@@ -1,0 +1,36 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    height: 100vh;
+}
+
+.login-card {
+    max-width: 80vh;
+    margin: 16px;
+    padding: 16px;
+}
+
+.login-header {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.login-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+.register-button {
+    padding-left: 8px;
+}

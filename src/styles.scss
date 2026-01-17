@@ -1,0 +1,53 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$primary-palette: mat.$azure-palette;
+$tertiary-palette: mat.$orange-palette;
+
+$light-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: $primary-palette,
+      tertiary: $tertiary-palette,
+    ),
+    typography: (
+      brand-family: 'Roboto, sans-serif',
+    ),
+  )
+);
+
+$dark-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+      primary: $primary-palette,
+      tertiary: $tertiary-palette,
+    ),
+  )
+);
+
+// 1. Aplicación al selector :root para que las variables CSS existan globalmente
+:root {
+  @include mat.all-component-themes($light-theme);
+  @include mat.system-level-colors($light-theme); // <--- ESTO GENERA LAS VARIABLES --mat-sys
+  @include mat.color-variants-backwards-compatibility($light-theme);
+}
+
+// 2. Modo Oscuro
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include mat.all-component-colors($dark-theme);
+    @include mat.system-level-colors($dark-theme); // <--- ACTUALIZA LAS VARIABLES A DARK
+    @include mat.color-variants-backwards-compatibility($dark-theme);
+    color-scheme: dark;
+  }
+}
+
+// 3. Fondo dinámico para que no tengas que usar púrpura
+body {
+  margin: 0;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
