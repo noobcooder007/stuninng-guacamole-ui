@@ -1,9 +1,11 @@
-<div class="container">
-  <div class="error-code">404</div>
-  <h1>Página no encontrada</h1>
-  <p>Lo sentimos, la página que buscas no existe o fue movida.</p>
-  <div class="back">
-    <img width="320" src="assets/images/no-data.svg" alt="404" />
-    <button mat-flat-button routerLink="/">Volver al Inicio</button>
-  </div>
-</div>
+<section class="w-full min-h-screen flex flex-col items-center justify-center gap-4">
+  <article class="flex flex-col items-center gap-4">
+    <p class="error-code text-9xl font-medium">404</p>
+    <p class="text-4xl">Página no encontrada</p>
+    <p class="text-2xl">Lo sentimos, la página que buscas no existe o fue movida.</p>
+    <figure class="flex flex-col items-center gap-4 mt-8">
+      <img class="size-72" src="assets/images/no-data.svg" alt="404" />
+      <button class="mt-8" mat-flat-button routerLink="/">Volver al Inicio</button>
+    </figure>
+  </article>
+</section>
