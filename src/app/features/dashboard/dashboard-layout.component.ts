@@ -1,12 +1,70 @@
-// dashboard-layout.component.ts
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { RouterOutlet, RouterLinkWithHref, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLinkWithHref, RouterLinkActive, Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTabsModule } from '@angular/material/tabs';
+import { AuthService } from '@app/core/services/auth.service';
+import { Tab, TabService } from '@app/core/services/tab.service';
+
+export interface NavItem {
+    id: string;
+    label: string;
+    icon: string;
+    route: string;
+}
+
+export interface NavCategory {
+    name: string;
+    icon: string;
+    items: NavItem[];
+}
+
+export const MENU_CONFIG: NavCategory[] = [
+    {
+        name: 'Directorios',
+        icon: 'person_search',
+        items: [
+            {
+                id: 'churches',
+                label: 'Iglesias',
+                icon: 'church',
+                route: '/churches',
+            },
+            {
+                id: 'collectors',
+                label: 'Colectores',
+                icon: 'groups',
+                route: '/collectors',
+            },
+            {
+                id: 'beneficients',
+                label: 'Bienhechores',
+                icon: 'volunteer_activism',
+                route: '/beneficients'
+            },
+        ],
+    },
+    {
+        name: 'Recibos',
+        icon: 'receipt',
+        items: [],
+    },
+    {
+        name: 'Reportes',
+        icon: 'document_scanner',
+        items: [],
+    },
+    {
+        name: 'Administracion',
+        icon: 'settings',
+        items: [],
+    },
+];
 
 @Component({
     selector: 'dashboard-layout',
@@ -17,24 +75,34 @@ import { MatListModule } from '@angular/material/list';
     MatIconModule,
     MatSidenavModule,
     MatListModule,
+    MatExpansionModule,
+    MatTabsModule,
     RouterLinkWithHref,
-    RouterLinkActive
+    RouterLinkActive,
 ],
     templateUrl: './dashboard-layout.component.html',
-    styleUrl: './dashboard-layout.component.scss',
 })
 export class DashboardLayoutComponent implements OnDestroy {
+    public readonly categories = MENU_CONFIG;
+    public currentRoute: string = '';
     protected readonly isMobile = signal(true);
+    protected readonly authService = inject(AuthService);
 
     private readonly _mobileQuery: MediaQueryList;
     private readonly _mobileQueryListener: () => void;
 
-    constructor() {
+    constructor(
+        public readonly tabService: TabService,
+        private readonly router: Router,
+    ) {
         const media = inject(MediaMatcher);
         this._mobileQuery = media.matchMedia('(max-width: 600px)');
         this.isMobile.set(this._mobileQuery.matches);
         this._mobileQueryListener = () => this.isMobile.set(this._mobileQuery.matches);
         this._mobileQuery.addEventListener('change', this._mobileQueryListener);
+        this.router.events.subscribe(() => {
+            this.currentRoute = this.router.url;
+        });
     }
 
     ngOnDestroy(): void {
@@ -51,7 +119,20 @@ export class DashboardLayoutComponent implements OnDestroy {
                 ? 'assets/images/profile-pic-female.svg'
                 : 'assets/images/profile-pic-male.svg'
         );
-
     };
+
+    public selectItem(item: NavItem) {
+        this.tabService.openTab({
+            id: item.id,
+            label: item.label,
+            link: item.route,
+        });
+    }
+
+    public closeTab(index: number, event: Event, tab: Tab) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        this.tabService.removeTab(index, tab);
+    }
 }
 

@@ -31,6 +31,11 @@ export interface AuthToken {
     expiresIn: number;
 }
 
+export interface AuthenticatedUser {
+    username: string;
+    role: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     private readonly http = inject(HttpClient)
@@ -39,6 +44,7 @@ export class AuthService {
     private _isLoading = signal(false);
     private _authStatus = signal<AuthStatus>('not-authenticated');
     private _authToken = signal<AuthToken | null>(null);
+    private _authenticatedUser = signal<AuthenticatedUser | null>(null);
 
     public authStatus = computed<AuthStatus>(() => {
         if (this._authStatus() === 'checking') {
@@ -62,12 +68,12 @@ export class AuthService {
         )
             .pipe(
                 map((response) => {
-                    this._snackbar.open('Sesión iniciada correctamente', 'Close', { duration: 5000 });
+                    this._snackbar.open('Sesión iniciada correctamente', 'Cerrar', { duration: 5000 });
                     return this.handleAuthSuccess(response as AuthResponse);
                 }),
                 catchError((_) => {
                     this._isLoading.set(false);
-                    this._snackbar.open('Oops credenciales invalidas', 'Close', { duration: 5000 });
+                    this._snackbar.open('Oops credenciales invalidas', 'Cerrar', { duration: 5000 });
                     return of(false);
                 })
             );
@@ -92,6 +98,24 @@ export class AuthService {
         );
     }
 
+    public logout(): Observable<void> {
+        return this.http.post(
+            `${environment.apiBaseUrl}/auth/logout`,
+            {
+                sessionId: localStorage.getItem('sessionId'),
+            },
+            { withCredentials: true },
+        ).pipe(
+            map(() => {
+                this._snackbar.open('Sesion cerrada con exito', 'Cerrar', { duration: 5000 });
+                this._authToken.set(null);
+                this._authStatus.set('not-authenticated');
+                localStorage.removeItem('refreshExpiresIn');
+                localStorage.removeItem('sessionId');
+            })
+        );
+    }
+
     public isAuthenticated(): boolean {
         const token = this.getAccessToken()
         return !!token;
@@ -107,26 +131,12 @@ export class AuthService {
         return (expiresIn - now) < (threshold * 1000);
     }
 
-    public getAccessToken(): AuthToken | null {
-        return this._authToken();
+    public getAuthenticatedUser(): AuthenticatedUser | null {
+        return this._authenticatedUser();
     }
 
-    public logout(): Observable<void> {
-        return this.http.post(
-            `${environment.apiBaseUrl}/auth/logout`,
-            {
-                sessionId: localStorage.getItem('sessionId'),
-            },
-            { withCredentials: true },
-        ).pipe(
-            map(() => {
-                this._snackbar.open('Logged out successfully', 'Close', { duration: 5000 });
-                this._authToken.set(null);
-                this._authStatus.set('not-authenticated');
-                localStorage.removeItem('refreshExpiresIn');
-                localStorage.removeItem('sessionId');
-            })
-        );
+    public getAccessToken(): AuthToken | null {
+        return this._authToken();
     }
 
     public handleAuthSuccess(response: AuthResponse) {
@@ -134,6 +144,11 @@ export class AuthService {
             {
                 accessToken: response.data.tokens.accessToken,
                 expiresIn: response.data.tokens.expiresIn
+            });
+        this._authenticatedUser.set(
+            {
+                username: response.data.user.username,
+                role: response.data.user.role
             });
         this.saveAuthMetadata(response);
         this._isLoading.set(false);

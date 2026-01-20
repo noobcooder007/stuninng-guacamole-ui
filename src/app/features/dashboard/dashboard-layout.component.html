@@ -1,37 +1,72 @@
-<div class="container" [class.is-mobile]="isMobile()">
-  <mat-toolbar class="toolbar" color="primary">
+<div class="flex flex-col h-screen overflow-hidden">
+  <mat-toolbar class="z-10 shadow-md">
     <button matIconButton aria-label="menu" (click)="snav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
-    <h1 class="app-name" routerLink="/">Sistema de Procuración de Fondos del Seminario Conciliar de México</h1>
-    <div class="spacer"></div>
-    <div class="profile">
-      <div class="info">
-        <span class="role">Administrador</span>
-        <span class="username">jtejeda</span>
-      </div>
-      <img class="w-10" src="assets/images/profile-pic-male.svg" alt="profile-pic">
-    </div>
+    <span class="pl-2 cursor-pointer" routerLink="/"
+      >Sistema de Procuración de Fondos del Seminario Conciliar de México</span
+    >
   </mat-toolbar>
-  <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="isMobile() ? 56 : 0" hasBackdrop="true">
-    <mat-sidenav #snav [mode]="isMobile() ? 'over' : 'side'" [fixedInViewport]="isMobile()" fixedTopGap="56">
-      <mat-nav-list>
-        <mat-list-item routerLink="/collectors" routerLinkActive>
-          <span matListItemTitle>Colectores</span>
-          <button matIconButton matListItemMeta>
-            <mat-icon>groups</mat-icon>
-          </button>
-        </mat-list-item>
-        <mat-list-item routerLink="/beneficients" routerLinkActive>
-          <span matListItemTitle>Bienhechores</span>
-          <button matIconButton matListItemMeta>
-            <mat-icon>volunteer_activism</mat-icon>
-          </button>
-        </mat-list-item>
-      </mat-nav-list>
+  <mat-sidenav-container
+    class="flex-1"
+    [style.marginTop.px]="isMobile() ? 56 : 0"
+    hasBackdrop="true"
+  >
+    <mat-sidenav
+      #snav
+      opened
+      class="p-4"
+      [mode]="isMobile() ? 'over' : 'side'"
+      [fixedInViewport]="isMobile()"
+      fixedTopGap="56"
+    >
+      <div class="flex flex-col h-full">
+        <mat-nav-list class="flex-grow overflow-y-auto">
+          <div class="flex flex-row gap-2 ml-4 mb-8">
+            <img class="w-16 rounded-full" [src]="avatarPath()" alt="profile-pic" />
+            <div class="flex flex-col justify-center ml-4">
+              <p class="text-2xl font-semibold">Administrador</p>
+              <p class="text-xl font-light">jtejeda</p>
+            </div>
+          </div>
+          @for (category of categories; track $index) {
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>{{ category.name }}</mat-expansion-panel-header>
+            @for (item of category.items; track $index) {
+            <mat-list-item [routerLink]="item.route" (click)="selectItem(item)" routerLinkActive>
+              <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+              <span matListItemTitle>{{ item.label }}</span>
+            </mat-list-item>
+            }
+          </mat-expansion-panel>
+          }
+        </mat-nav-list>
+        <button mat-flat-button type="button" aria-label="logout">Cerrar sesión</button>
+      </div>
     </mat-sidenav>
     <mat-sidenav-content>
-      <router-outlet></router-outlet>
+      <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+        @for (tab of tabService.tabs; track $index) {
+        <a
+          class="flex items-center content-between"
+          mat-tab-link
+          [routerLink]="tab.link"
+          routerLinkActive
+          #rla="routerLinkActive"
+          [active]="rla.isActive"
+        >
+          <span>
+            {{ tab.label }}
+          </span>
+          <mat-icon class="transition-transform justify-end" (click)="closeTab($index, $event, tab)"
+            >close</mat-icon
+          >
+        </a>
+        }
+      </nav>
+      <mat-tab-nav-panel #tabPanel>
+        <router-outlet></router-outlet>
+      </mat-tab-nav-panel>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

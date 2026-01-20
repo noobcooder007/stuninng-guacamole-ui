@@ -6,7 +6,7 @@ export const DASHBOARD_ROUTES: Routes = [
     {
         path: '',
         component: DashboardLayoutComponent,
-        canActivate: [authGuard],
+        // canActivate: [authGuard],
         children: [
             {
                 path: '',
@@ -22,7 +22,12 @@ export const DASHBOARD_ROUTES: Routes = [
                 path: 'beneficients',
                 loadComponent: () => import('./beneficient/beneficient.component')
                     .then(m => m.BeneficientComponent)
-            }
+            },
+            {
+                path: 'churches',
+                loadComponent: () => import('./church/church.component')
+                    .then(c => c.ChurchComponent)
+            },
         ]
     }
 ];
