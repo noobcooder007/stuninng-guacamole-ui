@@ -10,13 +10,15 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AuthService } from '@app/core/services/auth.service';
 import { Tab, TabService } from '@app/core/services/tab.service';
-import { OverviewComponent } from './overview/overview.component';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { OverviewComponent } from "./overview/overview.component";
 
 export interface NavItem {
     id: string;
     label: string;
     icon: string;
     route: string;
+    permission: string;
 }
 
 export interface NavCategory {
@@ -35,18 +37,21 @@ export const MENU_CONFIG: NavCategory[] = [
                 label: 'Iglesias',
                 icon: 'church',
                 route: '/churches',
+                permission: '',
             },
             {
                 id: 'collectors',
                 label: 'Colectores',
                 icon: 'groups',
                 route: '/collectors',
+                permission: '',
             },
             {
                 id: 'beneficients',
                 label: 'Bienhechores',
                 icon: 'volunteer_activism',
-                route: '/beneficients'
+                route: '/beneficients',
+                permission: '',
             },
         ],
     },
@@ -70,18 +75,19 @@ export const MENU_CONFIG: NavCategory[] = [
 @Component({
     selector: 'dashboard-layout',
     imports: [
-        RouterOutlet,
-        MatToolbarModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSidenavModule,
-        MatListModule,
-        MatExpansionModule,
-        MatTabsModule,
-        RouterLinkWithHref,
-        RouterLinkActive,
-        OverviewComponent,
-    ],
+    RouterOutlet,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule,
+    MatExpansionModule,
+    MatTabsModule,
+    RouterLinkWithHref,
+    RouterLinkActive,
+    HasPermissionPipe,
+    OverviewComponent
+],
     templateUrl: './dashboard-layout.component.html',
 })
 export class DashboardLayoutComponent implements OnDestroy {
@@ -128,6 +134,7 @@ export class DashboardLayoutComponent implements OnDestroy {
             id: item.id,
             label: item.label,
             link: item.route,
+            permission: item.permission,
         });
     }
 

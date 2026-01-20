@@ -29,15 +29,15 @@
               <p class="text-xl font-light">jtejeda</p>
             </div>
           </div>
-          @for (category of categories; track $index) {
+          @for (category of categories; track category.name) {
           <mat-expansion-panel>
             <mat-expansion-panel-header>{{ category.name }}</mat-expansion-panel-header>
-            @for (item of category.items; track $index) {
+            @for (item of category.items; track $index) { @if (item.permission | hasPermission) {
             <mat-list-item [routerLink]="item.route" (click)="selectItem(item)" routerLinkActive>
               <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
               <span matListItemTitle>{{ item.label }}</span>
             </mat-list-item>
-            }
+            } }
           </mat-expansion-panel>
           }
         </mat-nav-list>
@@ -60,7 +60,9 @@
               {{ tab.label }}
             </span>
             <button class="w-7 h-7 flex items-center justify-center rounded-full">
-              <mat-icon class="!inline-flex align-middle items-center justify-center active:scale-90" (click)="closeTab($index, $event, tab)"
+              <mat-icon
+                class="!inline-flex align-middle items-center justify-center active:scale-90"
+                (click)="closeTab($index, $event, tab)"
                 >close</mat-icon
               >
             </button>
@@ -69,7 +71,11 @@
         }
       </nav>
       <mat-tab-nav-panel #tabPanel>
+        @if (tabService.tabs.length > 0) {
         <router-outlet></router-outlet>
+        } @else {
+        <overview-component/>
+        }
       </mat-tab-nav-panel>
     </mat-sidenav-content>
   </mat-sidenav-container>

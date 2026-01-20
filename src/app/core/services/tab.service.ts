@@ -1,10 +1,12 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '@app/core/services/auth.service';
 
 export interface Tab {
     id: string;
     label: string;
     link: string; // La ruta para el router
+    permission: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -14,7 +16,7 @@ export class TabService {
 
     constructor(
         private router: Router,
-        // private cd: ChangeDetectorRef
+        private authService: AuthService,
     ) {
         this.loadTabs();
     }
@@ -27,6 +29,7 @@ export class TabService {
         const savedTabs = sessionStorage.getItem(this.STORAGE_KEY);
         if (savedTabs) {
             this.tabs = JSON.parse(savedTabs);
+            this.tabs.filter(tab => this.authService.hasPermission(tab.permission))
         }
     }
 

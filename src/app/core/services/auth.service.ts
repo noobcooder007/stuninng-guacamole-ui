@@ -5,6 +5,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from 'environments/environment.development';
 import { LoginUsernamePasswordRequestDto }
     from '@app/features/auth/dto/login-username-password-request.dto';
+import { jwtDecode } from 'jwt-decode';
 
 export type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
 
@@ -44,6 +45,7 @@ export class AuthService {
     private _isLoading = signal(false);
     private _authStatus = signal<AuthStatus>('not-authenticated');
     private _authToken = signal<AuthToken | null>(null);
+    private _userPermissions = signal<string[]>([]);
     private _authenticatedUser = signal<AuthenticatedUser | null>(null);
 
     public authStatus = computed<AuthStatus>(() => {
@@ -150,6 +152,8 @@ export class AuthService {
                 username: response.data.user.username,
                 role: response.data.user.role
             });
+        const decoded: any = jwtDecode(this.getAccessToken()!.accessToken);
+        this._userPermissions.set(decoded.rights);
         this.saveAuthMetadata(response);
         this._isLoading.set(false);
         this._authStatus.set('authenticated');
@@ -161,6 +165,11 @@ export class AuthService {
             'refreshExpiresIn', authResponse.data.tokens.refreshExpiresIn.toString());
         localStorage.setItem(
             'sessionId', authResponse.data.tokens.sessionId);
+    }
+
+    public hasPermission(permission: string | undefined): boolean {
+        if (!permission) return true;
+        return this._userPermissions().includes(permission);
     }
 
     public isLoading(): boolean {
