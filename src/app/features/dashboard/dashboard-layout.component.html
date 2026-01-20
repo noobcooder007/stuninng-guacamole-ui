@@ -1,4 +1,4 @@
-<div class="flex flex-col h-screen overflow-hidden">
+<div class="flex flex-col max-h-dvh h-screen overflow-hidden">
   <mat-toolbar class="z-10 shadow-md">
     <button matIconButton aria-label="menu" (click)="snav.toggle()">
       <mat-icon>menu</mat-icon>
@@ -46,9 +46,9 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="w-full overflow-x-auto no-scrollbar">
-        @for (tab of tabService.tabs; track $index) {
+        @for (tab of tabService.tabs; track tab.link) {
         <a
-          class="min-w-40 max-w-72 shrink-0 h-3 !inline-flex align-middle items-center justify-center"
+          class="min-w-40 max-w-72 shrink-0 h-12 !inline-flex align-middle items-center justify-center animate-fade-in-down"
           mat-tab-link
           [routerLink]="tab.link"
           routerLinkActive
@@ -60,7 +60,7 @@
               {{ tab.label }}
             </span>
             <button class="w-7 h-7 flex items-center justify-center rounded-full">
-              <mat-icon class="!inline-flex align-middle items-center justify-center" (click)="closeTab($index, $event, tab)"
+              <mat-icon class="!inline-flex align-middle items-center justify-center active:scale-90" (click)="closeTab($index, $event, tab)"
                 >close</mat-icon
               >
             </button>

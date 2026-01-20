@@ -10,6 +10,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AuthService } from '@app/core/services/auth.service';
 import { Tab, TabService } from '@app/core/services/tab.service';
+import { OverviewComponent } from './overview/overview.component';
 
 export interface NavItem {
     id: string;
@@ -69,17 +70,18 @@ export const MENU_CONFIG: NavCategory[] = [
 @Component({
     selector: 'dashboard-layout',
     imports: [
-    RouterOutlet,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSidenavModule,
-    MatListModule,
-    MatExpansionModule,
-    MatTabsModule,
-    RouterLinkWithHref,
-    RouterLinkActive,
-],
+        RouterOutlet,
+        MatToolbarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSidenavModule,
+        MatListModule,
+        MatExpansionModule,
+        MatTabsModule,
+        RouterLinkWithHref,
+        RouterLinkActive,
+        OverviewComponent,
+    ],
     templateUrl: './dashboard-layout.component.html',
 })
 export class DashboardLayoutComponent implements OnDestroy {
@@ -93,7 +95,7 @@ export class DashboardLayoutComponent implements OnDestroy {
 
     constructor(
         public readonly tabService: TabService,
-        private readonly router: Router,
+        public readonly router: Router,
     ) {
         const media = inject(MediaMatcher);
         this._mobileQuery = media.matchMedia('(max-width: 600px)');

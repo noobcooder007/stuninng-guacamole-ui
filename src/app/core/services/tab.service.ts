@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 export interface Tab {
@@ -12,7 +12,10 @@ export class TabService {
     private readonly STORAGE_KEY = 'open_tabs';
     public tabs: Tab[] = [];
 
-    constructor(private router: Router) {
+    constructor(
+        private router: Router,
+        // private cd: ChangeDetectorRef
+    ) {
         this.loadTabs();
     }
 
@@ -37,13 +40,18 @@ export class TabService {
     }
 
     public removeTab(index: number, tab: Tab) {
+        const isClosingActive = this.router.url === tab.link;
         this.tabs.splice(index, 1);
         this.saveTabs();
-        if (this.router.url === tab.link) {
-            if (this.tabs.length > 0) {
-                this.router.navigateByUrl(this.tabs[this.tabs.length - 1].link);
+        if (isClosingActive) {
+            const remainingTabs = this.tabs;
+            if (remainingTabs.length > 0) {
+                const nextIndex = index < remainingTabs.length ? index : remainingTabs.length - 1;
+                const nextTab = remainingTabs[nextIndex];
+                this.router.navigateByUrl(nextTab.link);
+            } else {
+                this.router.navigateByUrl('/');
             }
-            this.router.navigateByUrl('/');
         }
     }
 }
