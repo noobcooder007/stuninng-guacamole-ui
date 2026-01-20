@@ -45,22 +45,26 @@
       </div>
     </mat-sidenav>
     <mat-sidenav-content>
-      <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+      <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="w-full overflow-x-auto no-scrollbar">
         @for (tab of tabService.tabs; track $index) {
         <a
-          class="flex items-center content-between"
+          class="min-w-40 max-w-72 shrink-0 h-3 !inline-flex align-middle items-center justify-center"
           mat-tab-link
           [routerLink]="tab.link"
           routerLinkActive
           #rla="routerLinkActive"
           [active]="rla.isActive"
         >
-          <span>
-            {{ tab.label }}
-          </span>
-          <mat-icon class="transition-transform justify-end" (click)="closeTab($index, $event, tab)"
-            >close</mat-icon
-          >
+          <div class="flex items-center justify-between w-full h-full pl-4 pr-2 gap-2">
+            <span class="truncate text-sm font-medium tracking-wide">
+              {{ tab.label }}
+            </span>
+            <button class="w-7 h-7 flex items-center justify-center rounded-full">
+              <mat-icon class="!inline-flex align-middle items-center justify-center" (click)="closeTab($index, $event, tab)"
+                >close</mat-icon
+              >
+            </button>
+          </div>
         </a>
         }
       </nav>
