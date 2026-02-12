@@ -93,7 +93,7 @@ export const MENU_CONFIG: NavCategory[] = [
 export class DashboardLayoutComponent implements OnDestroy {
     public readonly categories = MENU_CONFIG;
     public currentRoute: string = '';
-    protected readonly isMobile = signal(true);
+    protected readonly isMobile = signal(false);
     protected readonly authService = inject(AuthService);
 
     private readonly _mobileQuery: MediaQueryList;

@@ -1,0 +1,122 @@
+<div class="my-2 text-center">
+  <h2 matDialogTitle>Añadir iglesia</h2>
+</div>
+<mat-dialog-content>
+  <form class="flex flex-col gap-4" [formGroup]="createChurchForm">
+    <div formGroupName="ecclesialIdentity" class="flex flex-col gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="name" aria-label="name" />
+      </mat-form-field>
+      <div class="grid grid-cols-2 gap-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Vicaria</mat-label>
+          <input matInput formControlName="vicaria" aria-label="vicaria" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Decanato</mat-label>
+          <input matInput formControlName="decanato" aria-label="decanato" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Parroquia</mat-label>
+          <input matInput formControlName="parroquia" aria-label="parroquia" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Capilla</mat-label>
+          <input matInput formControlName="capilla" aria-label="capilla" />
+        </mat-form-field>
+      </div>
+    </div>
+    <div formGroupName="address" class="flex flex-col gap-4">
+      <p>Domicilio</p>
+      <div class="grid grid-cols-2 gap-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Calle</mat-label>
+          <input matInput formControlName="street" aria-label="address-street" />
+        </mat-form-field>
+        <div class="grid grid-cols-2 gap-4" formGroupName="numeration">
+          <mat-form-field appearance="outline">
+            <mat-label>Número exterior</mat-label>
+            <input matInput formControlName="noExt" aria-label="address-number" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Número interior</mat-label>
+            <input matInput formControlName="noInt" aria-label="address-letter" />
+          </mat-form-field>
+        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Colonia / Barrio</mat-label>
+          <input matInput formControlName="neighborhood" aria-label="address-colony" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Localidad</mat-label>
+          <input matInput formControlName="locality" aria-label="address-delegation" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Municipio / Delegación</mat-label>
+          <input matInput formControlName="city" aria-label="address-municipality" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <input matInput formControlName="state" aria-label="address-state" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Código postal</mat-label>
+          <input matInput formControlName="zipCode" aria-label="address-postalCode" />
+        </mat-form-field>
+      </div>
+    </div>
+    <div formGroupName="priest" class="flex flex-col gap-4">
+      <p>Parroco</p>
+      <div class="grid grid-cols-2 gap-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="firstname" aria-label="priest-firstname" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Apellido paterno</mat-label>
+          <input matInput formControlName="firstLastname" aria-label="priest-firstLastname" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Apellido materno</mat-label>
+          <input matInput formControlName="secondLastname" aria-label="priest-secondLastname" />
+        </mat-form-field>
+      </div>
+    </div>
+    <div formGroupName="auxiliarPriest" class="flex flex-col gap-4">
+      <p>Vicario</p>
+      <div class="grid grid-cols-2 gap-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="firstname" aria-label="auxiliarPriest-firstname" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Apellido paterno</mat-label>
+          <input
+            matInput
+            formControlName="firstLastname"
+            aria-label="auxiliarPriest-firstLastname"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Apellido materno</mat-label>
+          <input
+            matInput
+            formControlName="secondLastname"
+            aria-label="auxiliarPriest-secondLastname"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Telefono</mat-label>
+      <input matInput formControlName="phoneNumber" aria-label="phoneNumber" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions class="flex flex-col gap-4">
+  <button class="w-full" type="button" matButton="tonal" (click)="close()">Cancelar</button>
+  <button class="w-full" type="button" matButton="filled" (click)="createChurch()" [disabled]="createChurchForm.invalid">
+    Guardar
+  </button>
+</mat-dialog-actions>

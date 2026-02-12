@@ -1,1 +1,85 @@
-<p>church page works</p>
+<div class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6">
+  <section class="flex flex-row items-baseline justify-between mb-4 w-full px-4">
+    <form class="flex flex-row gap-4 items-baseline" [formGroup]="searchForm">
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="name" aria-label="name" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Vicaria</mat-label>
+        <input matInput formControlName="vicaria" aria-label="vicaria" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Decanato</mat-label>
+        <input matInput formControlName="decanato" aria-label="decanato" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Parroquia</mat-label>
+        <input matInput formControlName="parroquia" aria-label="parroquia" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Capilla</mat-label>
+        <input matInput formControlName="capilla" aria-label="capilla" />
+      </mat-form-field>
+      <button class="whitespace-nowrap" matButton="tonal" type="button" (click)="searchForm.reset()">Borrar filtros</button>
+    </form>
+    <button class="whitespace-nowrap" type="button" matButton="filled" (click)="addChurch()">Añadir iglesia</button>
+  </section>
+  <table mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+      <td mat-cell *matCellDef="let row">{{ row.ecclesialIdentity.name }}</td>
+    </ng-container>
+    <ng-container matColumnDef="vicaria">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Vicaria</th>
+      <td mat-cell *matCellDef="let row">{{ row.ecclesialIdentity.vicaria }}</td>
+    </ng-container>
+    <ng-container matColumnDef="decanato">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Decanato</th>
+      <td mat-cell *matCellDef="let row">{{ row.ecclesialIdentity.decanato }}</td>
+    </ng-container>
+    <ng-container matColumnDef="parroquia">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Parroquia</th>
+      <td mat-cell *matCellDef="let row">{{ row.ecclesialIdentity.parroquia }}</td>
+    </ng-container>
+    <ng-container matColumnDef="capilla">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Capilla</th>
+      <td mat-cell *matCellDef="let row">{{ row.ecclesialIdentity.capilla }}</td>
+    </ng-container>
+    <ng-container matColumnDef="priest">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Parroco</th>
+      <td mat-cell *matCellDef="let row">{{ row.priest | fullname }}</td>
+    </ng-container>
+    <ng-container matColumnDef="auxiliarPriest">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Vicario</th>
+      <td mat-cell *matCellDef="let row">{{ row.auxiliarPriest | fullname }}</td>
+    </ng-container>
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Domicilio</th>
+      <td mat-cell *matCellDef="let row">{{ row.address | address }}</td>
+    </ng-container>
+    <ng-container matColumnDef="phoneNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Telefono</th>
+      <td mat-cell *matCellDef="let row">{{ row.phoneNumber }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let row">
+        <button matIconButton>
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <mat-paginator
+    [length]="pagination().itemCount"
+    (page)="onPageChange($event)"
+    [pageSize]="pagination().limit"
+    [pageIndex]="pagination().page - 1"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons
+    aria-label="Select page of churches"
+  ></mat-paginator>
+</div>
