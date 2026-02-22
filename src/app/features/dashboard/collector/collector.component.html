@@ -1,1 +1,83 @@
-<p>Collectors pages works</p>
+<div class="collector">
+  <h2>Colectores</h2>
+
+  <section class="flex flex-row items-baseline justify-between mb-4 w-full px-4">
+    <form [formGroup]="searchForm" class="filters">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>AP Paterno</mat-label>
+      <input matInput formControlName="apPaterno" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>AP Materno</mat-label>
+      <input matInput formControlName="apMaterno" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Clave</mat-label>
+      <input matInput formControlName="noColector" />
+    </mat-form-field>
+    </form>
+    <div class="actions">
+      <button class="whitespace-nowrap" type="button" matButton="tonal" (click)="searchForm.reset()">Borrar filtros</button>
+      <button class="whitespace-nowrap ml-2" type="button" matButton="filled" (click)="addCollector()">Añadir colector</button>
+    </div>
+  </section>
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" *ngIf="!isLoading()">
+
+    <ng-container matColumnDef="noColector">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Clave</th>
+      <td mat-cell *matCellDef="let element">{{ element.noColector }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+      <td mat-cell *matCellDef="let element">{{ element.nombre }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="rfc">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>RFC</th>
+      <td mat-cell *matCellDef="let element">{{ element.rfc || '-' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="telefono">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono</th>
+      <td mat-cell *matCellDef="let element">{{ element.telefono || '-' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+      <td mat-cell *matCellDef="let element">{{ element.email || '-' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let element">
+        <button matIconButton>
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button matIconButton>
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [length]="pagination().itemCount"
+                 [pageSize]="pagination().limit"
+                 [pageIndex]="pagination().page - 1"
+                 [pageSizeOptions]="[5,10,20]"
+                 (page)="onPageChange($event)"
+                 showFirstLastButtons>
+  </mat-paginator>
+
+  <div *ngIf="isLoading()">Cargando...</div>
+  </div>

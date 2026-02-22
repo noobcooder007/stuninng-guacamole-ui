@@ -1,1 +1,81 @@
-<p>beneficient page works</p>
+<div class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6">
+  <section class="flex flex-row items-baseline justify-between mb-4 w-full px-4">
+    <form class="flex flex-row gap-4 items-baseline flex-wrap" [formGroup]="searchForm">
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" aria-label="nombre" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Ap.Paterno</mat-label>
+        <input matInput formControlName="apPaterno" aria-label="apPaterno" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Ap.Materno</mat-label>
+        <input matInput formControlName="apMaterno" aria-label="apMaterno" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Tipo de Persona</mat-label>
+        <input matInput formControlName="tipoPersona" aria-label="tipoPersona" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>RFC</mat-label>
+        <input matInput formControlName="rfc" aria-label="rfc" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Razón Social</mat-label>
+        <input matInput formControlName="razonSocial" aria-label="razonSocial" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>Status</mat-label>
+        <input matInput formControlName="status" aria-label="status" />
+      </mat-form-field>
+      <mat-form-field class="w-40" appearance="outline">
+        <mat-label>No.Bienhechor</mat-label>
+        <input matInput formControlName="noBienhechor" aria-label="noBienhechor" />
+      </mat-form-field>
+      <button class="whitespace-nowrap" matButton="tonal" type="button" (click)="searchForm.reset()">Borrar filtros</button>
+    </form>
+    <button class="whitespace-nowrap" type="button" matButton="filled" (click)="addBeneficent()">Añadir Bienhechor</button>
+  </section>
+  <table mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="noBienhechor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>No.Bienhechor</th>
+      <td mat-cell *matCellDef="let row">{{ row.noBienhechor }}</td>
+    </ng-container>
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+      <td mat-cell *matCellDef="let row">{{ row.nombre }}</td>
+    </ng-container>
+    <ng-container matColumnDef="razonSocial">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Razón Social</th>
+      <td mat-cell *matCellDef="let row">{{ row.razonSocial }}</td>
+    </ng-container>
+    <ng-container matColumnDef="persona">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Persona</th>
+      <td mat-cell *matCellDef="let row">{{ row.persona }}</td>
+    </ng-container>
+    <ng-container matColumnDef="activo">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Activo</th>
+      <td mat-cell *matCellDef="let row">{{ row.activo ? 'Sí' : 'No' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let row">
+        <button matIconButton (click)="editBeneficent(row)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewBeneficent(row)" class="clickable-row"></tr>
+  </table>
+  <mat-paginator
+    [length]="pagination().itemCount"
+    (page)="onPageChange($event)"
+    [pageSize]="pagination().limit"
+    [pageIndex]="pagination().page - 1"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons
+    aria-label="Select page of beneficents"
+  ></mat-paginator>
+</div>

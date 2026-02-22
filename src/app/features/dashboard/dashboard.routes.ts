@@ -24,6 +24,11 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(m => m.BeneficientComponent)
             },
             {
+                path: 'beneficents-detail',
+                loadComponent: () => import('./beneficient/detail/beneficent-detail.component')
+                    .then(m => m.BeneficientDetailComponent)
+            },
+            {
                 path: 'churches',
                 loadComponent: () => import('./church/church.component')
                     .then(c => c.ChurchComponent)

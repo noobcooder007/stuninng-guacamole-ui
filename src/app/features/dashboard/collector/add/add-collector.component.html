@@ -1,0 +1,41 @@
+<div class="my-2 text-center">
+  <h2 matDialogTitle>Añadir colector</h2>
+</div>
+<mat-dialog-content>
+  <form class="flex flex-col gap-4" [formGroup]="createCollectorForm">
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Clave</mat-label>
+        <input matInput formControlName="noColector" aria-label="noColector" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" aria-label="nombre" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido paterno</mat-label>
+        <input matInput formControlName="apPaterno" aria-label="apPaterno" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido materno</mat-label>
+        <input matInput formControlName="apMaterno" aria-label="apMaterno" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>RFC</mat-label>
+        <input matInput formControlName="rfc" aria-label="rfc" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Teléfono</mat-label>
+        <input matInput formControlName="telefono" aria-label="telefono" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" aria-label="email" />
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions class="flex flex-col gap-4">
+  <button class="w-full" type="button" matButton="tonal" (click)="close()">Cancelar</button>
+  <button class="w-full" type="button" matButton="filled" (click)="createCollector()" [disabled]="createCollectorForm.invalid">Guardar</button>
+</mat-dialog-actions>
