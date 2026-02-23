@@ -40,10 +40,10 @@ export const MENU_CONFIG: NavCategory[] = [
                 permission: '',
             },
             {
-                id: 'collectors',
+                id: 'colectores',
                 label: 'Colectores',
                 icon: 'groups',
-                route: '/collectors',
+                route: '/colectores',
                 permission: '',
             },
             {
@@ -56,9 +56,37 @@ export const MENU_CONFIG: NavCategory[] = [
         ],
     },
     {
+        name: 'Colectores',
+        icon: 'assessment',
+        items: [
+            {
+                id: 'colectores-reportes',
+                label: 'Reportes',
+                icon: 'bar_chart',
+                route: '/colectores/reportes',
+                permission: '',
+            },
+        ],
+    },
+    {
         name: 'Recibos',
         icon: 'receipt',
-        items: [],
+        items: [
+            {
+                id: 'recibos-impresion',
+                label: 'Impresión de Recibos',
+                icon: 'print',
+                route: '/recibos/impresion',
+                permission: '',
+            },
+            {
+                id: 'recibos-especiales',
+                label: 'Recibos Especiales',
+                icon: 'description',
+                route: '/recibos/especiales',
+                permission: '',
+            },
+        ],
     },
     {
         name: 'Reportes',

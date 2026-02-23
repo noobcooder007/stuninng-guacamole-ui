@@ -1,0 +1,103 @@
+<div class="impresion-container">
+  <div class="header">
+    <h1>Impresión de Recibos</h1>
+  </div>
+
+  <mat-card class="main-card">
+    <mat-card-header>
+      <mat-card-title>Configuración de Impresión</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="recibosForm" class="form-container">
+        <!-- Botones de Impresión -->
+        <div class="buttons-section">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="imprimirRecibos()"
+            type="button">
+            <mat-icon>print</mat-icon>
+            Imprimir Recibos
+          </button>
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="cartaRecibosActual()"
+            type="button">
+            <mat-icon>description</mat-icon>
+            Carta de Recibos Actual
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="cartaRecibosAnterior()"
+            type="button">
+            <mat-icon>history</mat-icon>
+            Carta de Recibos Anterior
+          </button>
+        </div>
+
+        <!-- Campos de Configuración -->
+        <div class="form-grid">
+          <!-- Mes -->
+          <mat-form-field appearance="outline">
+            <mat-label>Mes</mat-label>
+            <mat-select formControlName="mes">
+              <mat-option *ngFor="let mes of meses" [value]="mes.value">
+                {{ mes.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Folio Inicial -->
+          <mat-form-field appearance="outline">
+            <mat-label>Folio Inicial</mat-label>
+            <input matInput formControlName="folioInicial" type="text" />
+          </mat-form-field>
+
+          <!-- Folio Final -->
+          <mat-form-field appearance="outline">
+            <mat-label>Folio Final</mat-label>
+            <input matInput formControlName="folioFinal" type="text" />
+          </mat-form-field>
+        </div>
+
+        <!-- Datos Colector -->
+        <div class="datos-colector-section">
+          <h3 class="section-title">Datos Colector</h3>
+          <div class="form-grid">
+            <!-- Nombre -->
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input matInput formControlName="nombre" type="text" />
+            </mat-form-field>
+
+            <!-- Apellido Paterno -->
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido Paterno</mat-label>
+              <input matInput formControlName="apPaterno" type="text" />
+            </mat-form-field>
+
+            <!-- Apellido Materno -->
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido Materno</mat-label>
+              <input matInput formControlName="apMaterno" type="text" />
+            </mat-form-field>
+
+            <!-- No. Colector -->
+            <mat-form-field appearance="outline">
+              <mat-label>No. Colector</mat-label>
+              <input matInput formControlName="noColector" type="text" />
+            </mat-form-field>
+
+            <!-- Código Postal -->
+            <mat-form-field appearance="outline">
+              <mat-label>Código Postal</mat-label>
+              <input matInput formControlName="codigoPostal" type="text" />
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

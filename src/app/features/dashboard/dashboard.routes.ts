@@ -33,6 +33,26 @@ export const DASHBOARD_ROUTES: Routes = [
                 loadComponent: () => import('./church/church.component')
                     .then(c => c.ChurchComponent)
             },
+            {
+                path: 'colectores',
+                loadComponent: () => import('./colector/colector.component')
+                    .then(m => m.ColectorComponent)
+            },
+            {
+                path: 'colectores/reportes',
+                loadComponent: () => import('./colector/reportes/colector-reportes.component')
+                    .then(m => m.ColectorReportesComponent)
+            },
+            {
+                path: 'recibos/impresion',
+                loadComponent: () => import('./recibos/impresion/impresion-recibos.component')
+                    .then(m => m.ImpresionRecibosComponent)
+            },
+            {
+                path: 'recibos/especiales',
+                loadComponent: () => import('./recibos/especiales/recibos-especiales.component')
+                    .then(m => m.RecibosEspecialesComponent)
+            },
         ]
     }
 ];
