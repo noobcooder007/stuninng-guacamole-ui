@@ -1,28 +1,25 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogModule, MatDialogTitle, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from "@angular/material/button";
 import { Address, ChurchService, CreateChurchDto, EcclesialIdentity, Priest } from '@app/core/services/church.service';
 
 @Component({
-    selector: 'add-church',
-    templateUrl: 'add-church.component.html',
+    selector: 'create-church',
+    templateUrl: 'create-church.component.html',
     imports: [
         ReactiveFormsModule,
         MatDialogModule,
-        MatDialogTitle,
-        MatDialogActions,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
     ]
 })
 
-export class AddChurchComponent {
+export class CreateChurchComponent {
     private readonly churchService = inject(ChurchService);
-    private readonly dialogRef = inject(MatDialogRef<AddChurchComponent>);
     private isLoading = signal(false);
 
     createChurchForm = new FormGroup({
@@ -71,7 +68,6 @@ export class AddChurchComponent {
         this.churchService.create(createChurchDto).subscribe({
             next: () => {
                 this.isLoading.set(false);
-                this.dialogRef.close();
             },
             error: () => {
                 this.isLoading.set(false);
@@ -79,8 +75,7 @@ export class AddChurchComponent {
         });
     }
 
-    close() {
+    reset() {
         this.createChurchForm.reset();
-        this.dialogRef.close();
     }
 }

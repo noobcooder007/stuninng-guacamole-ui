@@ -1,6 +1,4 @@
 import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { AddCollectorComponent } from './add/add-collector.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
@@ -11,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Collector, CollectorFilters, CollectorService, PaginatedMetadata } from '@app/core/services/collector.service';
+import { TabService } from '@app/core/services/tab.service';
+import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 
 @Component({
     selector: 'collector-component',
@@ -24,6 +24,7 @@ import { Collector, CollectorFilters, CollectorService, PaginatedMetadata } from
         MatInputModule,
         MatButtonModule,
         MatIcon,
+        FullnamePipe,
     ],
 })
 export class CollectorComponent implements OnInit, AfterViewInit {
@@ -37,19 +38,21 @@ export class CollectorComponent implements OnInit, AfterViewInit {
         pageCount: 0,
     };
     public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
-    public displayedColumns: string[] = ['noColector', 'nombre', 'rfc', 'telefono', 'email', 'actions'];
+    public displayedColumns: string[] = ['profile', 'fullname', 'nss', 'phoneNumber', 'telephoneNumber', 'commissionPercent', 'actions'];
     public dataSource = new MatTableDataSource<Collector>();
     public searchForm = new FormGroup({
-        nombre: new FormControl(''),
-        apPaterno: new FormControl(''),
-        apMaterno: new FormControl(''),
-        noColector: new FormControl(''),
+        firstname: new FormControl(''),
+        firstLastname: new FormControl(''),
+        secondLastname: new FormControl(''),
+        city: new FormControl(''),
+        state: new FormControl(''),
+        zipCode: new FormControl(''),
     });
 
     @ViewChild(MatSort) sort!: MatSort;
 
+    private readonly tabService = inject(TabService);
     private readonly collectorService = inject(CollectorService);
-    readonly addCollectorDialog = inject(MatDialog);
 
     ngOnInit() {
         this.setupFilters();
@@ -58,6 +61,16 @@ export class CollectorComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
+        this.dataSource.sortingDataAccessor = (item: Collector, property: string): string | number => {
+            switch (property) {
+                case 'fullname': return `${item.firstname} ${item.firstLastname} ${item.secondLastname}`;
+                case 'nss': return item.nss ?? item.maskedNSS;
+                case 'phoneNumber': return item.phoneNumber ?? item.maskedPhoneNumber;
+                case 'telephoneNumber': return item.telephoneNumber ?? item.maskedTelephoneNumber;
+                case 'commissionPercent': return item.paymentData.commissionPercent;
+                default: return (item as any)[property];
+            }
+        };
     }
 
     private setupFilters() {
@@ -87,11 +100,11 @@ export class CollectorComponent implements OnInit, AfterViewInit {
     }
 
     addCollector() {
-        this.addCollectorDialog.open(AddCollectorComponent, {
-            width: '600px',
-            maxHeight: '80vh',
-            disableClose: true,
-            autoFocus: false,
+        this.tabService.openTab({
+            id: 'add-collector',
+            label: 'Añadir colector',
+            link: '/collectors/create',
+            permission: 'add:collector'
         });
     }
 }

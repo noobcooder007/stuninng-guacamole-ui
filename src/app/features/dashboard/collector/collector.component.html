@@ -1,58 +1,74 @@
-<div class="collector">
-  <h2>Colectores</h2>
-
+<div class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6">
   <section class="flex flex-row items-baseline justify-between mb-4 w-full px-4">
-    <form [formGroup]="searchForm" class="filters">
-    <mat-form-field appearance="outline">
-      <mat-label>Nombre</mat-label>
-      <input matInput formControlName="nombre" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>AP Paterno</mat-label>
-      <input matInput formControlName="apPaterno" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>AP Materno</mat-label>
-      <input matInput formControlName="apMaterno" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Clave</mat-label>
-      <input matInput formControlName="noColector" />
-    </mat-form-field>
+    <form [formGroup]="searchForm" class="flex flex-row gap-4 items-baseline flex-wrap">
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input placeholder="Escribe un nombre" matInput formControlName="firstname" />
+      </mat-form-field>
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Apellido paterno</mat-label>
+        <input placeholder="Ingresa el apellido paterno" matInput formControlName="firstLastname" />
+      </mat-form-field>
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Apellido materno</mat-label>
+        <input placeholder="Ingresa el apellido materno" matInput formControlName="secondLastname" />
+      </mat-form-field>
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Ciudad / Delegación</mat-label>
+        <input placeholder="Ingresa una ciudad o delegación valida" matInput formControlName="city" />
+      </mat-form-field>
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Estado</mat-label>
+        <input placeholder="Ingresa un estado valido" matInput formControlName="state" />
+      </mat-form-field>
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Código Postal</mat-label>
+        <input placeholder="Ingresa código postal valido" matInput formControlName="zipCode" />
+      </mat-form-field>
+      <button
+        class="whitespace-nowrap"
+        type="button"
+        matButton="tonal"
+        (click)="searchForm.reset()"
+      >
+        Borrar filtros
+      </button>
     </form>
-    <div class="actions">
-      <button class="whitespace-nowrap" type="button" matButton="tonal" (click)="searchForm.reset()">Borrar filtros</button>
-      <button class="whitespace-nowrap ml-2" type="button" matButton="filled" (click)="addCollector()">Añadir colector</button>
-    </div>
+    <button
+      class="whitespace-nowrap ml-2"
+      type="button"
+      matButton="filled"
+      (click)="addCollector()"
+    >
+      Añadir colector
+    </button>
   </section>
-  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" *ngIf="!isLoading()">
-
-    <ng-container matColumnDef="noColector">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Clave</th>
-      <td mat-cell *matCellDef="let element">{{ element.noColector }}</td>
+  <table mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="profile">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <img class="rounded-full size-16 object-cover" srcset="{{element.profilePictureUrl}}" aria-label="profile-image-collector">
+      </td>
     </ng-container>
-
-    <ng-container matColumnDef="nombre">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
-      <td mat-cell *matCellDef="let element">{{ element.nombre }}</td>
+    <ng-container matColumnDef="fullname">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre completo</th>
+      <td mat-cell *matCellDef="let element">{{ element | fullname }}</td>
     </ng-container>
-
-    <ng-container matColumnDef="rfc">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>RFC</th>
-      <td mat-cell *matCellDef="let element">{{ element.rfc || '-' }}</td>
+    <ng-container matColumnDef="nss">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>NSS</th>
+      <td mat-cell *matCellDef="let element">{{ element.maskedNSS || '-' }}</td>
     </ng-container>
-
-    <ng-container matColumnDef="telefono">
+    <ng-container matColumnDef="phoneNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono celular</th>
+      <td mat-cell *matCellDef="let element">{{ element.maskedPhoneNumber || '-' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="telephoneNumber">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono</th>
-      <td mat-cell *matCellDef="let element">{{ element.telefono || '-' }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.maskedTelephoneNumber || '-' }}</td>
     </ng-container>
-
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
-      <td mat-cell *matCellDef="let element">{{ element.email || '-' }}</td>
+    <ng-container matColumnDef="commissionPercent">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Comisión</th>
+      <td mat-cell *matCellDef="let element">{{ `${element.paymentData.commissionPercent} %` || '-' }}</td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
@@ -68,16 +84,16 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
 
-  <mat-paginator [length]="pagination().itemCount"
-                 [pageSize]="pagination().limit"
-                 [pageIndex]="pagination().page - 1"
-                 [pageSizeOptions]="[5,10,20]"
-                 (page)="onPageChange($event)"
-                 showFirstLastButtons>
+  <mat-paginator
+    [length]="pagination().itemCount"
+    [pageSize]="pagination().limit"
+    [pageIndex]="pagination().page - 1"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  >
   </mat-paginator>
-
-  <div *ngIf="isLoading()">Cargando...</div>
-  </div>
+</div>

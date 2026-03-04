@@ -11,47 +11,57 @@ export const DASHBOARD_ROUTES: Routes = [
             {
                 path: '',
                 loadComponent: () => import('./overview/overview.component')
-                    .then(m => m.OverviewComponent)
+                    .then(m => m.OverviewComponent),
             },
             {
                 path: 'collectors',
                 loadComponent: () => import('./collector/collector.component')
-                    .then(m => m.CollectorComponent)
+                    .then(m => m.CollectorComponent),
+            },
+            {
+                path: 'collectors/create',
+                loadComponent: () => import('./collector/create/create-collector.component')
+                    .then(m => m.CreateCollectorComponent),
             },
             {
                 path: 'beneficients',
                 loadComponent: () => import('./beneficient/beneficient.component')
-                    .then(m => m.BeneficientComponent)
+                    .then(m => m.BeneficientComponent),
             },
             {
-                path: 'beneficents-detail',
-                loadComponent: () => import('./beneficient/detail/beneficent-detail.component')
-                    .then(m => m.BeneficientDetailComponent)
+                path: 'beneficients/create',
+                loadComponent: () => import('./beneficient/create/create-beneficient.component')
+                    .then(m => m.CreateBeneficientComponent),
+            },
+            {
+                path: 'beneficents/:id',
+                loadComponent: () => import('./beneficient/detail/beneficient-detail.component')
+                    .then(m => m.BeneficientDetailComponent),
             },
             {
                 path: 'churches',
                 loadComponent: () => import('./church/church.component')
-                    .then(c => c.ChurchComponent)
+                    .then(c => c.ChurchComponent),
             },
             {
-                path: 'colectores',
-                loadComponent: () => import('./colector/colector.component')
-                    .then(m => m.ColectorComponent)
+                path: 'churches/create',
+                loadComponent: () => import('./church/create/create-church.component')
+                    .then(c => c.CreateChurchComponent),
             },
             {
-                path: 'colectores/reportes',
-                loadComponent: () => import('./colector/reportes/colector-reportes.component')
-                    .then(m => m.ColectorReportesComponent)
+                path: 'reports/collector',
+                loadComponent: () => import('./collector/reportes/colector-reportes.component')
+                    .then(m => m.ColectorReportesComponent),
             },
             {
-                path: 'recibos/impresion',
+                path: 'receipts',
                 loadComponent: () => import('./recibos/impresion/impresion-recibos.component')
-                    .then(m => m.ImpresionRecibosComponent)
+                    .then(m => m.ImpresionRecibosComponent),
             },
             {
-                path: 'recibos/especiales',
+                path: 'receipts/specials',
                 loadComponent: () => import('./recibos/especiales/recibos-especiales.component')
-                    .then(m => m.RecibosEspecialesComponent)
+                    .then(m => m.RecibosEspecialesComponent),
             },
         ]
     }

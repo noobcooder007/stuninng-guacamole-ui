@@ -1,73 +1,94 @@
 <div class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6">
   <section class="flex flex-row items-baseline justify-between mb-4 w-full px-4">
     <form class="flex flex-row gap-4 items-baseline flex-wrap" [formGroup]="searchForm">
-      <mat-form-field class="w-40" appearance="outline">
+      <mat-form-field class="w-52" appearance="outline">
         <mat-label>Nombre</mat-label>
-        <input matInput formControlName="nombre" aria-label="nombre" />
+        <input matInput formControlName="firstname" aria-label="firstname" />
       </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Ap.Paterno</mat-label>
-        <input matInput formControlName="apPaterno" aria-label="apPaterno" />
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Apellido paterno</mat-label>
+        <input matInput formControlName="firstLastname" aria-label="firstLastname" />
       </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Ap.Materno</mat-label>
-        <input matInput formControlName="apMaterno" aria-label="apMaterno" />
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Apellido materno</mat-label>
+        <input matInput formControlName="secondLastname" aria-label="secondLastname" />
       </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Tipo de Persona</mat-label>
-        <input matInput formControlName="tipoPersona" aria-label="tipoPersona" />
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Municipio / Delegación</mat-label>
+        <input matInput formControlName="city" aria-label="city" />
       </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>RFC</mat-label>
-        <input matInput formControlName="rfc" aria-label="rfc" />
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Estado</mat-label>
+        <input matInput formControlName="state" aria-label="state" />
       </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Razón Social</mat-label>
-        <input matInput formControlName="razonSocial" aria-label="razonSocial" />
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Código postal</mat-label>
+        <input matInput formControlName="zipCode" aria-label="zipCode" />
       </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Status</mat-label>
-        <input matInput formControlName="status" aria-label="status" />
-      </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>No.Bienhechor</mat-label>
-        <input matInput formControlName="noBienhechor" aria-label="noBienhechor" />
-      </mat-form-field>
-      <button class="whitespace-nowrap" matButton="tonal" type="button" (click)="searchForm.reset()">Borrar filtros</button>
+      <button
+        class="whitespace-nowrap"
+        matButton="tonal"
+        type="button"
+        (click)="searchForm.reset()"
+      >
+        Borrar filtros
+      </button>
     </form>
-    <button class="whitespace-nowrap" type="button" matButton="filled" (click)="addBeneficent()">Añadir Bienhechor</button>
+    <button class="whitespace-nowrap" type="button" matButton="filled" (click)="addBeneficient()">
+      Añadir bienhechor
+    </button>
   </section>
   <table mat-table [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="noBienhechor">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>No.Bienhechor</th>
-      <td mat-cell *matCellDef="let row">{{ row.noBienhechor }}</td>
-    </ng-container>
-    <ng-container matColumnDef="nombre">
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef>Titulo</th>
+      <td mat-cell *matCellDef="let row">{{row.title}}</td>
+    ></ng-container>
+    <ng-container matColumnDef="firstname">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
-      <td mat-cell *matCellDef="let row">{{ row.nombre }}</td>
+      <td mat-cell *matCellDef="let row">{{ row.firstname }}</td>
     </ng-container>
-    <ng-container matColumnDef="razonSocial">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Razón Social</th>
-      <td mat-cell *matCellDef="let row">{{ row.razonSocial }}</td>
+    <ng-container matColumnDef="firstLastname">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Apellido paterno</th>
+      <td mat-cell *matCellDef="let row">{{ row.firstLastname }}</td>
     </ng-container>
-    <ng-container matColumnDef="persona">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Persona</th>
-      <td mat-cell *matCellDef="let row">{{ row.persona }}</td>
+    <ng-container matColumnDef="secondLastname">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Apellido materno</th>
+      <td mat-cell *matCellDef="let row">{{ row.secondLastname || '-' }}</td>
     </ng-container>
-    <ng-container matColumnDef="activo">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Activo</th>
-      <td mat-cell *matCellDef="let row">{{ row.activo ? 'Sí' : 'No' }}</td>
+    <ng-container matColumnDef="genre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Género</th>
+      <td mat-cell *matCellDef="let row">{{ row.genre | gender }}</td>
+    </ng-container>
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Correo electrónico</th>
+      <td mat-cell *matCellDef="let row">{{ row.maskedEmail || '-' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="maritalStatus">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado marital</th>
+      <td mat-cell *matCellDef="let row">{{ row.maritalStatus }}</td>
+    </ng-container>
+    <ng-container matColumnDef="rfc">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>RFC</th>
+      <td mat-cell *matCellDef="let row">{{ row.maskedRFC || '-' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+      <td mat-cell *matCellDef="let row">{{ row.isActive | status }}</td>
     </ng-container>
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Acciones</th>
       <td mat-cell *matCellDef="let row">
-        <button matIconButton (click)="editBeneficent(row)">
+        <button matIconButton (click)="editBeneficient(row.id)">
           <mat-icon>edit</mat-icon>
         </button>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewBeneficent(row)" class="clickable-row"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="viewBeneficient(row.id)"
+    ></tr>
   </table>
   <mat-paginator
     [length]="pagination().itemCount"

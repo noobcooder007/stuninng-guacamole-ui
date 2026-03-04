@@ -79,7 +79,7 @@ export class ChurchService {
     private readonly http = inject(HttpClient);
     private readonly _snackbar = inject(MatSnackBar);
 
-    getChurches(page: number = 1, limit: number = 5, filters: ChurchFilters): Observable<PaginatedResponse> {
+    getChurches(page: number = 1, limit: number = 5, filters: ChurchFilters = {}): Observable<PaginatedResponse> {
         let params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
         Object.entries(filters ?? {}).forEach(([key, value]) => {
             if (value) {

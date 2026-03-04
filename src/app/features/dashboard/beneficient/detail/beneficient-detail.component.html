@@ -1,5 +1,5 @@
 <div class="detail-container dialog-container">
-  <div class="dialog-header">
+  <!-- <div class="dialog-header">
     <h1>Detalles del Bienhechoir</h1>
     <div class="header-actions">
       <button mat-icon-button color="primary" (click)="editBeneficent()" title="Editar">
@@ -9,7 +9,7 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
-  </div>
+  </div> -->
 
   <mat-tab-group class="tabs-container">
     <!-- PESTAÑA 1: DATOS PERSONALES -->
@@ -225,10 +225,10 @@
       <mat-card class="section-card">
         <mat-card-header>
           <mat-card-title>Colectores Asignados</mat-card-title>
-          <button mat-raised-button color="accent" (click)="assignCollector()">
+          <!-- <button mat-raised-button color="accent" (click)="assignCollector()">
             <mat-icon>add</mat-icon>
             Asignar Colector
-          </button>
+          </button> -->
         </mat-card-header>
         <mat-card-content>
           <div *ngIf="beneficent.colectores && beneficent.colectores.length > 0" class="collectors-list">

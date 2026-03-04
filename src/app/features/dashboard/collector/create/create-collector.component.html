@@ -1,0 +1,177 @@
+<section class="flex flex-col h-full w-full items-center overflow-x-auto no-scrollbar p-6">
+  <div
+    class="relative flex-shrink-0 w-64 h-64 rounded-full flex items-center justify-center overflow-hidden mb-16"
+  >
+    @if (uploadingImage()) {
+      <div class="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+    }
+    <img
+      class="w-full h-full object-cover transition-opacity duration-300"
+      [src]="imagePreview || 'assets/images/profile-pic-male.svg'"
+      alt="avatar-preview"
+    />
+  </div>
+  <form class="flex flex-col gap-4 w-2/3" [formGroup]="createCollectorForm">
+    <p class="text-2xl pb-4 font-semibold">Datos personales</p>
+    <div class="grid grid-cols-2 gap-4">
+      <input
+        type="file"
+        #fileInput
+        class="hidden"
+        (change)="onFileSelected($event)"
+        aria-label="profilePicture"
+        accept="image/*"
+      />
+      <mat-form-field appearance="outline">
+        <mat-label>Fotografía</mat-label>
+        <input
+          matInput
+          readonly
+          [value]="createCollectorForm.get('profilePicture')?.value?.['name']"
+          aria-label="profilePicture"
+          placeholder="Selecciona una imagen"
+        />
+        <mat-icon class="cursor-pointer" matSuffix (click)="fileInput.click()"
+          >attach_file</mat-icon
+        >
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="firstname" aria-label="firstname" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido paterno</mat-label>
+        <input matInput formControlName="firstLastname" aria-label="firstLastname" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido materno</mat-label>
+        <input matInput formControlName="secondLastname" aria-label="secondLastname" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>NSS</mat-label>
+        <input type="tel" maxlength="11" minlength="11" matInput formControlName="nss" aria-label="nss" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Teléfono celular</mat-label>
+        <input
+          type="tel"
+          maxlength="10"
+          minlength="10"
+          matInput
+          formControlName="phoneNumber"
+          aria-label="phoneNumber"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Teléfono</mat-label>
+        <input
+          type="tel"
+          maxlength="10"
+          minlength="10"
+          matInput
+          formControlName="telephoneNumber"
+          aria-label="telephoneNumber"
+        />
+      </mat-form-field>
+    </div>
+    <p class="text-2xl pb-4 font-semibold">Domicilio</p>
+    <div formGroupName="address" class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Calle</mat-label>
+        <input matInput formControlName="street" aria-label="address-street" />
+      </mat-form-field>
+      <div formGroupName="numeration" class="grid grid-cols-2 gap-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Número exterior</mat-label>
+          <input matInput formControlName="noExt" aria-label="address-number" />
+          <span matTextPrefix>#</span>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Número interior</mat-label>
+          <input matInput formControlName="noInt" aria-label="address-letter" />
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>Colonia</mat-label>
+        <input matInput formControlName="neighborhood" aria-label="address-colony" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Localidad</mat-label>
+        <input matInput formControlName="locality" aria-label="address-locality" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Municipio / Delegación</mat-label>
+        <input matInput formControlName="city" aria-label="address-municipality" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Estado</mat-label>
+        <input matInput formControlName="state" aria-label="address-state" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Código postal</mat-label>
+        <input type="tel" minlength="5" maxlength="5" matInput formControlName="zipCode" aria-label="address-postalCode" />
+      </mat-form-field>
+    </div>
+    <p class="text-2xl pb-4 font-semibold">Información de pago</p>
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Porcentaje de comisión</mat-label>
+        <input
+          class="text-right"
+          type="number"
+          min="0"
+          max="100"
+          matInput
+          formControlName="commissionPercent"
+          aria-label="commissionPercent"
+        />
+        <span matTextSuffix>%</span>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Banco</mat-label>
+        <input type="text" matInput formControlName="bank" aria-label="bank" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Referencia</mat-label>
+        <input
+          class="text-right"
+          type="text"
+          matInput
+          formControlName="reference"
+          aria-label="reference"
+        />
+      </mat-form-field>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre de usuario</mat-label>
+        <input type="text" matInput readonly formControlName="username" aria-label="username" />
+      </mat-form-field>
+      <password-field
+        placeholder="Introduce una contraseña"
+        label="Contraseña"
+        formControlName="password"
+        aria-label="password"
+      />
+      <password-field
+        placeholder="Repite la contraseña"
+        label="Repetir contraseña"
+        formControlName="confirmPassword"
+        aria-label="confirmPassword"
+      />
+    </div>
+    <div class="flex flex-col gap-4 w-full">
+      <button
+        class="w-full"
+        type="button"
+        matButton="filled"
+        (click)="createCollector()"
+        [disabled]="createCollectorForm.invalid"
+      >
+        Guardar
+      </button>
+    </div>
+  </form>
+</section>

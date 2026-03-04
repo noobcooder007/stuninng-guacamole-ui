@@ -1,0 +1,168 @@
+<section class="flex flex-col h-full w-full items-center overflow-x-auto no-scrollbar p-6">
+  <form class="flex flex-col gap-4" [formGroup]="createBeneficientForm">
+    <p class="text-2xl pb-4 font-semibold">Información básica</p>
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Titulo</mat-label>
+        <mat-select formControlName="title">
+          <mat-option value="Sr">Señor</mat-option>
+          <mat-option value="Sra">Señora</mat-option>
+          <mat-option value="Srta">Señorita</mat-option>
+          <mat-option value="Srto">Señorito</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="firstname" aria-label="firstname" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido paterno</mat-label>
+        <input matInput formControlName="firstLastname" aria-label="firstLastname" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido materno</mat-label>
+        <input matInput formControlName="secondLastname" aria-label="secondLastname" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Genero</mat-label>
+        <mat-select formControlName="genre">
+          <mat-option value="M">Masculino</mat-option>
+          <mat-option value="F">Femenino</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de nacimiento</mat-label>
+        <input
+          matInput
+          formControlName="birthday"
+          aria-label="birthday"
+          [matDatepicker]="pickerBirthday"
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="pickerBirthday"></mat-datepicker-toggle>
+        <mat-datepicker #pickerBirthday></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Estado civil</mat-label>
+        <mat-select formControlName="maritalStatus">
+          <mat-option value="Soltero">Soltero/a</mat-option>
+          <mat-option value="Casado">Casado/a</mat-option>
+          <mat-option value="Divorciado">Divorciado/a</mat-option>
+          <mat-option value="Viudo">Viudo/a</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Aniversario de boda</mat-label>
+        <input
+          matInput
+          formControlName="weddingAnniversary"
+          aria-label="weddingAnniversary"
+          [matDatepicker]="pickerAnniversary"
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="pickerAnniversary"></mat-datepicker-toggle>
+        <mat-datepicker #pickerAnniversary></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Correo electronico</mat-label>
+        <input type="email" matInput formControlName="email" aria-label="email" />
+      </mat-form-field>
+    </div>
+    <p class="text-2xl pb-4 font-semibold">Domicilio</p>
+    <div formGroupName="address" class="flex flex-col gap-4">
+      <div class="grid grid-cols-2 gap-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Calle</mat-label>
+          <input matInput formControlName="street" aria-label="address-street" />
+        </mat-form-field>
+        <div class="grid grid-cols-2 gap-4" formGroupName="numeration">
+          <mat-form-field appearance="outline">
+            <mat-label>Número exterior</mat-label>
+            <input matInput formControlName="noExt" aria-label="address-number" />
+            <span matTextPrefix>#</span>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Número interior</mat-label>
+            <input matInput formControlName="noInt" aria-label="address-letter" />
+          </mat-form-field>
+        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Colonia / Barrio</mat-label>
+          <input matInput formControlName="neighborhood" aria-label="address-colony" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Localidad</mat-label>
+          <input matInput formControlName="locality" aria-label="address-delegation" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Municipio / Delegación</mat-label>
+          <input matInput formControlName="city" aria-label="address-municipality" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <input matInput formControlName="state" aria-label="address-state" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Código postal</mat-label>
+          <input
+            type="tel"
+            minlength="5"
+            maxlength="5"
+            matInput
+            formControlName="zipCode"
+            aria-label="address-postalCode"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <p class="text-2xl pb-4 font-semibold">Datos fiscales</p>
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Persona</mat-label>
+        <mat-select formControlName="person">
+          <mat-option value="FISICA">Fisica</mat-option>
+          <mat-option value="MORAL">Moral</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Registro</mat-label>
+        <input matInput formControlName="registeredName" aria-label="registeredName" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>RFC</mat-label>
+        <input matInput formControlName="rfc" aria-label="rfc" />
+      </mat-form-field>
+    </div>
+    <p class="text-2xl pb-4 font-semibold">Iglesia</p>
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Iglesia</mat-label>
+        <input
+          matInput
+          formControlName="churchId"
+          [matAutocomplete]="church"
+          aria-label="churchId"
+        />
+        <mat-autocomplete #church="matAutocomplete" [displayWith]="displayFn">
+          @for (church of churchList; track church.id) {
+            <mat-option [value]="church">
+              <div class="flex flex-col">
+                <span class="font-semibold">{{ church.ecclesialIdentity.name }}</span>
+                <span class="text-xs">{{ church.address | address }}</span>
+              </div>
+            </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <div class="flex flex-col gap-4 w-full">
+      <button
+        class="w-full"
+        type="button"
+        matButton="filled"
+        (click)="createBeneficient()"
+        [disabled]="createBeneficientForm.invalid"
+      >
+        Guardar
+      </button>
+    </div>
+  </form>
+</section>

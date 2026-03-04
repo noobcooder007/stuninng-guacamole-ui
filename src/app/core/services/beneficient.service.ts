@@ -4,55 +4,22 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
 
-// Interfaces y tipos
-export interface Beneficent {
-    id: number;
-    noBienhechor: string;
-    tipoPersona: 'Física' | 'Moral';
-    genero?: string;
-    nombre: string;
-    apPaterno: string;
-    apMaterno: string;
-    razonSocial: string;
-    email?: string;
-    fechaAlta?: string;
-    causaAlta?: string;
-    fechaNacimiento?: string;
-    edoCivil?: string;
-    rfc: string;
-    persona: 'Física' | 'Jurídica';
-    status: 'Activo' | 'Inactivo';
-    activo: boolean;
-    // Datos de donativo
-    donativo?: string;
-    frecuencia?: string;
-    saldo?: string;
-    diaPago?: string;
-    fechaUltimoDonativo?: string;
-    tipoDonativo?: string;
-    // Dirección
-    calle?: string;
-    numeroExterior?: string;
-    numeroInterior?: string;
-    colonia?: string;
-    cp?: string;
-    localidad?: string;
-    ciudad?: string;
-    delegacionMunicipio?: string;
-    telefono1?: string;
-    telefono2?: string;
-    whatsapp?: string;
-    entidadFederativa?: string;
-    // Observaciones
-    observaciones?: string;
-    fechaObservacion?: string;
-    // Colectores
-    colectores?: Colector[];
+export interface Address {
+    street: string;
+    numeration: {
+        noExt: string;
+        noInt?: string;
+    };
+    neighborhood?: string;
+    locality?: string;
+    city: string;
+    state: string;
+    zipCode: string;
 }
 
-export interface Colector {
+export interface Beneficient {
     id: number;
-    nombre: string;
+    
 }
 
 export interface PaginatedMetadata {
@@ -67,40 +34,36 @@ export interface PaginatedMetadata {
 export interface PaginatedResponse {
     statusCode: number;
     data: {
-        items: Beneficent[];
+        items: Beneficient[];
         meta: PaginatedMetadata;
     };
     timestamp: string;
 }
 
 export interface BeneficientFilters {
-    nombre?: string;
-    apPaterno?: string;
-    apMaterno?: string;
-    tipoPersona?: string;
-    rfc?: string;
-    razonSocial?: string;
-    status?: string;
-    noBienhechor?: string;
+    firstname?: string;
+    firstLastname?: string;
+    secondLastname?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
 }
 
 export interface CreateBeneficientDto {
-    noBienhechor: string;
-    tipoPersona: 'Física' | 'Moral';
-    genero?: string;
-    nombre: string;
-    apPaterno: string;
-    apMaterno: string;
-    razonSocial: string;
+    title: string;
+    firstname: string;
+    firstLastname: string;
+    secondLastname: string;
+    birthday: Date;
+    weddingAnniversary?: Date;
+    genre: string;
+    maritalStatus: string;
     email?: string;
-    fechaAlta?: string;
-    causaAlta?: string;
-    fechaNacimiento?: string;
-    edoCivil?: string;
-    rfc: string;
-    persona: 'Física' | 'Jurídica';
-    status: 'Activo' | 'Inactivo';
-    activo: boolean;
+    address: Address;
+    churchId: string;
+    person?: string;
+    registeredName?: string;
+    rfc?: string;
 }
 
 export interface UpdateBeneficientDto extends CreateBeneficientDto {
@@ -136,7 +99,7 @@ export class BeneficientService {
         });
 
         return this.http
-            .get<PaginatedResponse>(`${environment.apiBaseUrl}/beneficents`, { params })
+            .get<PaginatedResponse>(`${environment.apiBaseUrl}/beneficient`, { params })
             .pipe(
                 catchError((error) => {
                     this.snackbar.open('Error al obtener bienhechores', 'Cerrar', {
@@ -152,8 +115,8 @@ export class BeneficientService {
      * @param id ID del bienhechore
      * @returns Observable con los datos del bienhechore
      */
-    getBeneficent(id: number): Observable<{ statusCode: number; data: Beneficent }> {
-        return this.http.get<{ statusCode: number; data: Beneficent }>(
+    getBeneficent(id: number): Observable<{ statusCode: number; data: Beneficient }> {
+        return this.http.get<{ statusCode: number; data: Beneficient }>(
             `${environment.apiBaseUrl}/beneficents/${id}`
         ).pipe(
             catchError((error) => {
@@ -172,7 +135,7 @@ export class BeneficientService {
      */
     create(beneficent: CreateBeneficientDto): Observable<any> {
         return this.http
-            .post(`${environment.apiBaseUrl}/beneficents`, beneficent)
+            .post(`${environment.apiBaseUrl}/beneficient`, beneficent)
             .pipe(
                 catchError((error) => {
                     this.snackbar.open('Error al crear bienhechore', 'Cerrar', {

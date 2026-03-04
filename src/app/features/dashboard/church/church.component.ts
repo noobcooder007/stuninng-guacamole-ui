@@ -7,12 +7,11 @@ import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 import { AddressPipe } from '@app/shared/pipes/address.pipe';
 import { Church, ChurchFilters, ChurchService, PaginatedMetadata } from '@app/core/services/church.service';
-import { AddChurchComponent } from './add/add-church.component';
+import { TabService } from '@app/core/services/tab.service';
 
 @Component({
     selector: 'church',
@@ -53,9 +52,9 @@ export class ChurchComponent implements OnInit, AfterViewInit {
         capilla: new FormControl(''),
     });
 
-    readonly addChurchDialog = inject(MatDialog);
     @ViewChild(MatSort) sort!: MatSort;
 
+    private readonly tabService = inject(TabService);
     private readonly churchService = inject(ChurchService);
 
     ngOnInit() {
@@ -119,11 +118,11 @@ export class ChurchComponent implements OnInit, AfterViewInit {
     }
 
     addChurch() {
-        this.addChurchDialog.open(AddChurchComponent, {
-            width: '600px',
-            maxHeight: '80vh',
-            disableClose: true,
-            autoFocus: false,
+        this.tabService.openTab({
+            id: 'create-church',
+            label: 'Añadir inglesia',
+            link: '/churches/create',
+            permission: 'add:church'
         });
     }
 }

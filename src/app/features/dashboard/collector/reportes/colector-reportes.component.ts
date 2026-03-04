@@ -10,10 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
-    selector: 'app-colector-reportes',
-    standalone: true,
+    selector: 'colector-reportes',
     templateUrl: './colector-reportes.component.html',
-    styleUrls: ['./colector-reportes.component.scss'],
     imports: [
         CommonModule,
         ReactiveFormsModule,

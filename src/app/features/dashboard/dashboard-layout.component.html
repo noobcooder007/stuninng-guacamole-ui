@@ -1,11 +1,12 @@
 <div class="flex flex-col max-h-dvh h-screen overflow-hidden">
-  <mat-toolbar class="z-10 shadow-md">
+  <mat-toolbar class="flex flex-row z-10 shadow-md">
     <button matIconButton aria-label="menu" (click)="snav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
-    <span class="pl-2 cursor-pointer" routerLink="/"
+    <span class="pl-2 cursor-pointer flex-grow" routerLink="/"
       >Sistema de Procuración de Fondos del Seminario Conciliar de México</span
     >
+    <img class="w-32 h-auto object-cover" srcset="logo.webp" alt="logo">
   </mat-toolbar>
   <mat-sidenav-container
     class="flex-1"
@@ -51,6 +52,7 @@
           mat-tab-link
           [routerLink]="tab.link"
           routerLinkActive
+          [routerLinkActiveOptions]="{ exact: true }"
           #rla="routerLinkActive"
           [active]="rla.isActive"
         >

@@ -4,16 +4,43 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
 
+export interface Address {
+    street: string;
+    numeration: {
+        noExt: string;
+        noInt?: string;
+    };
+    neighborhood?: string;
+    locality?: string;
+    city: string;
+    state: string;
+    zipCode: string;
+}
+
+export interface PaymentData {
+    commissionPercent: number;
+    bank: string;
+    reference: string;
+}
+
 export interface Collector {
     id: number;
-    noColector: string;
-    nombre: string;
-    apPaterno?: string;
-    apMaterno?: string;
-    rfc?: string;
-    telefono?: string;
-    email?: string;
-    status?: string;
+    firstname: string;
+    firstLastname: string;
+    secondLastname?: string;
+    maskedNSS: string;
+    nss: string;
+    maskedPhoneNumber: string;
+    phoneNumber: string;
+    maskedTelephoneNumber: string;
+    telephoneNumber: string;
+    notes: string;
+    address: Address;
+    paymentData: PaymentData;
+    profilePath: string;
+    profilePictureUrl: string;
+    isActive: boolean;
+    createdAt: string;
 }
 
 export interface PaginatedMetadata {
@@ -35,20 +62,29 @@ export interface PaginatedResponse {
 }
 
 export interface CollectorFilters {
-    nombre?: string;
-    apPaterno?: string;
-    apMaterno?: string;
-    noColector?: string;
+    firstname?: string;
+    firstLastname?: string;
+    secondLastname?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
 }
 
 export interface CreateCollectorDto {
-    noColector: string;
-    nombre: string;
-    apPaterno?: string;
-    apMaterno?: string;
-    rfc?: string;
-    telefono?: string;
-    email?: string;
+    firstname: string;
+    firstLastname: string;
+    secondLastname?: string;
+    nss: string;
+    address: Address;
+    phoneNumber: string;
+    telephoneNumber?: string;
+    commissionPercent: number;
+    bank: string;
+    reference: string;
+    notes?: string;
+    profilePicture: File;
+    username: string;
+    password: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -64,7 +100,7 @@ export class CollectorService {
             }
         });
 
-        return this.http.get<PaginatedResponse>(`${environment.apiBaseUrl}/collectors`, { params }).pipe(
+        return this.http.get<PaginatedResponse>(`${environment.apiBaseUrl}/collector`, { params }).pipe(
             catchError((error) => {
                 this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
@@ -73,7 +109,29 @@ export class CollectorService {
     }
 
     create(collector: CreateCollectorDto) {
-        return this.http.post(`${environment.apiBaseUrl}/collectors`, collector).pipe(
+        const formData = new FormData();
+        formData.append('profilePicture', collector.profilePicture);
+        formData.append('firstname', collector.firstname);
+        formData.append('firstLastname', collector.firstLastname);
+        collector.secondLastname && formData.append('secondLastname', collector.secondLastname);
+        formData.append('nss', collector.nss);
+        formData.append('address[street]', collector.address.street);
+        formData.append('address[numeration][noExt]', collector.address.numeration.noExt);
+        collector.address.numeration.noInt && formData.append('address[numeration][noInt]', collector.address.numeration.noInt);
+        collector.address.neighborhood && formData.append('address[neighborhood]', collector.address.neighborhood);
+        collector.address.locality && formData.append('address[locality]', collector.address.locality);
+        formData.append('address[city]', collector.address.city);
+        formData.append('address[state]', collector.address.state);
+        formData.append('address[zipCode]', collector.address.zipCode);
+        formData.append('phoneNumber', collector.phoneNumber);
+        collector.telephoneNumber && formData.append('telephoneNumber', collector.telephoneNumber);
+        formData.append('commissionPercent', collector.commissionPercent.toString());
+        formData.append('bank', collector.bank);
+        formData.append('reference', collector.reference);
+        collector.notes && formData.append('notes', collector.notes);
+        formData.append('username', collector.username);
+        formData.append('password', collector.password);
+        return this.http.post(`${environment.apiBaseUrl}/collector`, formData).pipe(
             catchError((error) => {
                 this._snackbar.open('Error al crear colector', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);

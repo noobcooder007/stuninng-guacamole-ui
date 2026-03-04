@@ -7,17 +7,15 @@ import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { BeneficientService, Beneficent, BeneficientFilters, PaginatedMetadata } from '@app/core/services/beneficent.service';
-import { BeneficientDetailService } from '@app/core/services/beneficent-detail.service';
-import { BeneficientDetailComponent } from './detail/beneficent-detail.component';
+import { BeneficientService, PaginatedMetadata, BeneficientFilters, Beneficient } from '@app/core/services/beneficient.service';
+import { GenderPipe } from '@app/shared/pipes/gender.pipe';
+import { StatusPipe } from '@app/shared/pipes/status.pipe';
+import { TabService } from '@app/core/services/tab.service';
 
 @Component({
     selector: 'beneficient-component',
-    standalone: true,
     templateUrl: 'beneficient.component.html',
-    styleUrls: ['beneficient.component.scss'],
     imports: [
         ReactiveFormsModule,
         MatTableModule,
@@ -28,6 +26,8 @@ import { BeneficientDetailComponent } from './detail/beneficent-detail.component
         MatAnchor,
         MatButtonModule,
         MatIcon,
+        GenderPipe,
+        StatusPipe,
     ],
 })
 
@@ -42,22 +42,19 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
         pageCount: 0
     };
     public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
-    public displayedColumns: string[] = ['noBienhechor', 'nombre', 'razonSocial', 'persona', 'activo', 'actions'];
-    public dataSource = new MatTableDataSource<Beneficent>();
+    public displayedColumns: string[] = ['title', 'firstname', 'firstLastname', 'secondLastname', 'genre', 'email', 'maritalStatus', 'rfc', 'status', 'actions'];
+    public dataSource = new MatTableDataSource<Beneficient>();
     public searchForm = new FormGroup({
-        nombre: new FormControl(''),
-        apPaterno: new FormControl(''),
-        apMaterno: new FormControl(''),
-        tipoPersona: new FormControl(''),
-        rfc: new FormControl(''),
-        razonSocial: new FormControl(''),
-        status: new FormControl(''),
-        noBienhechor: new FormControl(''),
+        firstname: new FormControl(''),
+        firstLastname: new FormControl(''),
+        secondLastname: new FormControl(''),
+        city: new FormControl(''),
+        state: new FormControl(''),
+        zipCode: new FormControl(''),
     });
 
-    readonly dialog = inject(MatDialog);
-    readonly beneficientService = inject(BeneficientService);
-    readonly beneficientDetailService = inject(BeneficientDetailService);
+    private readonly tabService = inject(TabService);
+    private readonly beneficientService = inject(BeneficientService);
     @ViewChild(MatSort) sort!: MatSort;
 
     ngOnInit() {
@@ -67,13 +64,8 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
-        this.dataSource.sortingDataAccessor = (item: Beneficent, property: string): string | number => {
+        this.dataSource.sortingDataAccessor = (item: Beneficient, property: string): string | number => {
             switch (property) {
-                case 'noBienhechor': return item.noBienhechor;
-                case 'nombre': return item.nombre;
-                case 'razonSocial': return item.razonSocial;
-                case 'persona': return item.persona;
-                case 'activo': return item.activo ? 'Sí' : 'No';
                 default: return (item as any)[property];
             }
         };
@@ -93,19 +85,7 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
 
     loadData(page: number = 1, limit: number = 5) {
         this.isLoading.set(true);
-
-        // Construir filtros desde el formulario
-        const filters: BeneficientFilters = {
-            nombre: this.searchForm.get('nombre')?.value || undefined,
-            apPaterno: this.searchForm.get('apPaterno')?.value || undefined,
-            apMaterno: this.searchForm.get('apMaterno')?.value || undefined,
-            tipoPersona: this.searchForm.get('tipoPersona')?.value || undefined,
-            rfc: this.searchForm.get('rfc')?.value || undefined,
-            razonSocial: this.searchForm.get('razonSocial')?.value || undefined,
-            status: this.searchForm.get('status')?.value || undefined,
-            noBienhechor: this.searchForm.get('noBienhechor')?.value || undefined,
-        };
-
+        const filters = this.searchForm.value as BeneficientFilters;
         // Llamar al servicio
         this.beneficientService.getBeneficents(page, limit, filters).subscribe({
             next: (response) => {
@@ -124,25 +104,16 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
         this.loadData(event.pageIndex + 1, event.pageSize);
     }
 
-    addBeneficent() {
-        console.log('Agregar bienhechores');
-    }
-
-    editBeneficent(element: any) {
-        console.log('Editar bienhechores:', element);
-    }
-
-    viewBeneficent(element: any) {
-        // Guardar los datos en el servicio
-        this.beneficientDetailService.setBeneficent(element);
-
-        // Abrir dialog
-        this.dialog.open(BeneficientDetailComponent, {
-            width: '90%',
-            maxWidth: '1000px',
-            maxHeight: '90vh',
-            panelClass: 'beneficent-detail-dialog',
-            disableClose: false,
+    addBeneficient() {
+        this.tabService.openTab({
+            id: 'create-beneficient',
+            label: 'Añadir bienhechor',
+            link: '/beneficients/create',
+            permission: 'add:beneficient'
         });
     }
+
+    editBeneficient(id: string) {}
+
+    viewBeneficient(id: string) {}
 }
