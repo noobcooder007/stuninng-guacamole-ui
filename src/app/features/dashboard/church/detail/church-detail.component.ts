@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'edit-church',
-    templateUrl: './edit-church.component.html',
+    selector: 'church-detail',
+    templateUrl: './church-detail.component.html',
 })
 
 export class EditChurchComponent implements OnInit {

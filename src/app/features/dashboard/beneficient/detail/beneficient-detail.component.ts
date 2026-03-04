@@ -25,9 +25,6 @@ import { BeneficientService, Beneficient } from '@app/core/services/beneficient.
 })
 export class BeneficientDetailComponent implements OnInit {
     private beneficientService = inject(BeneficientService);
-    readonly dialogRef = inject(MatDialogRef<BeneficientDetailComponent>);
-
-    beneficent: any;
 
     ngOnInit() {
         
