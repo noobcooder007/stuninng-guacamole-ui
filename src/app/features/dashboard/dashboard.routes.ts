@@ -49,9 +49,9 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(c => c.CreateChurchComponent),
             },
             {
-                path: 'reports/collector',
-                loadComponent: () => import('./collector/reportes/colector-reportes.component')
-                    .then(m => m.ColectorReportesComponent),
+                path: 'receipts/specials',
+                loadComponent: () => import('./recibos/especiales/recibos-especiales.component')
+                    .then(m => m.RecibosEspecialesComponent),
             },
             {
                 path: 'receipts',
@@ -59,9 +59,24 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(m => m.ImpresionRecibosComponent),
             },
             {
-                path: 'receipts/specials',
-                loadComponent: () => import('./recibos/especiales/recibos-especiales.component')
-                    .then(m => m.RecibosEspecialesComponent),
+                path: 'reports/collector',
+                loadComponent: () => import('./collector/reportes/colector-reportes.component')
+                    .then(m => m.ColectorReportesComponent),
+            },
+            {
+                path: 'reports',
+                loadComponent: () => import('./collector/reportes/reports.component')
+                    .then(m => m.ReportsComponent),
+            },
+            {
+                path: 'processes',
+                loadComponent: () => import('./processes/processes.component')
+                    .then(m => m.ProcessesComponent),
+            },
+            {
+                path: 'uploads',
+                loadComponent: () => import('./uploads/uploads.component')
+                    .then(m => m.UploadsComponent),
             },
         ]
     }

@@ -1,0 +1,89 @@
+<div class="processes-container">
+  <mat-tab-group [(selectedIndex)]="activeTab">
+    <!-- Pestaña: Comisión y Liquidación -->
+    <mat-tab label="Comisión y Liquidación">
+      <ng-template mat-tab-label>
+        <span>Comisión y Liquidación</span>
+      </ng-template>
+      <div class="tab-content">
+        <h2>Generación de Comisión</h2>
+        <mat-card class="form-card">
+          <mat-card-content>
+            <form [formGroup]="commissionForm" class="form-container">
+              <div class="form-row">
+                <!-- Mes -->
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Mes</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option *ngFor="let month of months" [value]="month.value">
+                      {{ month.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!-- Año -->
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Año</mat-label>
+                  <mat-select formControlName="year">
+                    <mat-option *ngFor="let year of years" [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!-- Botón Iniciar Procesos -->
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="startCommissionProcess()"
+                  [disabled]="isProcessing || commissionForm.invalid"
+                  class="start-btn">
+                  <mat-icon>play_arrow</mat-icon>
+                  Iniciar Procesos
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Pestaña: Genera Recibos -->
+    <mat-tab label="Genera Recibos">
+      <ng-template mat-tab-label>
+        <span>Genera Recibos</span>
+      </ng-template>
+      <div class="tab-content">
+        <h2>Generación de Recibos</h2>
+        <mat-card class="form-card">
+          <mat-card-content>
+            <form [formGroup]="receiptsForm" class="form-container">
+              <div class="form-row">
+                <!-- Mes -->
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Mes</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option *ngFor="let month of months" [value]="month.value">
+                      {{ month.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!-- Botón Iniciar Procesos -->
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="startReceiptsGenerationProcess()"
+                  [disabled]="isProcessing || receiptsForm.invalid"
+                  class="start-btn">
+                  <mat-icon>play_arrow</mat-icon>
+                  Iniciar Procesos
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

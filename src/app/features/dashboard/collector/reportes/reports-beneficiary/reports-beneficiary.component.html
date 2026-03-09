@@ -1,0 +1,227 @@
+<div class="reports-beneficiary-container">
+  <mat-tab-group [(selectedIndex)]="activeTab">
+    <!-- Reporte 1: Movimientos Bienhechores -->
+    <mat-tab label="Movimientos">
+      <ng-template mat-tab-label>
+        <span>Movimientos</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Movimientos Bienhechores</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <button mat-raised-button color="primary" (click)="downloadBeneficiaryMovementsReport()" [disabled]="isLoading">
+              <mat-icon>picture_as_pdf</mat-icon>
+              Crear PDF
+            </button>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 2: Concentrado Donativos -->
+    <mat-tab label="Concentrado">
+      <ng-template mat-tab-label>
+        <span>Concentrado Donativos</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Concentrado Donativos Bienhechores</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <button mat-raised-button color="primary" (click)="downloadBeneficiaryConcentratedReport()" [disabled]="isLoading">
+              <mat-icon>picture_as_pdf</mat-icon>
+              Crear PDF
+            </button>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 3: Status -->
+    <mat-tab label="Status">
+      <ng-template mat-tab-label>
+        <span>Status</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Bienhechores Status</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="beneficiaryStatusForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Inicial</mat-label>
+                  <input matInput [matDatepicker]="pickerStart" formControlName="startDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerStart></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Final</mat-label>
+                  <input matInput [matDatepicker]="pickerEnd" formControlName="endDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerEnd></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Status</mat-label>
+                  <mat-select formControlName="status">
+                    <mat-option *ngFor="let status of statuses" [value]="status.value">
+                      {{ status.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Causa</mat-label>
+                  <mat-select formControlName="cause">
+                    <mat-option *ngFor="let cause of causes" [value]="cause.value">
+                      {{ cause.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="downloadBeneficiaryStatusReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 4: Excel -->
+    <mat-tab label="Excel">
+      <ng-template mat-tab-label>
+        <span>Excel</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Bienhechores Excel</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="beneficiaryExcelForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Num Colector</mat-label>
+                  <input matInput formControlName="collectorNum" type="text" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Mes</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option *ngFor="let month of months" [value]="month.value">
+                      {{ month.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Colonia</mat-label>
+                  <input matInput formControlName="colony" type="text" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Delegación</mat-label>
+                  <input matInput formControlName="delegation" type="text" />
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>C.P.</mat-label>
+                  <input matInput formControlName="postalCode" type="text" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Num. de Registro</mat-label>
+                  <input matInput formControlName="registryNum" type="text" />
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-checkbox formControlName="isActive" class="checkbox">
+                  Activo
+                </mat-checkbox>
+
+                <button mat-raised-button color="primary" (click)="downloadBeneficiaryExcelReport()" [disabled]="isLoading">
+                  <mat-icon>table_chart</mat-icon>
+                  Crear Excel
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 5: Bienhechores General -->
+    <mat-tab label="Bienhechores">
+      <ng-template mat-tab-label>
+        <span>Bienhechores</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Bienhechores</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="beneficiaryGeneralForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Donativo Inicial</mat-label>
+                  <input matInput formControlName="initialDonation" type="number" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Donativo Final</mat-label>
+                  <input matInput formControlName="finalDonation" type="number" />
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Num. Colector</mat-label>
+                  <input matInput formControlName="collectorNum" type="text" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Frecuencia</mat-label>
+                  <input matInput formControlName="frequency" type="text" />
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Delegación</mat-label>
+                  <input matInput formControlName="delegation" type="text" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>C.P.</mat-label>
+                  <input matInput formControlName="postalCode" type="text" />
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="downloadBeneficiaryReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

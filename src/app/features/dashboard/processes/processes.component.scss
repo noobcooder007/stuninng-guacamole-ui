@@ -1,0 +1,50 @@
+.processes-container {
+  padding: 20px;
+
+  .tab-content {
+    padding: 30px 20px;
+
+    h2 {
+      margin: 0 0 20px 0;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .form-card {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .form-container {
+        display: flex;
+        flex-direction: column;
+
+        .form-row {
+          display: flex;
+          gap: 16px;
+          align-items: flex-end;
+          flex-wrap: wrap;
+
+          @media (max-width: 768px) {
+            flex-direction: column;
+            align-items: stretch;
+
+            .form-field,
+            .start-btn {
+              width: 100%;
+            }
+          }
+
+          .form-field {
+            min-width: 200px;
+            flex: 1;
+          }
+
+          .start-btn {
+            padding: 8px 24px;
+            min-height: 56px;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+  }
+}

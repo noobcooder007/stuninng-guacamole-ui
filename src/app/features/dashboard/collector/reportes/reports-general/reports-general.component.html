@@ -1,0 +1,404 @@
+<div class="reports-general-container">
+  <mat-tab-group [(selectedIndex)]="activeTab">
+    <!-- Reporte 1: Diferencia de Cantidades -->
+    <mat-tab label="Diferencia Cantidades">
+      <ng-template mat-tab-label>
+        <span>Diferencia Cantidades</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Diferencia de Cantidades</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="quantityDifferenceForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Mes</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option *ngFor="let month of months" [value]="month.value">
+                      {{ month.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Año</mat-label>
+                  <mat-select formControlName="year">
+                    <mat-option *ngFor="let year of years" [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="generateQuantityDifferenceReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 2: Informe Mensual -->
+    <mat-tab label="Informe Mensual">
+      <ng-template mat-tab-label>
+        <span>Informe Mensual</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Informe Mensual</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="monthlyReportForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Mes</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option *ngFor="let month of months" [value]="month.value">
+                      {{ month.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Año</mat-label>
+                  <mat-select formControlName="year">
+                    <mat-option *ngFor="let year of years" [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="generateMonthlyReportPdf()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+
+                <button mat-raised-button color="accent" (click)="generateMonthlyReportExcel()" [disabled]="isLoading">
+                  <mat-icon>table_chart</mat-icon>
+                  Crear Excel
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 3: Eficiencia -->
+    <mat-tab label="Eficiencia">
+      <ng-template mat-tab-label>
+        <span>Eficiencia</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Eficiencia</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="efficiencyForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Mes</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option *ngFor="let month of months" [value]="month.value">
+                      {{ month.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Año</mat-label>
+                  <mat-select formControlName="year">
+                    <mat-option *ngFor="let year of years" [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Donativo Inicial</mat-label>
+                  <input matInput formControlName="initialDonation" type="number" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Donativo Final</mat-label>
+                  <input matInput formControlName="finalDonation" type="number" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Num. Colector</mat-label>
+                  <input matInput formControlName="collectorNum" type="text" />
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Frecuencia</mat-label>
+                  <mat-select formControlName="frequency">
+                    <mat-option *ngFor="let freq of frequencies" [value]="freq.value">
+                      {{ freq.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="generateEfficiencyReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 4: Eficiencia Concentrada -->
+    <mat-tab label="Eficiencia Concentrada">
+      <ng-template mat-tab-label>
+        <span>Eficiencia Concentrada</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Eficiencia Concentrada</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="concentratedEfficiencyForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Inicial</mat-label>
+                  <input matInput [matDatepicker]="pickerStart" formControlName="startDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerStart></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Final</mat-label>
+                  <input matInput [matDatepicker]="pickerEnd" formControlName="endDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerEnd></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Porcentaje Inicial</mat-label>
+                  <input matInput formControlName="initialPercentage" type="number" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Porcentaje Final</mat-label>
+                  <input matInput formControlName="finalPercentage" type="number" />
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Tipo Eficiencia</mat-label>
+                  <mat-select formControlName="efficiencyType">
+                    <mat-option *ngFor="let type of efficiencyTypes" [value]="type.value">
+                      {{ type.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Num. Colector</mat-label>
+                  <input matInput formControlName="collectorNum" type="text" />
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="generateConcentratedEfficiencyReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 5: Disminución Donativos -->
+    <mat-tab label="Disminución Donativos">
+      <ng-template mat-tab-label>
+        <span>Disminución Donativos</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Disminución de Donativos</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="dateRangeForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Inicial</mat-label>
+                  <input matInput [matDatepicker]="pickerStart2" formControlName="startDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart2"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerStart2></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Final</mat-label>
+                  <input matInput [matDatepicker]="pickerEnd2" formControlName="endDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd2"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerEnd2></mat-datepicker>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="generateDecreasedDonationReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 6: Aumento Donativos -->
+    <mat-tab label="Aumento Donativos">
+      <ng-template mat-tab-label>
+        <span>Aumento Donativos</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Aumento de Donativos</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="dateRangeForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Inicial</mat-label>
+                  <input matInput [matDatepicker]="pickerStart3" formControlName="startDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart3"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerStart3></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Final</mat-label>
+                  <input matInput [matDatepicker]="pickerEnd3" formControlName="endDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd3"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerEnd3></mat-datepicker>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="generateIncreasedDonationReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 7: Donativos -->
+    <mat-tab label="Donativos">
+      <ng-template mat-tab-label>
+        <span>Donativos</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Donativos</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="dateRangeForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Inicial</mat-label>
+                  <input matInput [matDatepicker]="pickerStart4" formControlName="startDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart4"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerStart4></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Final</mat-label>
+                  <input matInput [matDatepicker]="pickerEnd4" formControlName="endDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd4"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerEnd4></mat-datepicker>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="generateDonationReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 8: Recibos Emitidos -->
+    <mat-tab label="Recibos Emitidos">
+      <ng-template mat-tab-label>
+        <span>Recibos Emitidos</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte de Recibos Emitidos</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="issuedReceiptsForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Mes</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option *ngFor="let month of months" [value]="month.value">
+                      {{ month.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Año</mat-label>
+                  <mat-select formControlName="year">
+                    <mat-option *ngFor="let year of years" [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Frecuencia</mat-label>
+                  <mat-select formControlName="frequency">
+                    <mat-option *ngFor="let freq of frequencies" [value]="freq.value">
+                      {{ freq.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Tipo de Recibo</mat-label>
+                  <mat-select formControlName="receiptType">
+                    <mat-option *ngFor="let type of receiptTypes" [value]="type.value">
+                      {{ type.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="generateIssuedReceiptsReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

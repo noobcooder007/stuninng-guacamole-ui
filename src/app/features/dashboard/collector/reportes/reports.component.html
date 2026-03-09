@@ -1,0 +1,27 @@
+<div class="reports-container">
+  <mat-tab-group [(selectedIndex)]="activeTab">
+    <!-- Pestaña: Reportes Generales -->
+    <mat-tab label="Reportes Generales">
+      <ng-template mat-tab-label>
+        <span>Reportes Generales</span>
+      </ng-template>
+      <app-reports-general></app-reports-general>
+    </mat-tab>
+
+    <!-- Pestaña: Reportes Bienhechores -->
+    <mat-tab label="Reportes Bienhechores">
+      <ng-template mat-tab-label>
+        <span>Reportes Bienhechores</span>
+      </ng-template>
+      <app-reports-beneficiary></app-reports-beneficiary>
+    </mat-tab>
+
+    <!-- Pestaña: Reportes Colectores -->
+    <mat-tab label="Reportes Colectores">
+      <ng-template mat-tab-label>
+        <span>Reportes Colectores</span>
+      </ng-template>
+      <app-reports-collector></app-reports-collector>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -56,19 +56,6 @@ export const MENU_CONFIG: NavCategory[] = [
         ],
     },
     {
-        name: 'Colectores',
-        icon: 'assessment',
-        items: [
-            {
-                id: 'colectores-reportes',
-                label: 'Reportes',
-                icon: 'bar_chart',
-                route: '/reports/collector',
-                permission: '',
-            },
-        ],
-    },
-    {
         name: 'Recibos',
         icon: 'receipt',
         items: [
@@ -76,7 +63,7 @@ export const MENU_CONFIG: NavCategory[] = [
                 id: 'print-receipts',
                 label: 'Impresión de Recibos',
                 icon: 'print',
-                route: '/receipts/preview',
+                route: '/receipts',
                 permission: '',
             },
             {
@@ -89,14 +76,57 @@ export const MENU_CONFIG: NavCategory[] = [
         ],
     },
     {
-        name: 'Reportes',
-        icon: 'document_scanner',
-        items: [],
+        name: 'Procesos',
+        icon: 'autorenew',
+        items: [
+            {
+                id: 'processes',
+                label: 'Procesos',
+                icon: 'play_circle',
+                route: '/processes',
+                permission: '',
+            },
+        ],
     },
     {
-        name: 'Administracion',
-        icon: 'settings',
-        items: [],
+        name: 'Reportes',
+        icon: 'document_scanner',
+        items: [
+            {
+                id: 'reports-general',
+                label: 'Reportes Generales',
+                icon: 'assessment',
+                route: '/reports',
+                permission: '',
+            },
+            {
+                id: 'reports-collector',
+                label: 'Reportes Colectores',
+                icon: 'bar_chart',
+                route: '/reports/collector',
+                permission: '',
+            },
+        ],
+    },
+    {
+        name: 'Cargas',
+        icon: 'cloud_upload',
+        items: [
+            {
+                id: 'upload-deposits',
+                label: 'Carga Depósito',
+                icon: 'upload_file',
+                route: '/uploads',
+                permission: '',
+            },
+            {
+                id: 'upload-information',
+                label: 'Carga Información',
+                icon: 'upload_file',
+                route: '/uploads',
+                permission: '',
+            },
+        ],
     },
 ];
 

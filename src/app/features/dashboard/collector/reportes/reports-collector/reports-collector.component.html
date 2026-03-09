@@ -1,0 +1,102 @@
+<div class="reports-collector-container">
+  <mat-tab-group [(selectedIndex)]="activeTab">
+    <!-- Reporte 1: Depósitos Colector -->
+    <mat-tab label="Depósitos">
+      <ng-template mat-tab-label>
+        <span>Depósitos Colector</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Depósitos Colector</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="depositsForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Inicial</mat-label>
+                  <input matInput [matDatepicker]="pickerStart" formControlName="startDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerStart></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Fecha Final</mat-label>
+                  <input matInput [matDatepicker]="pickerEnd" formControlName="endDate" />
+                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerEnd></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Num. Colector</mat-label>
+                  <input matInput formControlName="collectorNum" type="text" />
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <button mat-raised-button color="primary" (click)="downloadDepositsReport()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Reporte 2: Liquidación Colector -->
+    <mat-tab label="Liquidación">
+      <ng-template mat-tab-label>
+        <span>Liquidación Colector</span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-card class="report-card">
+          <mat-card-header>
+            <mat-card-title>Reporte Liquidación Colector</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="liquidationForm" class="form-container">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Mes</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option *ngFor="let month of months" [value]="month.value">
+                      {{ month.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Año</mat-label>
+                  <mat-select formControlName="year">
+                    <mat-option *ngFor="let year of years" [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Num. Colector</mat-label>
+                  <input matInput formControlName="collectorNum" type="text" />
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <button mat-raised-button color="primary" (click)="downloadLiquidationReportPdf()" [disabled]="isLoading">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  Crear PDF
+                </button>
+
+                <button mat-raised-button color="accent" (click)="downloadLiquidationReportExcel()" [disabled]="isLoading">
+                  <mat-icon>table_chart</mat-icon>
+                  Crear Excel
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -1,0 +1,83 @@
+.uploads-container {
+  padding: 20px;
+
+  .tab-content {
+    padding: 30px 20px;
+
+    .upload-card {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .upload-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .section-data,
+        .section-file {
+          border: 1px solid rgba(0, 0, 0, 0.12);
+          border-radius: 4px;
+          padding: 20px;
+          background-color: #fafafa;
+
+          h3 {
+            margin: 0 0 16px 0;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+          }
+
+          button {
+            margin-bottom: 12px;
+          }
+
+          .file-info {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #666;
+          }
+
+          .selected-file {
+            margin-top: 12px;
+            padding: 8px 12px;
+            background-color: #e8f5e9;
+            border-left: 3px solid #4caf50;
+            border-radius: 4px;
+
+            span {
+              font-size: 0.875rem;
+              color: #2e7d32;
+              word-break: break-word;
+            }
+          }
+        }
+
+        .progress-section {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+
+          mat-progress-bar {
+            border-radius: 4px;
+          }
+
+          .progress-text {
+            font-size: 0.875rem;
+            color: #666;
+            text-align: center;
+          }
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: 12px;
+          justify-content: flex-start;
+
+          button {
+            min-height: 40px;
+            padding: 8px 20px;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,98 +1,12 @@
-<div class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6">
-  <section class="flex flex-row items-baseline justify-between mb-4 w-full px-4">
-    <form class="flex flex-row gap-4 items-baseline flex-wrap" [formGroup]="searchForm">
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Nombre</mat-label>
-        <input matInput formControlName="nombre" aria-label="nombre" />
-      </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Ap.Paterno</mat-label>
-        <input matInput formControlName="apPaterno" aria-label="apPaterno" />
-      </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Ap.Materno</mat-label>
-        <input matInput formControlName="apMaterno" aria-label="apMaterno" />
-      </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Tipo de Persona</mat-label>
-        <input matInput formControlName="tipoPersona" aria-label="tipoPersona" />
-      </mat-form-field>
-      <mat-form-field class="w-40" appearance="outline">
-        <mat-label>Razón Social</mat-label>
-        <input matInput formControlName="razonSocial" aria-label="razonSocial" />
-      </mat-form-field>
-    </form>
-
-    <!-- <button
-      mat-raised-button
-      color="primary"
-      (click)="addReciboEspecial()"
-      class="whitespace-nowrap">
-      <mat-icon>add</mat-icon>
-      Agregar
-    </button> -->
-  </section>
-
-  <!-- Tabla -->
-  <table
-    mat-table
-    [dataSource]="dataSource"
-    matSort
-    class="w-full mat-table-container">
-
-    <!-- No. Bienhechor Column -->
-    <ng-container matColumnDef="noBienhechor">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>No. Bienhechor</th>
-      <td mat-cell *matCellDef="let row">{{ row.noBienhechor }}</td>
-    </ng-container>
-
-    <!-- Nombre Column -->
-    <ng-container matColumnDef="nombre">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
-      <td mat-cell *matCellDef="let row">{{ row.nombre }}</td>
-    </ng-container>
-
-    <!-- Razón Social Column -->
-    <ng-container matColumnDef="razonSocial">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Razón Social</th>
-      <td mat-cell *matCellDef="let row">{{ row.razonSocial }}</td>
-    </ng-container>
-
-    <!-- Persona Column -->
-    <ng-container matColumnDef="persona">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Persona</th>
-      <td mat-cell *matCellDef="let row">{{ row.persona }}</td>
-    </ng-container>
-
-    <!-- Activo Column -->
-    <ng-container matColumnDef="activo">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Activo</th>
-      <td mat-cell *matCellDef="let row">{{ row.activo ? 'Sí' : 'No' }}</td>
-    </ng-container>
-
-    <!-- Actions Column -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Acciones</th>
-      <td mat-cell *matCellDef="let row">
-        <!-- <button matIconButton (click)="editReciboEspecial(row)">
-          <mat-icon>edit</mat-icon>
-        </button> -->
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewReciboEspecial(row)" class="clickable-row"></tr> -->
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-
-  <!-- Paginator -->
-  <mat-paginator
-    [length]="pagination().itemCount"
-    (page)="onPageChange($event)"
-    [pageSize]="pagination().limit"
-    [pageIndex]="pagination().page - 1"
-    [pageSizeOptions]="[5, 10, 20]"
-    showFirstLastButtons
-    aria-label="Select page of recibos especiales"
-  ></mat-paginator>
+<div class="recibos-especiales-container">
+  <mat-tab-group [(selectedIndex)]="activeTab">
+    <mat-tab *ngFor="let section of sections" [label]="section.label">
+      <ng-template mat-tab-label>
+        {{ section.label }}
+      </ng-template>
+      <div class="tab-content">
+        <p>Contenido para: {{ section.label }}</p>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </div>
