@@ -56,6 +56,39 @@ export const MENU_CONFIG: NavCategory[] = [
         ],
     },
     {
+        name: 'Colectores',
+        icon: 'assessment',
+        items: [
+            {
+                id: 'assignments',
+                label: 'Asignaciones',
+                icon: 'assignment',
+                route: '/assignments',
+                permission: '',
+            },
+            {
+                id: 'colectores-reportes',
+                label: 'Reportes',
+                icon: 'bar_chart',
+                route: '/reports/collector',
+                permission: '',
+            },
+        ],
+    },
+    {
+        name: 'Bienhechores',
+        icon: 'volunteer_activism',
+        items: [
+            {
+                id: 'promises-donation',
+                label: 'Promesas de donación',
+                icon: 'loyalty',
+                route: '/promises-donation',
+                permission: '',
+            },
+        ]
+    },
+    {
         name: 'Recibos',
         icon: 'receipt',
         items: [

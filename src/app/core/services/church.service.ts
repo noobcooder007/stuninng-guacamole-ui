@@ -82,7 +82,7 @@ export class ChurchService {
     getChurches(page: number = 1, limit: number = 5, filters: ChurchFilters = {}): Observable<PaginatedResponse> {
         let params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
         Object.entries(filters ?? {}).forEach(([key, value]) => {
-            if (value) {
+            if (value !== null && value !== undefined && value !== '') {
                 params = params.set(key, value);
             }
         });

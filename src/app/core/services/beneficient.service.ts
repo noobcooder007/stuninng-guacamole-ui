@@ -75,13 +75,6 @@ export class BeneficientService {
     private readonly http = inject(HttpClient);
     private readonly snackbar = inject(MatSnackBar);
 
-    /**
-     * Obtiene la lista de bienhechores con paginación y filtros
-     * @param page Número de página (por defecto 1)
-     * @param limit Límite de registros por página (por defecto 5)
-     * @param filters Filtros a aplicar
-     * @returns Observable con la respuesta paginada
-     */
     getBeneficents(
         page: number = 1,
         limit: number = 5,
@@ -91,9 +84,8 @@ export class BeneficientService {
             .set('page', page.toString())
             .set('limit', limit.toString());
 
-        // Agregar filtros dinámicamente
         Object.entries(filters ?? {}).forEach(([key, value]) => {
-            if (value) {
+            if (value !== null && value !== undefined && value !== '') {
                 params = params.set(key, value);
             }
         });
@@ -110,11 +102,6 @@ export class BeneficientService {
             );
     }
 
-    /**
-     * Obtiene un bienhechor específico por ID
-     * @param id ID del bienhechore
-     * @returns Observable con los datos del bienhechore
-     */
     getBeneficent(id: number): Observable<{ statusCode: number; data: Beneficient }> {
         return this.http.get<{ statusCode: number; data: Beneficient }>(
             `${environment.apiBaseUrl}/beneficents/${id}`
@@ -128,11 +115,6 @@ export class BeneficientService {
         );
     }
 
-    /**
-     * Crea un nuevo bienhechore
-     * @param beneficent Datos del nuevo bienhechore
-     * @returns Observable con el resultado de la creación
-     */
     create(beneficent: CreateBeneficientDto): Observable<any> {
         return this.http
             .post(`${environment.apiBaseUrl}/beneficient`, beneficent)
@@ -146,11 +128,6 @@ export class BeneficientService {
             );
     }
 
-    /**
-     * Actualiza un bienhechore existente
-     * @param beneficent Datos del bienhechore a actualizar (incluye ID)
-     * @returns Observable con el resultado de la actualización
-     */
     update(beneficent: UpdateBeneficientDto): Observable<any> {
         const { id, ...updateData } = beneficent;
         return this.http
@@ -165,11 +142,6 @@ export class BeneficientService {
             );
     }
 
-    /**
-     * Elimina un bienhechore por ID
-     * @param id ID del bienhechore a eliminar
-     * @returns Observable con el resultado de la eliminación
-     */
     delete(id: number): Observable<any> {
         return this.http
             .delete(`${environment.apiBaseUrl}/beneficents/${id}`)

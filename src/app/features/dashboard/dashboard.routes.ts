@@ -54,6 +54,26 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(m => m.RecibosEspecialesComponent),
             },
             {
+                path: 'assignments',
+                loadComponent: () => import('./assignments/assignments.component')
+                    .then(m => m.AssignmentsComponent),
+            },
+            {
+                path: 'promises-donation',
+                loadComponent: () => import('./promises-donation/promises-donation.component')
+                    .then((m) => m.PromisesDonationComponent)
+            },
+            {
+                path: 'assignments',
+                loadComponent: () => import('./assignments/assignments.component')
+                    .then(m => m.AssignmentsComponent),
+            },
+            {
+                path: 'promises-donation',
+                loadComponent: () => import('./promises-donation/promises-donation.component')
+                    .then((m) => m.PromisesDonationComponent)
+            },
+            {
                 path: 'receipts',
                 loadComponent: () => import('./recibos/impresion/impresion-recibos.component')
                     .then(m => m.ImpresionRecibosComponent),

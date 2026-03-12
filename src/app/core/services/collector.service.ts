@@ -24,7 +24,7 @@ export interface PaymentData {
 }
 
 export interface Collector {
-    id: number;
+    id: string;
     firstname: string;
     firstLastname: string;
     secondLastname?: string;
@@ -95,7 +95,7 @@ export class CollectorService {
     getCollectors(page: number = 1, limit: number = 5, filters: CollectorFilters = {}): Observable<PaginatedResponse> {
         let params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
         Object.entries(filters ?? {}).forEach(([key, value]) => {
-            if (value) {
+            if (value !== null && value !== undefined && value !== '') {
                 params = params.set(key, value as string);
             }
         });

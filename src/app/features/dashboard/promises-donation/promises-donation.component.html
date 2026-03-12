@@ -1,0 +1,110 @@
+<div class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6">
+  <section class="flex flex-row items-baseline justify-between mb-4 w-full px-4">
+    <form [formGroup]="searchForm" class="flex flex-row gap-4 items-baseline flex-wrap">
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Moneda</mat-label>
+        <mat-select formControlName="currency">
+          <mat-option value="MXN">MXN</mat-option>
+          <mat-option value="USD">USD</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Metodo de pago</mat-label>
+        <input placeholder="Escribe un metodo de pago" matInput formControlName="method" />
+      </mat-form-field>
+      <mat-form-field class="w-52" appearance="outline">
+        <mat-label>Recurrencia</mat-label>
+        <mat-select matInput formControlName="recurrence">
+          @for (recurrence of recurrences; track $index) {
+            <mat-option [value]="recurrence.value">{{ recurrence.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-button-toggle-group formControlName="isActive">
+        <mat-button-toggle [value]="true">Active</mat-button-toggle>
+        <mat-button-toggle [value]="null">Todas</mat-button-toggle>
+        <mat-button-toggle [value]="false">Inactive</mat-button-toggle>
+      </mat-button-toggle-group>
+      <button
+        class="whitespace-nowrap"
+        type="button"
+        matButton="tonal"
+        (click)="searchForm.reset()"
+      >
+        Borrar filtros
+      </button>
+    </form>
+    <button
+      class="whitespace-nowrap ml-2"
+      type="button"
+      matButton="filled"
+      (click)="addPromiseDonation()"
+    >
+      Añadir promesa
+    </button>
+  </section>
+  <table mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="currency">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Moneda</th>
+      <td mat-cell *matCellDef="let element">{{ element.currency }}</td>
+    </ng-container>
+    <ng-container matColumnDef="method">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Metodo de pago</th>
+      <td mat-cell *matCellDef="let element">{{ element.method }}</td>
+    </ng-container>
+    <ng-container matColumnDef="promiseAmount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Monto prometido</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.promiseAmount | currency: element.currency : 'symbol' : '1.2-2' }}
+        {{ element.currency }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="startDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de comienzo</th>
+      <td mat-cell *matCellDef="let element">{{ element.startDate | date: 'fullDate' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="lastDonation">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ultima donación</th>
+      <td mat-cell *matCellDef="let element">{{ element.lastDonation | date: 'fullDate' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="nextDonation">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Proxima donación</th>
+      <td mat-cell *matCellDef="let element">{{ element.nextDonation | date: 'fullDate' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="recurrence">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Recurrencia</th>
+      <td mat-cell *matCellDef="let element">{{ element.recurrence | recurrence }}</td>
+    </ng-container>
+    <ng-container matColumnDef="isActive">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Activa</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.isActive }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let element">
+        <button matIconButton>
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button matIconButton>
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator
+    [length]="pagination().itemCount"
+    [pageSize]="pagination().limit"
+    [pageIndex]="pagination().page - 1"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  >
+  </mat-paginator>
+</div>

@@ -1,11 +1,15 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { provideServiceWorker } from '@angular/service-worker';
-import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { provideNativeDateAdapter } from '@angular/material/core';
+
+export function getLanguage() {
+  return localStorage.getItem('user_lang') || 'es-MX';
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,5 +21,13 @@ export const appConfig: ApplicationConfig = {
     }),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideNativeDateAdapter(),
+    {
+      provide: LOCALE_ID,
+      useFactory: getLanguage
+    },
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'es-MX'
+    },
   ]
 };
