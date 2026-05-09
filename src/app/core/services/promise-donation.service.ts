@@ -35,7 +35,12 @@ export interface PromisesDonationFilters {
 }
 
 export interface CreatePromiseDonationDto {
-    
+    amount: number;
+    currency: 'MXN' | 'USD';
+    method: string;
+    startDate: string;
+    recurrence: number;
+    availability?: { day: string; time: string; note: string }[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -59,10 +64,10 @@ export class PromisesDonationService {
         );
     }
 
-    create(collector: CreatePromiseDonationDto) {
-        return this.http.post(`${environment.apiBaseUrl}/promises`, collector).pipe(
+    create(promise: CreatePromiseDonationDto) {
+        return this.http.post(`${environment.apiBaseUrl}/promises`, promise).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al crear colector', 'Cerrar', { duration: 5000 });
+                this._snackbar.open('Error al crear promesa de donación', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

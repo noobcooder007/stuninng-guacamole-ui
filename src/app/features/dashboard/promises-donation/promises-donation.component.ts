@@ -9,12 +9,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIcon } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { PaginatedMetadata } from '@app/core/services/collector.service';
 import { TabService } from '@app/core/services/tab.service';
 import { PromiseDonation, PromisesDonationFilters, PromisesDonationService } from '@app/core/services/promise-donation.service';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RecurrencePipe } from '@app/shared/pipes/recurrence.pipe';
+import { CreatePromiseDonationDialogComponent } from './create/create-promise-donation-dialog.component';
 
 @Component({
     selector: 'promises-donation-component',
@@ -29,6 +31,7 @@ import { RecurrencePipe } from '@app/shared/pipes/recurrence.pipe';
         MatButtonModule,
         MatButtonToggleModule,
         MatSelectModule,
+        MatDialogModule,
         MatIcon,
         CurrencyPipe,
         DatePipe,
@@ -67,6 +70,7 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
 
     private readonly tabService = inject(TabService);
     private readonly promisesService = inject(PromisesDonationService);
+    private readonly dialog = inject(MatDialog);
 
     ngOnInit() {
         this.setupFilters();
@@ -104,11 +108,15 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
     }
 
     addPromiseDonation() {
-        this.tabService.openTab({
-            id: 'add-promises-donation',
-            label: 'Añadir promesa de donación',
-            link: '/promises-donation/create',
-            permission: 'add:promise'
+        const dialogRef = this.dialog.open(CreatePromiseDonationDialogComponent, {
+            width: '600px',
+            maxHeight: '90vh',
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loadData();
+            }
         });
     }
 }

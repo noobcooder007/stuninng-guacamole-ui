@@ -1,0 +1,112 @@
+<div class="p-6 max-h-[80vh] overflow-y-auto">
+  <h2 class="text-center text-xl font-semibold mb-6">Crear nueva promesa de donación</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+    <!-- Monto -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Monto</mat-label>
+      <input matInput type="number" formControlName="amount" placeholder="Ingrese el monto">
+      <mat-error *ngIf="form.get('amount')?.invalid && form.get('amount')?.touched">
+        Monto requerido y debe ser mayor a 0
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Tipo moneda -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Tipo moneda</mat-label>
+      <mat-select formControlName="currency">
+        <mat-option *ngFor="let currency of currencies" [value]="currency.value">
+          {{ currency.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Método de pago -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Método de pago</mat-label>
+      <input matInput formControlName="method" placeholder="Ingrese el método de pago">
+      <mat-error *ngIf="form.get('method')?.invalid && form.get('method')?.touched">
+        Método de pago requerido
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Fecha de comienzo -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Fecha de comienzo</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="startDate">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="form.get('startDate')?.invalid && form.get('startDate')?.touched">
+        Fecha de comienzo requerida
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Recurrencia -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Recurrencia</mat-label>
+      <mat-select formControlName="recurrence">
+        <mat-option *ngFor="let recurrence of recurrences" [value]="recurrence.value">
+          {{ recurrence.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Disponibilidad -->
+    <div class="mt-6">
+      <div class="flex items-center justify-between mb-4">
+        <label class="text-sm font-medium">Disponibilidad</label>
+        <button type="button" mat-stroked-button (click)="addAvailability()">
+          <mat-icon>add</mat-icon>
+          Agregar
+        </button>
+      </div>
+
+      <table mat-table [dataSource]="availability.controls" class="w-full">
+        <ng-container matColumnDef="day">
+          <th mat-header-cell *matHeaderCellDef>Día</th>
+          <td mat-cell *matCellDef="let control; let i = index">
+            <mat-form-field appearance="outline" class="w-full">
+              <input matInput [formControl]="control.get('day')" placeholder="Ej: Lunes">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="time">
+          <th mat-header-cell *matHeaderCellDef>Hora</th>
+          <td mat-cell *matCellDef="let control; let i = index">
+            <mat-form-field appearance="outline" class="w-full">
+              <input matInput type="time" [formControl]="control.get('time')">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="note">
+          <th mat-header-cell *matHeaderCellDef>Nota</th>
+          <td mat-cell *matCellDef="let control; let i = index">
+            <mat-form-field appearance="outline" class="w-full">
+              <input matInput [formControl]="control.get('note')" placeholder="Nota de disponibilidad">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let control; let i = index">
+            <button type="button" mat-icon-button (click)="removeAvailability(i)" color="warn">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex justify-end space-x-4 mt-6">
+      <button type="button" mat-button (click)="onCancel()">Cancelar</button>
+      <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">Crear</button>
+    </div>
+  </form>
+</div>

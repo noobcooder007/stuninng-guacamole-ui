@@ -12,8 +12,9 @@ import { Collector, CollectorFilters, CollectorService, PaginatedMetadata } from
 import { Assignment, AssignmentFilters, AssignmentService } from '@app/core/services/assignment.service';
 import { TabService } from '@app/core/services/tab.service';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { SearchCollectorComponent } from './search-collector/search-collector.component';
+import { CreateAssignmentDialogComponent } from './create/create-assignment-dialog.component';
 import { DatePipe } from '@angular/common';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 
@@ -29,6 +30,7 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
         MatInputModule,
         MatAutocompleteModule,
         MatButtonModule,
+        MatDialogModule,
         MatIcon,
         DatePipe,
         FullnamePipe,
@@ -127,11 +129,17 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
     }
 
     addAssignment() {
-        this.tabService.openTab({
-            id: 'add-assignment',
-            label: 'Añadir asignación',
-            link: '/assignments/create',
-            permission: 'add:assignment'
+        const dialogRef = this.advancedSearchDialog.open(CreateAssignmentDialogComponent, {
+            minWidth: '80vw',
+            maxWidth: '1200px',
+            disableClose: true,
+            hasBackdrop: true,
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                // Manejar respuesta si es necesario
+            }
         });
     }
 
