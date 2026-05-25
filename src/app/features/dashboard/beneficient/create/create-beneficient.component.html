@@ -1,5 +1,5 @@
 <section class="flex flex-col h-full w-full items-center overflow-x-auto no-scrollbar p-6">
-  <form class="flex flex-col gap-4" [formGroup]="createBeneficientForm">
+  <form class="flex flex-col gap-4 w-2/3" [formGroup]="createBeneficientForm">
     <p class="text-2xl pb-4 font-semibold">Información básica</p>
     <div class="grid grid-cols-2 gap-4">
       <mat-form-field appearance="outline">
@@ -65,6 +65,11 @@
         <mat-label>Correo electronico</mat-label>
         <input type="email" matInput formControlName="email" aria-label="email" />
       </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Número de teléfono</mat-label>
+        <input type="tel" matInput formControlName="phoneNumber" aria-label="phoneNumber">
+      </mat-form-field>
+      <mat-checkbox formControlName="keepPrivate" aria-label="keepPrivate">Mantener datos privados</mat-checkbox>
     </div>
     <p class="text-2xl pb-4 font-semibold">Domicilio</p>
     <div formGroupName="address" class="flex flex-col gap-4">

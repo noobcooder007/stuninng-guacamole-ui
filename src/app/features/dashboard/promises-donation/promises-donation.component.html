@@ -44,6 +44,14 @@
     </button>
   </section>
   <table mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="fullname">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Bienhechor</th>
+      <td mat-cell *matCellDef="let element">{{ element.beneficient | fullname }}</td>
+    </ng-container>
+    <ng-container matColumnDef="beneficientNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header># de bienhechor</th>
+      <td mat-cell *matCellDef="let element">{{ element.beneficient.beneficientNumber }}</td>
+    </ng-container>
     <ng-container matColumnDef="currency">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Moneda</th>
       <td mat-cell *matCellDef="let element">{{ element.currency }}</td>
@@ -56,7 +64,6 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Monto prometido</th>
       <td mat-cell *matCellDef="let element">
         {{ element.promiseAmount | currency: element.currency : 'symbol' : '1.2-2' }}
-        {{ element.currency }}
       </td>
     </ng-container>
     <ng-container matColumnDef="startDate">
@@ -74,12 +81,6 @@
     <ng-container matColumnDef="recurrence">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Recurrencia</th>
       <td mat-cell *matCellDef="let element">{{ element.recurrence | recurrence }}</td>
-    </ng-container>
-    <ng-container matColumnDef="isActive">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Activa</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.isActive }}
-      </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">

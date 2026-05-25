@@ -19,7 +19,23 @@ export interface Address {
 
 export interface Beneficient {
     id: number;
-    
+    title: string;
+    firstname: string;
+    firstLastname: string;
+    secondLastname: string;
+    birthday: Date;
+    genre: string;
+    maritalStatus: string;
+    weddingAniversary: Date | null;
+    address: Address;
+    email: string | null;
+    phoneNumber: string | null;
+    person: string | null;
+    registeredName: string | null;
+    rfc: string | null;
+    createdAt: Date;
+    isActive: boolean;
+    beneficientNumber: number;
 }
 
 export interface PaginatedMetadata {
@@ -59,11 +75,13 @@ export interface CreateBeneficientDto {
     genre: string;
     maritalStatus: string;
     email?: string;
+    phoneNumber?: string;
     address: Address;
     churchId: string;
     person?: string;
     registeredName?: string;
     rfc?: string;
+    keepPrivate: boolean;
 }
 
 export interface UpdateBeneficientDto extends CreateBeneficientDto {

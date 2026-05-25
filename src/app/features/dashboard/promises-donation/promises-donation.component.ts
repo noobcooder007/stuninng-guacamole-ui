@@ -9,14 +9,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIcon } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { PaginatedMetadata } from '@app/core/services/collector.service';
 import { TabService } from '@app/core/services/tab.service';
 import { PromiseDonation, PromisesDonationFilters, PromisesDonationService } from '@app/core/services/promise-donation.service';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RecurrencePipe } from '@app/shared/pipes/recurrence.pipe';
-import { CreatePromiseDonationDialogComponent } from './create/create-promise-donation-dialog.component';
+import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 
 @Component({
     selector: 'promises-donation-component',
@@ -36,6 +36,7 @@ import { CreatePromiseDonationDialogComponent } from './create/create-promise-do
         CurrencyPipe,
         DatePipe,
         RecurrencePipe,
+        FullnamePipe,
     ],
 })
 export class PromisesDonationComponent implements OnInit, AfterViewInit {
@@ -49,7 +50,7 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
         pageCount: 0,
     };
     public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
-    public displayedColumns: string[] = ['currency', 'method', 'promiseAmount', 'startDate', 'lastDonation', 'nextDonation', 'recurrence', 'isActive', 'actions'];
+    public displayedColumns: string[] = ['fullname', 'beneficientNumber', 'currency', 'method', 'promiseAmount', 'startDate', 'lastDonation', 'nextDonation', 'recurrence', 'actions'];
     public dataSource = new MatTableDataSource<PromiseDonation>();
     public searchForm = new FormGroup({
         currency: new FormControl(''),
@@ -70,7 +71,6 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
 
     private readonly tabService = inject(TabService);
     private readonly promisesService = inject(PromisesDonationService);
-    private readonly dialog = inject(MatDialog);
 
     ngOnInit() {
         this.setupFilters();
@@ -79,6 +79,18 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
+        this.dataSource.sortingDataAccessor = (item, property) => {
+            switch (property) {
+                case 'fullname': return `${item.beneficient?.firstname} ${item.beneficient?.firstLastname} ${item.beneficient?.secondLastname}`;
+                case 'beneficientNumber': return item.beneficient?.beneficientNumber;
+                default: {
+                    const value = item[property as keyof PromiseDonation];
+                    return (typeof value === 'string' || typeof value === 'number') 
+                        ? value 
+                        : String(value);
+                }
+            }
+        };
     }
 
     private setupFilters() {
@@ -91,7 +103,7 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
     loadData(page: number = 1, limit: number = 5) {
         this.isLoading.set(true);
         const filters = this.searchForm.value as PromisesDonationFilters;
-        this.promisesService.getPromisesDonation(page, limit, filters).subscribe({
+        this.promisesService.getPromisesDonationWithBeneficients(page, limit, filters).subscribe({
             next: ({ data: { items, meta } }) => {
                 this.pagination.set(meta);
                 this.isLoading.set(false);
@@ -108,15 +120,11 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
     }
 
     addPromiseDonation() {
-        const dialogRef = this.dialog.open(CreatePromiseDonationDialogComponent, {
-            width: '600px',
-            maxHeight: '90vh',
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.loadData();
-            }
+        this.tabService.openTab({
+            id: 'create-promise-donation',
+            label: 'Añadir promesa de donación',
+            link: '/promises-donation/create',
+            permission: 'add:promise-donation'
         });
     }
 }

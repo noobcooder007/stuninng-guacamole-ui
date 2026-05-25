@@ -13,6 +13,7 @@ import { Church, ChurchService } from '@app/core/services/church.service';
 import { addressExclusiveFieldsValidator } from '@app/shared/validators/exclusive-fields-validators.validator';
 import { debounceTime } from 'rxjs';
 import { AddressPipe } from '@app/shared/pipes/address.pipe';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
     selector: 'create-beneficient',
@@ -25,6 +26,7 @@ import { AddressPipe } from '@app/shared/pipes/address.pipe';
         MatSelectModule,
         MatDatepickerModule,
         MatButtonModule,
+        MatCheckboxModule,
         MatIconModule,
         MatProgressSpinnerModule,
         AddressPipe,
@@ -46,6 +48,8 @@ export class CreateBeneficientComponent implements OnInit {
         maritalStatus: new FormControl(null, [Validators.required]),
         weddingAnniversary: new FormControl(null),
         email: new FormControl(null, [Validators.email]),
+        phoneNumber: new FormControl(null),
+        keepPrivate: new FormControl(false),
         address: new FormGroup({
             street: new FormControl(null, [Validators.required]),
             numeration: new FormGroup({

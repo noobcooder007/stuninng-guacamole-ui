@@ -55,6 +55,10 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Apellido materno</th>
       <td mat-cell *matCellDef="let row">{{ row.secondLastname || '-' }}</td>
     </ng-container>
+    <ng-container matColumnDef="beneficientNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Numero de bienhechor</th>
+      <td mat-cell *matCellDef="let row">{{ row.beneficientNumber }}
+    </ng-container>
     <ng-container matColumnDef="genre">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Género</th>
       <td mat-cell *matCellDef="let row">{{ row.genre | gender }}</td>

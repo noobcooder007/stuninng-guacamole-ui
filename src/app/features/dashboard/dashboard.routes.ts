@@ -74,6 +74,11 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then((m) => m.PromisesDonationComponent)
             },
             {
+                path: 'promises-donation/create',
+                loadComponent: () => import('./promises-donation/create/create-promise-donation.component')
+                    .then((m) => m.CreatePromiseDonationComponent)
+            },
+            {
                 path: 'receipts',
                 loadComponent: () => import('./recibos/impresion/impresion-recibos.component')
                     .then(m => m.ImpresionRecibosComponent),

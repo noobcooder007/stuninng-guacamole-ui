@@ -42,7 +42,7 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
         pageCount: 0
     };
     public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
-    public displayedColumns: string[] = ['title', 'firstname', 'firstLastname', 'secondLastname', 'genre', 'email', 'maritalStatus', 'rfc', 'status', 'actions'];
+    public displayedColumns: string[] = ['title', 'firstname', 'firstLastname', 'secondLastname', 'beneficientNumber', 'genre', 'email', 'maritalStatus', 'rfc', 'status', 'actions'];
     public dataSource = new MatTableDataSource<Beneficient>();
     public searchForm = new FormGroup({
         firstname: new FormControl(''),
