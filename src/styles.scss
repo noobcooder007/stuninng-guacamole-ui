@@ -52,4 +52,10 @@ body {
   color: var(--mat-sys-on-surface);
 }
 
+// El drawer de Angular Material tiene overflow:auto por defecto, lo que genera
+// un segundo scrollbar junto al de mat-nav-list. Lo suprimimos aquí.
+.mat-drawer {
+  overflow: hidden !important;
+}
+
 // Color base #005cbb
