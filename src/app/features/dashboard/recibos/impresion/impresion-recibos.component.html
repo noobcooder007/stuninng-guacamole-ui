@@ -1,14 +1,81 @@
 <div class="impresion-recibos-container">
-  <mat-tab-group [(selectedIndex)]="activeTab">
-    <mat-tab *ngFor="let section of sections" [label]="section.label">
-      <ng-template mat-tab-label>
-        {{ section.label }}
-      </ng-template>
-      <div class="tab-content">
-        <p>Contenido para: {{ section.label }}</p>
+  <div class="page-header">
+    <h1>Impresion de Recibos</h1>
+  </div>
+
+  <div class="buttons-section">
+    <button mat-flat-button color="primary" type="button" (click)="printRecibos()">
+      <mat-icon>picture_as_pdf</mat-icon>
+      Imprimir recibos
+    </button>
+    <button mat-flat-button color="primary" type="button" (click)="printCartaRecibosActual()">
+      <mat-icon>picture_as_pdf</mat-icon>
+      Carta de recibos actual
+    </button>
+    <button mat-flat-button color="primary" type="button" (click)="printCartaRecibosAnterior()">
+      <mat-icon>picture_as_pdf</mat-icon>
+      Carta de recibos anterior
+    </button>
+  </div>
+
+  <div class="form-container">
+    <div class="select-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Mes</mat-label>
+        <mat-select [(value)]="filters.month">
+          <mat-option *ngFor="let month of months" [value]="month.value">
+            {{ month.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Año</mat-label>
+        <mat-select [(value)]="filters.year">
+          <mat-option *ngFor="let year of years" [value]="year.value">
+            {{ year.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="folio-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Folio inicial</mat-label>
+        <input matInput type="text" placeholder="Folio inicial" [(ngModel)]="filters.folioInicio" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Folio final</mat-label>
+        <input matInput type="text" placeholder="Folio final" [(ngModel)]="filters.folioFinal" />
+      </mat-form-field>
+    </div>
+
+    <div class="datos-colector-section">
+      <p class="section-title">Datos de colector</p>
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput type="text" placeholder="Nombre" [(ngModel)]="filters.nombre" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Apellido paterno</mat-label>
+          <input matInput type="text" placeholder="Apellido paterno" [(ngModel)]="filters.apellidoPaterno" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Apellido materno</mat-label>
+          <input matInput type="text" placeholder="Apellido materno" [(ngModel)]="filters.apellidoMaterno" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Número Colector</mat-label>
+          <input matInput type="text" placeholder="Número colector" [(ngModel)]="filters.numeroColector" />
+        </mat-form-field>
       </div>
-    </mat-tab>
-  </mat-tab-group>
+    </div>
+  </div>
 </div>
 
 
