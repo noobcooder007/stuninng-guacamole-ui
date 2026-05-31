@@ -217,6 +217,12 @@ export class DashboardLayoutComponent implements OnDestroy {
         return 'assets/images/profile-pic-female.svg';
     });
 
+    public logout(): void {
+        this.authService.logout().subscribe(() => {
+            this.router.navigateByUrl('/auth/login');
+        });
+    }
+
     public selectItem(item: NavItem) {
         this.tabService.openTab({
             id: item.id,
