@@ -35,6 +35,7 @@ export interface AuthToken {
 export interface AuthenticatedUser {
     username: string;
     role: string;
+    gender: 'MALE' | 'FEMALE' | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -147,13 +148,14 @@ export class AuthService {
                 accessToken: response.data.tokens.accessToken,
                 expiresIn: response.data.tokens.expiresIn
             });
+        const decoded: any = jwtDecode(this.getAccessToken()!.accessToken);
+        this._userPermissions.set(decoded.rights);
         this._authenticatedUser.set(
             {
                 username: response.data.user.username,
-                role: response.data.user.role
+                role: response.data.user.role,
+                gender: decoded.gender ?? null,
             });
-        const decoded: any = jwtDecode(this.getAccessToken()!.accessToken);
-        this._userPermissions.set(decoded.rights);
         this.saveAuthMetadata(response);
         this._isLoading.set(false);
         this._authStatus.set('authenticated');

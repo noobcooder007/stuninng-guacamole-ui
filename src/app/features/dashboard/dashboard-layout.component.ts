@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { RouterOutlet, RouterLinkWithHref, RouterLinkActive, Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -186,6 +186,7 @@ export class DashboardLayoutComponent implements OnDestroy {
     public currentRoute: string = '';
     protected readonly isMobile = signal(false);
     protected readonly authService = inject(AuthService);
+    protected readonly currentUser = computed(() => this.authService.getAuthenticatedUser());
 
     private readonly _mobileQuery: MediaQueryList;
     private readonly _mobileQueryListener: () => void;
@@ -209,16 +210,12 @@ export class DashboardLayoutComponent implements OnDestroy {
     }
 
     currentYear = signal(new Date().getFullYear());
-    avatarPath = signal('assets/images/profile-pic-female.svg');
-    genre = signal<'F' | 'M'>('F');
-    toggleAvatarPath(): void {
-        this.genre.update((genre) => genre === 'F' ? 'M' : 'F');
-        this.avatarPath.set(
-            this.genre() === 'F'
-                ? 'assets/images/profile-pic-female.svg'
-                : 'assets/images/profile-pic-male.svg'
-        );
-    };
+    protected readonly avatarPath = computed(() => {
+        const gender = this.currentUser()?.gender;
+        if (gender === 'MALE') return 'assets/images/profile-pic-male.svg';
+        if (gender === 'FEMALE') return 'assets/images/profile-pic-female.svg';
+        return 'assets/images/profile-pic-female.svg';
+    });
 
     public selectItem(item: NavItem) {
         this.tabService.openTab({
