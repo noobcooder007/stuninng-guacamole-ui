@@ -11,7 +11,7 @@
             <mat-card-title>Reporte Movimientos Bienhechores</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <button mat-raised-button color="primary" (click)="downloadBeneficiaryMovementsReport()" [disabled]="isLoading">
+            <button matButton="filled" type="button" (click)="downloadBeneficiaryMovementsReport()" [disabled]="isLoading">
               <mat-icon>picture_as_pdf</mat-icon>
               Crear PDF
             </button>
@@ -31,7 +31,7 @@
             <mat-card-title>Reporte Concentrado Donativos Bienhechores</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <button mat-raised-button color="primary" (click)="downloadBeneficiaryConcentratedReport()" [disabled]="isLoading">
+            <button matButton="filled" type="button" (click)="downloadBeneficiaryConcentratedReport()" [disabled]="isLoading">
               <mat-icon>picture_as_pdf</mat-icon>
               Crear PDF
             </button>
@@ -72,22 +72,22 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Status</mat-label>
                   <mat-select formControlName="status">
-                    <mat-option *ngFor="let status of statuses" [value]="status.value">
-                      {{ status.label }}
-                    </mat-option>
+                    @for (status of statuses; track status.value) {
+                      <mat-option [value]="status.value">{{ status.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>Causa</mat-label>
                   <mat-select formControlName="cause">
-                    <mat-option *ngFor="let cause of causes" [value]="cause.value">
-                      {{ cause.label }}
-                    </mat-option>
+                    @for (cause of causes; track cause.value) {
+                      <mat-option [value]="cause.value">{{ cause.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="downloadBeneficiaryStatusReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="downloadBeneficiaryStatusReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
@@ -119,9 +119,9 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Mes</mat-label>
                   <mat-select formControlName="month">
-                    <mat-option *ngFor="let month of months" [value]="month.value">
-                      {{ month.label }}
-                    </mat-option>
+                    @for (month of months; track month.value) {
+                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
               </div>
@@ -155,7 +155,7 @@
                   Activo
                 </mat-checkbox>
 
-                <button mat-raised-button color="primary" (click)="downloadBeneficiaryExcelReport()" [disabled]="isLoading">
+                <button matButton="tonal" type="button" (click)="downloadBeneficiaryExcelReport()" [disabled]="isLoading">
                   <mat-icon>table_chart</mat-icon>
                   Crear Excel
                 </button>
@@ -213,7 +213,7 @@
                   <input matInput formControlName="postalCode" type="text" />
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="downloadBeneficiaryReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="downloadBeneficiaryReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>

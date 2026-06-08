@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIcon } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -33,6 +34,7 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
         MatSelectModule,
         MatDialogModule,
         MatIcon,
+        MatProgressBarModule,
         CurrencyPipe,
         DatePipe,
         RecurrencePipe,

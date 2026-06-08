@@ -1,45 +1,82 @@
 <div class="processes-container">
+
+  <!-- Card de estado del periodo -->
+  <mat-card class="mb-6">
+    @if (periodStatus(); as period) {
+      <mat-card-header>
+        <mat-card-title>{{ months[period.month - 1]?.label }} {{ period.year }}</mat-card-title>
+        <mat-card-subtitle>Periodo activo</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="flex gap-8 flex-wrap pt-2">
+          <div class="flex flex-col gap-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-[color:var(--mat-sys-outline)]">Estado</span>
+            <mat-chip-set>
+              <mat-chip
+                highlighted
+                disableRipple
+                [color]="period.status === PeriodStatusEnum.OPEN ? 'primary' : 'warn'"
+              >
+                {{ period.status === PeriodStatusEnum.OPEN ? 'Abierto' : 'Cerrado' }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+          <div class="flex flex-col gap-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-[color:var(--mat-sys-outline)]">Recibos pendientes</span>
+            <span class="text-xl font-semibold">{{ period.pendingReceiptsCount }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button type="button" matButton="filled" [disabled]="isTogglingPeriod()" (click)="togglePeriod()">
+          <mat-icon>{{ period.status === PeriodStatusEnum.OPEN ? 'lock' : 'lock_open' }}</mat-icon>
+          {{ period.status === PeriodStatusEnum.OPEN ? 'Cerrar periodo' : 'Abrir periodo' }}
+        </button>
+      </mat-card-actions>
+    } @else {
+      <mat-card-content>
+        <span class="text-sm text-[color:var(--mat-sys-outline)]">Cargando estado…</span>
+      </mat-card-content>
+    }
+  </mat-card>
+
   <mat-tab-group [(selectedIndex)]="activeTab">
+
     <!-- Pestaña: Comisión y Liquidación -->
     <mat-tab label="Comisión y Liquidación">
-      <ng-template mat-tab-label>
-        <span>Comisión y Liquidación</span>
-      </ng-template>
       <div class="tab-content">
         <h2>Generación de Comisión</h2>
         <mat-card class="form-card">
           <mat-card-content>
             <form [formGroup]="commissionForm" class="form-container">
               <div class="form-row">
-                <!-- Mes -->
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>Mes</mat-label>
                   <mat-select formControlName="month">
-                    <mat-option *ngFor="let month of months" [value]="month.value">
-                      {{ month.label }}
-                    </mat-option>
+                    @for (month of months; track month.value) {
+                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
-
-                <!-- Año -->
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>Año</mat-label>
                   <mat-select formControlName="year">
-                    <mat-option *ngFor="let year of years" [value]="year">
-                      {{ year }}
-                    </mat-option>
+                    @for (year of years; track year) {
+                      <mat-option [value]="year">{{ year }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
-
-                <!-- Botón Iniciar Procesos -->
                 <button
-                  mat-raised-button
-                  color="primary"
+                  type="button"
+                  matButton="filled"
                   (click)="startCommissionProcess()"
-                  [disabled]="isProcessing || commissionForm.invalid"
-                  class="start-btn">
+                  [disabled]="isProcessing() || commissionForm.invalid"
+                  class="start-btn"
+                >
                   <mat-icon>play_arrow</mat-icon>
-                  Iniciar Procesos
+                  Iniciar proceso
                 </button>
               </div>
             </form>
@@ -50,34 +87,29 @@
 
     <!-- Pestaña: Genera Recibos -->
     <mat-tab label="Genera Recibos">
-      <ng-template mat-tab-label>
-        <span>Genera Recibos</span>
-      </ng-template>
       <div class="tab-content">
         <h2>Generación de Recibos</h2>
         <mat-card class="form-card">
           <mat-card-content>
             <form [formGroup]="receiptsForm" class="form-container">
               <div class="form-row">
-                <!-- Mes -->
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>Mes</mat-label>
                   <mat-select formControlName="month">
-                    <mat-option *ngFor="let month of months" [value]="month.value">
-                      {{ month.label }}
-                    </mat-option>
+                    @for (month of months; track month.value) {
+                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
-
-                <!-- Botón Iniciar Procesos -->
                 <button
-                  mat-raised-button
-                  color="primary"
+                  type="button"
+                  matButton="filled"
                   (click)="startReceiptsGenerationProcess()"
-                  [disabled]="isProcessing || receiptsForm.invalid"
-                  class="start-btn">
+                  [disabled]="isProcessing() || receiptsForm.invalid"
+                  class="start-btn"
+                >
                   <mat-icon>play_arrow</mat-icon>
-                  Iniciar Procesos
+                  Iniciar proceso
                 </button>
               </div>
             </form>
@@ -85,5 +117,6 @@
         </mat-card>
       </div>
     </mat-tab>
+
   </mat-tab-group>
 </div>

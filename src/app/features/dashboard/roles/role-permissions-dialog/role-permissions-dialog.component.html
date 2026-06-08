@@ -1,0 +1,78 @@
+<h2 mat-dialog-title>Permisos de "{{ data.role.name }}"</h2>
+
+<mat-dialog-content class="!pt-2">
+  @if (isLoading()) {
+    <mat-progress-bar mode="indeterminate" class="mb-4" />
+    <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] text-center py-8">
+      Cargando permisos disponibles...
+    </p>
+  } @else {
+    <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] mb-4">
+      {{ selectedCount() }} permiso(s) asignado(s)
+    </p>
+
+    <div class="flex flex-col gap-3 min-w-[540px]">
+      @for (group of permissionGroups(); track group.module) {
+        <div class="rounded-lg border border-[color:var(--mat-sys-outline-variant)] overflow-hidden">
+          <div class="flex items-center px-4 py-3 bg-[color:var(--mat-sys-surface-container-high)]">
+            <mat-checkbox
+              [checked]="isGroupAllChecked(group)"
+              [indeterminate]="isGroupIndeterminate(group)"
+              (change)="toggleGroup(group, $event.checked)"
+            >
+              <span class="font-semibold text-sm">{{ group.module }}</span>
+              <span class="text-xs text-[color:var(--mat-sys-outline)] ml-2">
+                ({{ getGroupSelectedCount(group) }}/{{ group.permissions.length }})
+              </span>
+            </mat-checkbox>
+          </div>
+
+          @for (permission of group.permissions; track permission.id; let last = $last) {
+            <div
+              class="flex items-start px-6 py-3 hover:bg-[color:var(--mat-sys-surface-container-low)] cursor-pointer"
+              (click)="togglePermission(permission)"
+            >
+              <mat-checkbox
+                [checked]="permission.selected"
+                (click)="$event.stopPropagation()"
+                (change)="togglePermission(permission)"
+              >
+                <div class="flex flex-col ml-1">
+                  <span class="text-sm font-medium">{{ permission.name }}</span>
+                  @if (permission.description) {
+                    <span class="text-xs text-[color:var(--mat-sys-outline)]">{{ permission.description }}</span>
+                  }
+                </div>
+              </mat-checkbox>
+            </div>
+            @if (!last) {
+              <mat-divider />
+            }
+          }
+        </div>
+      }
+
+      @if (permissionGroups().length === 0) {
+        <p class="text-center text-sm text-[color:var(--mat-sys-outline)] py-8">
+          No hay permisos disponibles en el sistema.
+        </p>
+      }
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button matButton type="button" mat-dialog-close>Cancelar</button>
+  <button
+    matButton="filled"
+    type="button"
+    [disabled]="isLoading() || isSaving()"
+    (click)="save()"
+  >
+    @if (isSaving()) {
+      <mat-progress-spinner diameter="18" mode="indeterminate" />
+    } @else {
+      Guardar permisos
+    }
+  </button>
+</mat-dialog-actions>

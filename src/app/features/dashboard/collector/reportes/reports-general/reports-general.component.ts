@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -18,7 +17,6 @@ import { ReportsService } from '@app/core/services/reports.service';
   templateUrl: './reports-general.component.html',
   styleUrl: './reports-general.component.scss',
   imports: [
-    CommonModule,
     MatTabsModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -78,17 +76,17 @@ export class ReportsGeneralComponent implements OnInit {
   // Forms para cada reporte
   public quantityDifferenceForm = new FormGroup({
     month: new FormControl(''),
-    year: new FormControl<number | string>(''),
+    year: new FormControl(''),
   });
 
   public monthlyReportForm = new FormGroup({
     month: new FormControl(''),
-    year: new FormControl<number | string>(''),
+    year: new FormControl(''),
   });
 
   public efficiencyForm = new FormGroup({
     month: new FormControl(''),
-    year: new FormControl<number | string>(''),
+    year: new FormControl(''),
     initialDonation: new FormControl(''),
     finalDonation: new FormControl(''),
     collectorNum: new FormControl(''),
@@ -96,8 +94,8 @@ export class ReportsGeneralComponent implements OnInit {
   });
 
   public concentratedEfficiencyForm = new FormGroup({
-    startDate: new FormControl(''),
-    endDate: new FormControl(''),
+    startDate: new FormControl<Date | null>(null),
+    endDate: new FormControl<Date | null>(null),
     initialPercentage: new FormControl(''),
     finalPercentage: new FormControl(''),
     efficiencyType: new FormControl(''),
@@ -105,13 +103,13 @@ export class ReportsGeneralComponent implements OnInit {
   });
 
   public dateRangeForm = new FormGroup({
-    startDate: new FormControl(''),
-    endDate: new FormControl(''),
+    startDate: new FormControl<Date | null>(null),
+    endDate: new FormControl<Date | null>(null),
   });
 
   public issuedReceiptsForm = new FormGroup({
     month: new FormControl(''),
-    year: new FormControl<number | string>(''),
+    year: new FormControl(''),
     frequency: new FormControl(''),
     receiptType: new FormControl(''),
   });

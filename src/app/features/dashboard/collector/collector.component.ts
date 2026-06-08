@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Collector, CollectorFilters, CollectorService, PaginatedMetadata } from '@app/core/services/collector.service';
 import { TabService } from '@app/core/services/tab.service';
@@ -24,6 +25,7 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
         MatInputModule,
         MatButtonModule,
         MatIcon,
+        MatProgressBarModule,
         FullnamePipe,
     ],
 })

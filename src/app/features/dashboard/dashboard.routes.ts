@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@app/core/guards/auth.guard';
+import { permissionGuard } from '@app/core/guards/permission.guard';
 import { DashboardLayoutComponent } from '@app/features/dashboard/dashboard-layout.component';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 export const DASHBOARD_ROUTES: Routes = [
     {
@@ -64,16 +66,6 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then((m) => m.PromisesDonationComponent)
             },
             {
-                path: 'assignments',
-                loadComponent: () => import('./assignments/assignments.component')
-                    .then(m => m.AssignmentsComponent),
-            },
-            {
-                path: 'promises-donation',
-                loadComponent: () => import('./promises-donation/promises-donation.component')
-                    .then((m) => m.PromisesDonationComponent)
-            },
-            {
                 path: 'promises-donation/create',
                 loadComponent: () => import('./promises-donation/create/create-promise-donation.component')
                     .then((m) => m.CreatePromiseDonationComponent)
@@ -82,6 +74,11 @@ export const DASHBOARD_ROUTES: Routes = [
                 path: 'receipts',
                 loadComponent: () => import('./recibos/impresion/impresion-recibos.component')
                     .then(m => m.ImpresionRecibosComponent),
+            },
+            {
+                path: 'receipts/received',
+                loadComponent: () => import('./recibos/recepcion/recibos-recepcion.component')
+                    .then(m => m.RecibosRecepcionComponent),
             },
             {
                 path: 'reports/collector',
@@ -102,6 +99,41 @@ export const DASHBOARD_ROUTES: Routes = [
                 path: 'uploads',
                 loadComponent: () => import('./uploads/uploads.component')
                     .then(m => m.UploadsComponent),
+            },
+            {
+                path: 'roles',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_ROLE },
+                loadComponent: () => import('./roles/roles.component')
+                    .then(m => m.RolesComponent),
+            },
+            {
+                path: 'roles/create',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_ROLE },
+                loadComponent: () => import('./roles/create/create-role.component')
+                    .then(m => m.CreateRoleComponent),
+            },
+            {
+                path: 'roles/:id/permissions',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.MANAGE_ROLE },
+                loadComponent: () => import('./roles/permissions/role-permissions.component')
+                    .then(m => m.RolePermissionsComponent),
+            },
+            {
+                path: 'permissions',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_PERMISSION },
+                loadComponent: () => import('./permissions/permissions.component')
+                    .then(m => m.PermissionsComponent),
+            },
+            {
+                path: 'permissions/create',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_PERMISSION },
+                loadComponent: () => import('./permissions/create/create-permission.component')
+                    .then(m => m.CreatePermissionComponent),
             },
         ]
     }

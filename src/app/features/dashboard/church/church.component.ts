@@ -2,6 +2,7 @@ import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@an
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAnchor, MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table'
@@ -26,6 +27,7 @@ import { TabService } from '@app/core/services/tab.service';
         MatAnchor,
         MatButtonModule,
         MatIcon,
+        MatProgressBarModule,
         FullnamePipe,
         AddressPipe,
     ],

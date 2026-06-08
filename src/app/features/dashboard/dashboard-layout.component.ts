@@ -4,11 +4,12 @@ import { RouterOutlet, RouterLinkWithHref, RouterLinkActive, Router } from '@ang
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AuthService } from '@app/core/services/auth.service';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 import { Tab, TabService } from '@app/core/services/tab.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { OverviewComponent } from "./overview/overview.component";
@@ -106,6 +107,13 @@ export const MENU_CONFIG: NavCategory[] = [
                 route: '/receipts/specials',
                 permission: '',
             },
+            {
+                id: 'receipts-received',
+                label: 'Recibir recibos',
+                icon: 'task_alt',
+                route: '/receipts/received',
+                permission: '',
+            },
         ],
     },
     {
@@ -158,6 +166,26 @@ export const MENU_CONFIG: NavCategory[] = [
                 icon: 'upload_file',
                 route: '/uploads',
                 permission: '',
+            },
+        ],
+    },
+    {
+        name: 'Administración',
+        icon: 'admin_panel_settings',
+        items: [
+            {
+                id: 'roles',
+                label: 'Roles',
+                icon: 'manage_accounts',
+                route: '/roles',
+                permission: Permissions.VIEW_ROLE,
+            },
+            {
+                id: 'permissions',
+                label: 'Permisos',
+                icon: 'lock',
+                route: '/permissions',
+                permission: Permissions.VIEW_PERMISSION,
             },
         ],
     },
@@ -230,6 +258,12 @@ export class DashboardLayoutComponent implements OnDestroy {
             link: item.route,
             permission: item.permission,
         });
+    }
+
+    public onMenuItemClick(item: NavItem, sidenav: MatSidenav) {
+        if (!this.authService.hasPermission(item.permission)) return;
+        this.selectItem(item);
+        sidenav.close();
     }
 
     public closeTab(index: number, event: Event, tab: Tab) {

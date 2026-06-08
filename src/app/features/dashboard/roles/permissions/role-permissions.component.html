@@ -1,0 +1,69 @@
+<div class="flex flex-col h-full w-full p-6 gap-4">
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-2xl font-semibold">Permisos del rol</h2>
+      @if (roleName()) {
+        <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">{{ roleName() }} · {{ selectedCount() }} permiso(s) asignado(s)</p>
+      }
+    </div>
+    <button type="button" matButton="filled" [disabled]="isLoading() || isSaving()" (click)="save()">
+      @if (isSaving()) {
+        <mat-progress-spinner diameter="18" mode="indeterminate" />
+      } @else {
+        Guardar permisos
+      }
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+  } @else {
+    <div class="flex flex-col gap-3 overflow-y-auto flex-1 min-h-0 pb-6">
+      @for (group of permissionGroups(); track group.module) {
+        <div class="rounded-lg border border-[color:var(--mat-sys-outline-variant)] overflow-hidden shrink-0">
+          <div class="flex items-center px-4 py-3 bg-[color:var(--mat-sys-surface-container-high)]">
+            <mat-checkbox
+              [checked]="isGroupAllChecked(group)"
+              [indeterminate]="isGroupIndeterminate(group)"
+              (change)="toggleGroup(group, $event.checked)"
+            >
+              <span class="font-semibold text-sm">{{ group.module }}</span>
+              <span class="text-xs text-[color:var(--mat-sys-outline)] ml-2">
+                ({{ getGroupSelectedCount(group) }}/{{ group.permissions.length }})
+              </span>
+            </mat-checkbox>
+          </div>
+
+          @for (permission of group.permissions; track permission.id; let last = $last) {
+            <div
+              class="flex items-start px-6 py-3 hover:bg-[color:var(--mat-sys-surface-container-low)] cursor-pointer"
+              (click)="togglePermission(permission)"
+            >
+              <mat-checkbox
+                [checked]="permission.selected"
+                (click)="$event.stopPropagation()"
+                (change)="togglePermission(permission)"
+              >
+                <div class="flex flex-col ml-1">
+                  <span class="text-sm font-medium">{{ permission.name }}</span>
+                  @if (permission.description) {
+                    <span class="text-xs text-[color:var(--mat-sys-outline)]">{{ permission.description }}</span>
+                  }
+                </div>
+              </mat-checkbox>
+            </div>
+            @if (!last) {
+              <mat-divider />
+            }
+          }
+        </div>
+      }
+
+      @if (permissionGroups().length === 0) {
+        <p class="text-center text-sm text-[color:var(--mat-sys-outline)] py-8">
+          No hay permisos disponibles en el sistema.
+        </p>
+      }
+    </div>
+  }
+</div>

@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +13,6 @@ import { MatSelectModule } from '@angular/material/select';
     templateUrl: './impresion-recibos.component.html',
     styleUrl: './impresion-recibos.component.scss',
     imports: [
-        CommonModule,
         FormsModule,
         MatButtonModule,
         MatIconModule,

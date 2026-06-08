@@ -1,12 +1,14 @@
 <div class="recibos-especiales-container">
   <mat-tab-group [(selectedIndex)]="activeTab">
-    <mat-tab *ngFor="let section of sections" [label]="section.label">
-      <ng-template mat-tab-label>
-        {{ section.label }}
-      </ng-template>
-      <div class="tab-content">
-        <p>Contenido para: {{ section.label }}</p>
-      </div>
-    </mat-tab>
+    @for (section of sections; track section.id) {
+      <mat-tab>
+        <ng-template mat-tab-label>
+          {{ section.label }}
+        </ng-template>
+        <div class="tab-content">
+          <p>Contenido para: {{ section.label }}</p>
+        </div>
+      </mat-tab>
+    }
   </mat-tab-group>
 </div>

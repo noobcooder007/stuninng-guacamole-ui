@@ -1,0 +1,26 @@
+<h2 mat-dialog-title class="flex items-center gap-2">
+  <mat-icon class="text-[color:var(--mat-sys-error)]">warning</mat-icon>
+  Eliminar rol
+</h2>
+
+<mat-dialog-content>
+  <p class="text-sm">
+    ¿Estás seguro de que deseas eliminar el rol
+    <strong>"{{ data.roleName }}"</strong>?
+  </p>
+  <p class="text-sm text-[color:var(--mat-sys-error)] mt-2">
+    Esta acción eliminará el rol y revocará sus permisos a todos los usuarios asociados. No se puede deshacer.
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button matButton type="button" mat-dialog-close>Cancelar</button>
+  <button
+    matButton="filled"
+    type="button"
+    class="!bg-[color:var(--mat-sys-error)] !text-[color:var(--mat-sys-on-error)]"
+    (click)="dialogRef.close(true)"
+  >
+    Eliminar
+  </button>
+</mat-dialog-actions>

@@ -4,8 +4,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'environments/environment.development';
 import { catchError, Observable, throwError } from 'rxjs';
 
+export interface AssignmentPerson {
+    firstname: string;
+    firstLastname: string;
+    secondLastname?: string;
+}
+
 export interface Assignment {
     id: string;
+    beneficient: AssignmentPerson;
+    collector: AssignmentPerson;
+    updatedAt: string;
 }
 
 export interface PaginatedMetadata {
@@ -27,7 +36,7 @@ export interface PaginatedResponse {
 }
 
 export interface AssignmentFilters {
-    collectorId: string;
+    collectorId?: string;
 }
 
 export interface ReassignAssignmentsDto {
@@ -50,9 +59,9 @@ export class AssignmentService {
     private readonly http = inject(HttpClient);
     private readonly _snackbar = inject(MatSnackBar);
 
-    getAssignments(page: number = 1, limit: number = 5, filters: AssignmentFilters): Observable<PaginatedResponse> {
+    getAssignments(page: number = 1, limit: number = 5, filters: AssignmentFilters = {}): Observable<PaginatedResponse> {
         let params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
-        Object.entries(filters ?? {}).forEach(([key, value]) => {
+        Object.entries(filters).forEach(([key, value]) => {
             if (value !== null && value !== undefined && value !== '') {
                 params = params.set(key, value as string);
             }
@@ -60,7 +69,17 @@ export class AssignmentService {
 
         return this.http.get<PaginatedResponse>(`${environment.apiBaseUrl}/assignment/actives`, { params }).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
+                this._snackbar.open('Error al obtener asignaciones activas', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    getOrphanedAssignments(page: number = 1, limit: number = 5): Observable<PaginatedResponse> {
+        const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
+        return this.http.get<PaginatedResponse>(`${environment.apiBaseUrl}/assignment/orphans`, { params }).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al obtener asignaciones huérfanas', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

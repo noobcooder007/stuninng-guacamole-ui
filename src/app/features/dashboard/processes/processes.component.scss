@@ -1,13 +1,13 @@
 .processes-container {
   padding: 20px;
 
-  .tab-content {
+.tab-content {
     padding: 30px 20px;
 
     h2 {
       margin: 0 0 20px 0;
       font-size: 1.5rem;
-      color: #333;
+      color: var(--mat-sys-on-surface);
     }
 
     .form-card {

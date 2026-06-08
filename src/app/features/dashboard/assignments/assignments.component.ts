@@ -1,44 +1,43 @@
-import { AfterViewInit, ChangeDetectorRef, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AfterViewInit, Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIcon } from '@angular/material/icon';
-import { catchError, debounceTime, delay, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
-import { Collector, CollectorFilters, CollectorService, PaginatedMetadata } from '@app/core/services/collector.service';
-import { Assignment, AssignmentFilters, AssignmentService } from '@app/core/services/assignment.service';
-import { TabService } from '@app/core/services/tab.service';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Collector, PaginatedMetadata } from '@app/core/services/collector.service';
+import { Assignment, AssignmentService } from '@app/core/services/assignment.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { SearchCollectorComponent } from './search-collector/search-collector.component';
 import { CreateAssignmentDialogComponent } from './create/create-assignment-dialog.component';
 import { DatePipe } from '@angular/common';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 
+type ViewMode = 'activas' | 'huerfanas';
+
 @Component({
     selector: 'assignaments-component',
     templateUrl: './assignments.component.html',
     imports: [
-        ReactiveFormsModule,
         MatTableModule,
         MatPaginatorModule,
         MatSortModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
         MatButtonModule,
+        MatButtonToggleModule,
         MatDialogModule,
         MatIcon,
+        MatProgressBarModule,
         DatePipe,
         FullnamePipe,
     ],
 })
 export class AssignmentsComponent implements OnInit, AfterViewInit {
     public isLoading = signal(true);
-    private initialPaginatedMetadata: PaginatedMetadata = {
+    public viewMode = signal<ViewMode>('activas');
+    public selectedCollector = signal<Collector | null>(null);
+
+    private readonly initialPagination: PaginatedMetadata = {
         hasNextPage: false,
         hasPreviousPage: false,
         limit: 5,
@@ -46,123 +45,87 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
         itemCount: 0,
         pageCount: 0,
     };
-    public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
-    public displayedColumns: string[] = ['beneficient-fullname', 'collector-fullname', 'updatedAt'];
+
+    public pagination = signal<PaginatedMetadata>(this.initialPagination);
+
+    public readonly displayedColumns = computed<string[]>(() =>
+        this.viewMode() === 'activas'
+            ? ['beneficient-fullname', 'collector-fullname', 'updatedAt', 'actions']
+            : ['beneficient-fullname', 'updatedAt', 'actions']
+    );
+
     public dataSource = new MatTableDataSource<Assignment>();
-    public searchForm = new FormGroup({
-        collectorId: new FormControl<Collector | string | null>(null, [Validators.required]),
-    });
 
     @ViewChild(MatSort) sort!: MatSort;
-    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger!: MatAutocompleteTrigger;
 
-    private readonly tabService = inject(TabService);
     private readonly assignmentsService = inject(AssignmentService);
-    private readonly collectorService = inject(CollectorService);
-    private readonly advancedSearchDialog = inject(MatDialog);
-    collectorList = signal<Collector[]>([]);
+    private readonly dialog = inject(MatDialog);
 
     ngOnInit() {
-        this.loadCollectors();
+        this.loadData(1, this.initialPagination.limit);
     }
 
     ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
     }
 
-    loadCollectors() {
-        this.searchForm.get('collectorId')?.valueChanges.pipe(
-            startWith(''),
-            debounceTime(300),
-            distinctUntilChanged(),
-            switchMap(value => {
-                const searchTerm = typeof value === 'string'
-                    ? value
-                    : typeof value === 'object' ? value?.firstname || '' : '';
-                const filters: CollectorFilters = {
-                    firstname: searchTerm,
-                };
-                if (searchTerm === '') this.dataSource.data = [];
-                if (typeof value !== 'object') {
-                    return this.collectorService.getCollectors(1, 5, filters).pipe(
-                        map((response) => response.data.items),
-                        catchError(() => of([])),
-                        delay(0)
-                    );
-                }
-                return of([]);
-            })
-        ).subscribe(collectors => this.collectorList.set(collectors));
+    onViewModeChange(mode: ViewMode) {
+        this.viewMode.set(mode);
+        this.selectedCollector.set(null);
+        this.pagination.set(this.initialPagination);
+        this.dataSource.data = [];
+        this.loadData(1, this.initialPagination.limit);
     }
 
-    onCollectorSelected(event: MatAutocompleteSelectedEvent) {
-        const selectedCollector = event.option.value
-        if (selectedCollector && selectedCollector.id) {
-            this.loadAssignments(this.pagination().page + 1, this.pagination().limit, selectedCollector.id);
-        }
+    clearFilter() {
+        this.selectedCollector.set(null);
+        this.loadData(1, this.pagination().limit);
     }
 
-    loadAssignments(page: number, limit: number, collectorId: string) {
-        if (this.searchForm.invalid) return;
-        const filter: AssignmentFilters = {
-            collectorId
-        };
+    loadData(page: number, limit: number, collectorId?: string) {
         this.isLoading.set(true);
-        this.assignmentsService.getAssignments(page, limit, filter).subscribe({
+        const source$ = this.viewMode() === 'huerfanas'
+            ? this.assignmentsService.getOrphanedAssignments(page, limit)
+            : this.assignmentsService.getAssignments(page, limit, collectorId ? { collectorId } : {});
+
+        source$.subscribe({
             next: ({ data: { items, meta } }) => {
                 this.pagination.set(meta);
-                this.isLoading.set(false);
                 this.dataSource.data = items;
                 this.dataSource.sort = this.sort;
+                this.isLoading.set(false);
             },
             error: () => this.isLoading.set(false),
         });
     }
 
     onPageChange(event: PageEvent) {
-        this.pagination.update((meta) => ({ ...meta, page: event.pageIndex + 1, limit: event.pageSize }));
-        const collectorCtrl = this.searchForm.get('collectorId');
-        if (typeof collectorCtrl?.value === 'object') {
-            const collectorId = collectorCtrl.value!.id;
-            this.loadAssignments(event.pageIndex + 1, event.pageSize, collectorId);
-        }
+        this.loadData(event.pageIndex + 1, event.pageSize, this.selectedCollector()?.id);
     }
 
     addAssignment() {
-        const dialogRef = this.advancedSearchDialog.open(CreateAssignmentDialogComponent, {
+        const dialogRef = this.dialog.open(CreateAssignmentDialogComponent, {
             minWidth: '80vw',
             maxWidth: '1200px',
             disableClose: true,
             hasBackdrop: true,
         });
-
         dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                // Manejar respuesta si es necesario
-            }
+            if (result) this.loadData(1, this.pagination().limit, this.selectedCollector()?.id);
         });
-    }
-
-    displayFn(collector: Collector) {
-        return collector && `${collector.firstname} ${collector.firstLastname} ${collector.secondLastname ?? ''}`;
     }
 
     openAdvancedSearch() {
-        if (this.autocompleteTrigger) this.autocompleteTrigger.closePanel();
-        const dialogRef = this.advancedSearchDialog.open(SearchCollectorComponent, {
+        const dialogRef = this.dialog.open(SearchCollectorComponent, {
             minWidth: '70vw',
             disableClose: true,
             hasBackdrop: true,
-            data: { currentFilter: this.searchForm.get('collectorId')?.value }
+            data: { currentFilter: this.selectedCollector() }
         });
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe((result: Collector) => {
             if (result) {
-                this.searchForm.patchValue({ collectorId: result });
-                const collectorCtrl = this.searchForm.get('collectorId');
-                collectorCtrl?.setValue(result);
-                collectorCtrl?.markAsDirty();
-                collectorCtrl?.updateValueAndValidity();
-                this.loadAssignments(this.pagination().page, this.pagination().limit, result.id);
+                this.selectedCollector.set(result);
+                this.loadData(1, this.pagination().limit, result.id);
             }
         });
     }

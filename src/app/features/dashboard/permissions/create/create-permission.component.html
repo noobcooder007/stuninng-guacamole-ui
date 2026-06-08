@@ -1,0 +1,64 @@
+<div class="flex flex-col h-full w-full p-6 max-w-lg">
+  <h2 class="text-2xl font-semibold mb-2">Nuevo permiso</h2>
+  <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] mb-6">
+    El nombre del permiso se construye como <strong>acción:recurso</strong>
+    @if (permissionName) {
+      — resultado: <strong>{{ permissionName }}</strong>
+    }
+  </p>
+
+  <form [formGroup]="form" class="flex flex-col gap-4">
+    <div class="flex gap-3">
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label>Acción</mat-label>
+        <input matInput formControlName="action" placeholder="add, view, edit, delete..." autocomplete="off" />
+        @if (form.controls.action.hasError('required')) {
+          <mat-error>Obligatorio</mat-error>
+        }
+        @if (form.controls.action.hasError('pattern')) {
+          <mat-error>Solo letras minúsculas</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label>Recurso</mat-label>
+        <input matInput formControlName="resource" placeholder="church, collector..." autocomplete="off" />
+        @if (form.controls.resource.hasError('required')) {
+          <mat-error>Obligatorio</mat-error>
+        }
+        @if (form.controls.resource.hasError('pattern')) {
+          <mat-error>Solo letras minúsculas</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descripción</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        rows="3"
+        placeholder="Describe qué permite hacer este permiso..."
+      ></textarea>
+      @if (form.controls.description.hasError('maxlength')) {
+        <mat-error>Máximo 200 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="flex justify-end gap-2 mt-2">
+      <button type="button" matButton routerLink="/permissions">Cancelar</button>
+      <button
+        type="button"
+        matButton="filled"
+        [disabled]="form.invalid || isLoading()"
+        (click)="submit()"
+      >
+        @if (isLoading()) {
+          <mat-progress-spinner diameter="18" mode="indeterminate" />
+        } @else {
+          Crear permiso
+        }
+      </button>
+    </div>
+  </form>
+</div>

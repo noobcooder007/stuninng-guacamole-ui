@@ -34,7 +34,7 @@
               </div>
 
               <div class="form-row">
-                <button mat-raised-button color="primary" (click)="downloadDepositsReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="downloadDepositsReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
@@ -61,18 +61,18 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Mes</mat-label>
                   <mat-select formControlName="month">
-                    <mat-option *ngFor="let month of months" [value]="month.value">
-                      {{ month.label }}
-                    </mat-option>
+                    @for (month of months; track month.value) {
+                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>Año</mat-label>
                   <mat-select formControlName="year">
-                    <mat-option *ngFor="let year of years" [value]="year">
-                      {{ year }}
-                    </mat-option>
+                    @for (year of years; track year) {
+                      <mat-option [value]="year.toString()">{{ year }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
@@ -83,12 +83,12 @@
               </div>
 
               <div class="form-row">
-                <button mat-raised-button color="primary" (click)="downloadLiquidationReportPdf()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="downloadLiquidationReportPdf()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
 
-                <button mat-raised-button color="accent" (click)="downloadLiquidationReportExcel()" [disabled]="isLoading">
+                <button matButton="tonal" type="button" (click)="downloadLiquidationReportExcel()" [disabled]="isLoading">
                   <mat-icon>table_chart</mat-icon>
                   Crear Excel
                 </button>

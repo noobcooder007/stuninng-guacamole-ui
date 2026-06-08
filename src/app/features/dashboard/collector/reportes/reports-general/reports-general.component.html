@@ -16,22 +16,22 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Mes</mat-label>
                   <mat-select formControlName="month">
-                    <mat-option *ngFor="let month of months" [value]="month.value">
-                      {{ month.label }}
-                    </mat-option>
+                    @for (month of months; track month.value) {
+                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>Año</mat-label>
                   <mat-select formControlName="year">
-                    <mat-option *ngFor="let year of years" [value]="year">
-                      {{ year }}
-                    </mat-option>
+                    @for (year of years; track year) {
+                      <mat-option [value]="year.toString()">{{ year }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="generateQuantityDifferenceReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateQuantityDifferenceReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
@@ -58,27 +58,27 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Mes</mat-label>
                   <mat-select formControlName="month">
-                    <mat-option *ngFor="let month of months" [value]="month.value">
-                      {{ month.label }}
-                    </mat-option>
+                    @for (month of months; track month.value) {
+                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>Año</mat-label>
                   <mat-select formControlName="year">
-                    <mat-option *ngFor="let year of years" [value]="year">
-                      {{ year }}
-                    </mat-option>
+                    @for (year of years; track year) {
+                      <mat-option [value]="year.toString()">{{ year }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="generateMonthlyReportPdf()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateMonthlyReportPdf()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
 
-                <button mat-raised-button color="accent" (click)="generateMonthlyReportExcel()" [disabled]="isLoading">
+                <button matButton="tonal" type="button" (click)="generateMonthlyReportExcel()" [disabled]="isLoading">
                   <mat-icon>table_chart</mat-icon>
                   Crear Excel
                 </button>
@@ -105,18 +105,18 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Mes</mat-label>
                   <mat-select formControlName="month">
-                    <mat-option *ngFor="let month of months" [value]="month.value">
-                      {{ month.label }}
-                    </mat-option>
+                    @for (month of months; track month.value) {
+                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>Año</mat-label>
                   <mat-select formControlName="year">
-                    <mat-option *ngFor="let year of years" [value]="year">
-                      {{ year }}
-                    </mat-option>
+                    @for (year of years; track year) {
+                      <mat-option [value]="year.toString()">{{ year }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
               </div>
@@ -142,13 +142,13 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Frecuencia</mat-label>
                   <mat-select formControlName="frequency">
-                    <mat-option *ngFor="let freq of frequencies" [value]="freq.value">
-                      {{ freq.label }}
-                    </mat-option>
+                    @for (freq of frequencies; track freq.value) {
+                      <mat-option [value]="freq.value">{{ freq.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="generateEfficiencyReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateEfficiencyReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
@@ -203,9 +203,9 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Tipo Eficiencia</mat-label>
                   <mat-select formControlName="efficiencyType">
-                    <mat-option *ngFor="let type of efficiencyTypes" [value]="type.value">
-                      {{ type.label }}
-                    </mat-option>
+                    @for (type of efficiencyTypes; track type.value) {
+                      <mat-option [value]="type.value">{{ type.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
@@ -214,7 +214,7 @@
                   <input matInput formControlName="collectorNum" type="text" />
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="generateConcentratedEfficiencyReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateConcentratedEfficiencyReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
@@ -252,7 +252,7 @@
                   <mat-datepicker #pickerEnd2></mat-datepicker>
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="generateDecreasedDonationReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateDecreasedDonationReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
@@ -290,7 +290,7 @@
                   <mat-datepicker #pickerEnd3></mat-datepicker>
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="generateIncreasedDonationReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateIncreasedDonationReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
@@ -328,7 +328,7 @@
                   <mat-datepicker #pickerEnd4></mat-datepicker>
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="generateDonationReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateDonationReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>
@@ -355,18 +355,18 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Mes</mat-label>
                   <mat-select formControlName="month">
-                    <mat-option *ngFor="let month of months" [value]="month.value">
-                      {{ month.label }}
-                    </mat-option>
+                    @for (month of months; track month.value) {
+                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>Año</mat-label>
                   <mat-select formControlName="year">
-                    <mat-option *ngFor="let year of years" [value]="year">
-                      {{ year }}
-                    </mat-option>
+                    @for (year of years; track year) {
+                      <mat-option [value]="year.toString()">{{ year }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
               </div>
@@ -375,22 +375,22 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Frecuencia</mat-label>
                   <mat-select formControlName="frequency">
-                    <mat-option *ngFor="let freq of frequencies" [value]="freq.value">
-                      {{ freq.label }}
-                    </mat-option>
+                    @for (freq of frequencies; track freq.value) {
+                      <mat-option [value]="freq.value">{{ freq.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>Tipo de Recibo</mat-label>
                   <mat-select formControlName="receiptType">
-                    <mat-option *ngFor="let type of receiptTypes" [value]="type.value">
-                      {{ type.label }}
-                    </mat-option>
+                    @for (type of receiptTypes; track type.value) {
+                      <mat-option [value]="type.value">{{ type.label }}</mat-option>
+                    }
                   </mat-select>
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="generateIssuedReceiptsReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateIssuedReceiptsReport()" [disabled]="isLoading">
                   <mat-icon>picture_as_pdf</mat-icon>
                   Crear PDF
                 </button>

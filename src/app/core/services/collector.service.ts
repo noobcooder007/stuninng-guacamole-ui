@@ -91,6 +91,7 @@ export interface CreateCollectorDto {
 export class CollectorService {
     private readonly http = inject(HttpClient);
     private readonly _snackbar = inject(MatSnackBar);
+    private readonly apiUrl = environment.apiBaseUrl;
 
     getCollectors(page: number = 1, limit: number = 5, filters: CollectorFilters = {}): Observable<PaginatedResponse> {
         let params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
@@ -100,7 +101,7 @@ export class CollectorService {
             }
         });
 
-        return this.http.get<PaginatedResponse>(`${environment.apiBaseUrl}/collector`, { params }).pipe(
+        return this.http.get<PaginatedResponse>(`${this.apiUrl}/collector`, { params }).pipe(
             catchError((error) => {
                 this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);

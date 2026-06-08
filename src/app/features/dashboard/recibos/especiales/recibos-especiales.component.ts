@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
@@ -8,7 +7,6 @@ import { MatTabsModule } from '@angular/material/tabs';
     templateUrl: './recibos-especiales.component.html',
     styleUrl: './recibos-especiales.component.scss',
     imports: [
-        CommonModule,
         MatTabsModule,
     ],
 })

@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -19,7 +18,6 @@ import { ReportsService } from '@app/core/services/reports.service';
   templateUrl: './reports-beneficiary.component.html',
   styleUrl: './reports-beneficiary.component.scss',
   imports: [
-    CommonModule,
     MatTabsModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -66,8 +64,8 @@ export class ReportsBeneficiaryComponent implements OnInit {
 
   // Forms
   public beneficiaryStatusForm = new FormGroup({
-    startDate: new FormControl(''),
-    endDate: new FormControl(''),
+    startDate: new FormControl<Date | null>(null),
+    endDate: new FormControl<Date | null>(null),
     status: new FormControl(''),
     cause: new FormControl(''),
   });

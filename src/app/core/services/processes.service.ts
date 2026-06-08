@@ -1,31 +1,59 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
+import { environment } from 'environments/environment.development';
+import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface ProcessRequest {
-  month: string;
-  year?: string;
+    month: string;
+    year?: string;
 }
 
-export interface ProcessResponse {
-  success: boolean;
-  message: string;
-  data?: any;
+export interface PeriodStatusResponse {
+    statusCode: number;
+    data: PeriodStatus;
+    timestamp: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface PeriodStatus {
+    id: string;
+    month: number;
+    year: number;
+    status: PeriodStatusEnum;
+    createdAt: string;
+    createdBy: string;
+    pendingReceiptsCount: number;
+}
+
+@Injectable({ providedIn: 'root' })
 export class ProcessesService {
-  private apiUrl = '/api/processes';
+    private readonly http = inject(HttpClient);
+    private readonly _snackbar = inject(MatSnackBar);
+    private readonly apiUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) {}
+    getPeriodStatus(): Observable<PeriodStatusResponse> {
+        return this.http.get<PeriodStatusResponse>(`${this.apiUrl}/periods/current`).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
 
-  startCommissionProcess(request: ProcessRequest): Observable<ProcessResponse> {
-    return this.http.post<ProcessResponse>(`${this.apiUrl}/commission`, request);
-  }
+    openPeriod(): Observable<PeriodStatusResponse> {
+        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/periods/open`, {});
+    }
 
-  startReceiptsGenerationProcess(request: ProcessRequest): Observable<ProcessResponse> {
-    return this.http.post<ProcessResponse>(`${this.apiUrl}/generate-receipts`, request);
-  }
+    closePeriod(): Observable<PeriodStatusResponse> {
+        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/periods/close`, {});
+    }
+
+    startCommissionProcess(request: ProcessRequest): Observable<PeriodStatusResponse> {
+        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/processes/commission`, request);
+    }
+
+    startReceiptsGenerationProcess(request: ProcessRequest): Observable<PeriodStatusResponse> {
+        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/processes/generate-receipts`, request);
+    }
 }
