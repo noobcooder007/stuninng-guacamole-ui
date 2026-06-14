@@ -98,9 +98,15 @@ searchControl.valueChanges.pipe(
 ## Testing
 
 - Framework: **Vitest** + jsdom.
-- Prioridad de tests: pipes y validadores (son funciones puras).
-- Para servicios HTTP usar `HttpClientTestingModule` o mocks de Vitest.
-- Ejecutar con `ng test`.
+- Todos los specs van en `src/testing/` (estructura: `services/`, `pipes/`, `validators/`). Nunca colocar specs junto al código fuente.
+- Prioridad de tests: pipes y validadores (son funciones puras), luego servicios HTTP.
+- Para servicios HTTP usar `provideHttpClient()` + `provideHttpClientTesting()` + `HttpTestingController`.
+- **Siempre mockear dependencias externas** (HttpClient, MatSnackBar, Router, localStorage, etc.). Los tests no deben impactar servicios reales ni APIs.
+  - Servicios HTTP: proveer `{ provide: MatSnackBar, useValue: { open: vi.fn() } }` en el TestBed.
+  - `localStorage`/`sessionStorage`: usar `vi.stubGlobal` en `beforeEach` y `vi.unstubAllGlobals()` en `afterEach`.
+  - Para `AuthService`: llamar `TestBed.resetTestingModule()` al inicio del `beforeEach` (los signals de Angular requieren un reset explícito).
+- Ejecutar tests: `ng test`.
+- Ver cobertura: `ng test --coverage`.
 
 ## Lo que NO hacer
 
