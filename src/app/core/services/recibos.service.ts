@@ -38,6 +38,17 @@ export interface ReciboFilters {
     type?: ReceiptType;
 }
 
+export interface ImpresionReciboFilters {
+    month?: string | null;
+    year?: string | null;
+    firstname?: string | null;
+    firstLastname?: string | null;
+    secondLastname?: string | null;
+    collectorNumber?: string | null;
+    fromSequence?: number | null;
+    toSequence?: number | null;
+}
+
 export interface ValidateReciboData {
     valid: boolean;
     folio: string;
@@ -110,5 +121,57 @@ export class RecibosService {
                 return throwError(() => error);
             })
         );
+    }
+
+    imprimirRecibos(filters: ImpresionReciboFilters): Observable<Blob> {
+        return this.http.get(`${environment.apiBaseUrl}/receipts/print`, {
+            params: this.buildPrintParams(filters),
+            responseType: 'blob',
+        }).pipe(
+            catchError((error) => {
+                this.snackbar.open('Error al generar los recibos', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    imprimirCartaActual(filters: ImpresionReciboFilters): Observable<Blob> {
+        return this.http.get(`${environment.apiBaseUrl}/receipts/print/delivery-letter`, {
+            params: this.buildPrintParams(filters),
+            responseType: 'blob',
+        }).pipe(
+            catchError((error) => {
+                this.snackbar.open('Error al generar la carta de recibos actual', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    imprimirCartaAnterior(filters: ImpresionReciboFilters): Observable<Blob> {
+        return this.http.get(`${environment.apiBaseUrl}/receipts/print/carta-anterior`, {
+            params: this.buildPrintParams(filters),
+            responseType: 'blob',
+        }).pipe(
+            catchError((error) => {
+                this.snackbar.open('Error al generar la carta de recibos anterior', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    private buildPrintParams(filters: ImpresionReciboFilters): HttpParams {
+        let params = new HttpParams();
+        const includeSequence = filters.fromSequence != null && filters.toSequence != null;
+
+        Object.entries(filters).forEach(([key, value]) => {
+            if (key === 'fromSequence' || key === 'toSequence') {
+                if (includeSequence) params = params.set(key, String(value));
+                return;
+            }
+            if (value !== null && value !== undefined && value !== '') {
+                params = params.set(key, String(value));
+            }
+        });
+        return params;
     }
 }

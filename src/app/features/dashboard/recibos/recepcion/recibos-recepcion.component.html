@@ -36,8 +36,10 @@
         @if (isAddingFolio()) {
           <mat-spinner diameter="20" />
         } @else {
-          <mat-icon>add</mat-icon>
-          Agregar
+          <span class="flex items-center gap-1">
+            <mat-icon>add</mat-icon>
+            Agregar
+          </span>
         }
       </button>
     </div>
@@ -75,8 +77,10 @@
             @if (isConfirming()) {
               <mat-spinner diameter="20" />
             } @else {
-              <mat-icon>task_alt</mat-icon>
-              Confirmar {{ queuedReceipts().length }} recibo{{ queuedReceipts().length !== 1 ? 's' : '' }}
+              <span class="flex items-center gap-1">
+                <mat-icon>task_alt</mat-icon>
+                Confirmar {{ queuedReceipts().length }} recibo{{ queuedReceipts().length !== 1 ? 's' : '' }}
+              </span>
             }
           </button>
         </div>

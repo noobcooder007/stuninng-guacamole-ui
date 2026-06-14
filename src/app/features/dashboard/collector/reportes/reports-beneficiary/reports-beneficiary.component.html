@@ -12,8 +12,10 @@
           </mat-card-header>
           <mat-card-content>
             <button matButton="filled" type="button" (click)="downloadBeneficiaryMovementsReport()" [disabled]="isLoading">
-              <mat-icon>picture_as_pdf</mat-icon>
-              Crear PDF
+              <span class="flex items-center gap-1">
+                <mat-icon>picture_as_pdf</mat-icon>
+                Crear PDF
+              </span>
             </button>
           </mat-card-content>
         </mat-card>
@@ -32,8 +34,10 @@
           </mat-card-header>
           <mat-card-content>
             <button matButton="filled" type="button" (click)="downloadBeneficiaryConcentratedReport()" [disabled]="isLoading">
-              <mat-icon>picture_as_pdf</mat-icon>
-              Crear PDF
+              <span class="flex items-center gap-1">
+                <mat-icon>picture_as_pdf</mat-icon>
+                Crear PDF
+              </span>
             </button>
           </mat-card-content>
         </mat-card>
@@ -156,8 +160,10 @@
                 </mat-checkbox>
 
                 <button matButton="tonal" type="button" (click)="downloadBeneficiaryExcelReport()" [disabled]="isLoading">
-                  <mat-icon>table_chart</mat-icon>
-                  Crear Excel
+                  <span class="flex items-center gap-1">
+                <mat-icon>table_chart</mat-icon>
+                Crear Excel
+              </span>
                 </button>
               </div>
             </form>

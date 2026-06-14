@@ -1,79 +1,131 @@
-<div class="impresion-recibos-container p-6">
-  <div class="page-header">
-    <h1>Impresion de Recibos</h1>
-  </div>
+<div class="p-6 flex flex-col gap-6">
 
-  <div class="buttons-section">
-    <button matButton="filled" type="button" (click)="printRecibos()">
-      <mat-icon>picture_as_pdf</mat-icon>
-      Imprimir recibos
-    </button>
-    <button matButton="filled" type="button" (click)="printCartaRecibosActual()">
-      <mat-icon>picture_as_pdf</mat-icon>
-      Carta de recibos actual
-    </button>
-    <button matButton="filled" type="button" (click)="printCartaRecibosAnterior()">
-      <mat-icon>picture_as_pdf</mat-icon>
-      Carta de recibos anterior
-    </button>
-  </div>
+  <mat-card>
+    <mat-card-content class="flex flex-col gap-6 pt-4">
 
-  <div class="form-container">
-    <div class="select-row">
-      <mat-form-field appearance="outline">
-        <mat-label>Mes</mat-label>
-        <mat-select [(value)]="filters.month">
-          @for (month of months; track month.value) {
-            <mat-option [value]="month.value">{{ month.label }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Año</mat-label>
-        <mat-select [(value)]="filters.year">
-          @for (year of years; track year.value) {
-            <mat-option [value]="year.value">{{ year.label }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-
-    <div class="folio-row">
-      <mat-form-field appearance="outline">
-        <mat-label>Folio inicial</mat-label>
-        <input matInput type="text" placeholder="Folio inicial" [(ngModel)]="filters.folioInicio" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Folio final</mat-label>
-        <input matInput type="text" placeholder="Folio final" [(ngModel)]="filters.folioFinal" />
-      </mat-form-field>
-    </div>
-
-    <div class="datos-colector-section">
-      <p class="section-title">Datos de colector</p>
-      <div class="form-grid">
-        <mat-form-field appearance="outline">
-          <mat-label>Nombre</mat-label>
-          <input matInput type="text" placeholder="Nombre" [(ngModel)]="filters.nombre" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Apellido paterno</mat-label>
-          <input matInput type="text" placeholder="Apellido paterno" [(ngModel)]="filters.apellidoPaterno" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Apellido materno</mat-label>
-          <input matInput type="text" placeholder="Apellido materno" [(ngModel)]="filters.apellidoMaterno" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Número Colector</mat-label>
-          <input matInput type="text" placeholder="Número colector" [(ngModel)]="filters.numeroColector" />
-        </mat-form-field>
+      <!-- Periodo -->
+      <div class="flex flex-col gap-3">
+        <span class="text-xs font-semibold uppercase tracking-widest text-[color:var(--mat-sys-on-surface-variant)]">
+          Periodo
+        </span>
+        <div class="flex gap-4 flex-wrap items-end">
+          <mat-form-field appearance="outline" class="min-w-44 flex-1">
+            <mat-label>Mes</mat-label>
+            <mat-select [(value)]="filters.month" aria-label="Mes">
+              @for (month of months; track month.value) {
+                <mat-option [value]="month.value">{{ month.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="min-w-36 flex-1">
+            <mat-label>Año</mat-label>
+            <mat-select [(value)]="filters.year" aria-label="Año">
+              @for (year of years; track year.value) {
+                <mat-option [value]="year.value">{{ year.value }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
-    </div>
-  </div>
+
+      <mat-divider />
+
+      <!-- Rango de folios -->
+      <div class="flex flex-col gap-3">
+        <span class="text-xs font-semibold uppercase tracking-widest text-[color:var(--mat-sys-on-surface-variant)]">
+          Rango de folios
+        </span>
+        <div class="flex gap-4 flex-wrap items-end">
+          <mat-form-field appearance="outline" class="min-w-44 flex-1">
+            <mat-label>Folio inicial</mat-label>
+            <input
+              matInput
+              type="text"
+              inputmode="numeric"
+              aria-label="Folio inicial"
+              [ngModel]="filters.fromSequence"
+              (ngModelChange)="filters.fromSequence = $event ? +$event.replace(/\D/g, '') || null : null"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="min-w-44 flex-1">
+            <mat-label>Folio final</mat-label>
+            <input
+              matInput
+              type="text"
+              inputmode="numeric"
+              aria-label="Folio final"
+              [ngModel]="filters.toSequence"
+              (ngModelChange)="filters.toSequence = $event ? +$event.replace(/\D/g, '') || null : null"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-divider />
+
+      <!-- Datos del colector -->
+      <div class="flex flex-col gap-3">
+        <span class="text-xs font-semibold uppercase tracking-widest text-[color:var(--mat-sys-on-surface-variant)]">
+          Datos del colector
+        </span>
+        <div class="flex gap-4 flex-wrap items-end">
+          <mat-form-field appearance="outline" class="min-w-44 flex-1">
+            <mat-label>Nombre</mat-label>
+            <input matInput type="text" aria-label="Nombre" [(ngModel)]="filters.firstname" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="min-w-44 flex-1">
+            <mat-label>Apellido paterno</mat-label>
+            <input matInput type="text" aria-label="Apellido paterno" [(ngModel)]="filters.firstLastname" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="min-w-44 flex-1">
+            <mat-label>Apellido materno</mat-label>
+            <input matInput type="text" aria-label="Apellido materno" [(ngModel)]="filters.secondLastname" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="min-w-36 flex-1">
+            <mat-label>Número de colector</mat-label>
+            <input matInput type="text" aria-label="Número de colector" [(ngModel)]="filters.collectorNumber" />
+          </mat-form-field>
+        </div>
+      </div>
+
+    </mat-card-content>
+
+    <mat-card-actions class="flex flex-wrap gap-3">
+      <button type="button" matButton="tonal" (click)="clearFilters()">
+        Borrar filtros
+      </button>
+      <span class="flex-1"></span>
+      <button
+        type="button"
+        matButton="filled"
+        [disabled]="loadingAction() !== null"
+        (click)="printCarta()"
+      >
+        @if (loadingAction() === 'carta') {
+          <mat-spinner diameter="18" />
+        } @else {
+          <span class="flex items-center gap-1">
+            <mat-icon>picture_as_pdf</mat-icon>
+            Carta de recibos
+          </span>
+        }
+      </button>
+      <button
+        type="button"
+        matButton="filled"
+        [disabled]="loadingAction() !== null"
+        (click)="printRecibos()"
+      >
+        @if (loadingAction() === 'recibos') {
+          <mat-spinner diameter="18" />
+        } @else {
+          <span class="flex items-center gap-1">
+            <mat-icon>picture_as_pdf</mat-icon>
+            Imprimir recibos
+          </span>
+        }
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
 </div>

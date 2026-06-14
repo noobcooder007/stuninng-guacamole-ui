@@ -31,8 +31,10 @@
 
       <mat-card-actions align="end">
         <button type="button" matButton="filled" [disabled]="isTogglingPeriod()" (click)="togglePeriod()">
-          <mat-icon>{{ period.status === PeriodStatusEnum.OPEN ? 'lock' : 'lock_open' }}</mat-icon>
-          {{ period.status === PeriodStatusEnum.OPEN ? 'Cerrar periodo' : 'Abrir periodo' }}
+          <span class="flex items-center gap-1">
+            <mat-icon>{{ period.status === PeriodStatusEnum.OPEN ? 'lock' : 'lock_open' }}</mat-icon>
+            {{ period.status === PeriodStatusEnum.OPEN ? 'Cerrar periodo' : 'Abrir periodo' }}
+          </span>
         </button>
       </mat-card-actions>
     } @else {
@@ -77,8 +79,10 @@
                 @if (isProcessing()) {
                   <mat-spinner diameter="20" />
                 } @else {
-                  <mat-icon>play_arrow</mat-icon>
-                  Iniciar proceso
+                  <span class="flex items-center gap-1">
+                    <mat-icon>play_arrow</mat-icon>
+                    Iniciar proceso
+                  </span>
                 }
               </button>
             </form>
@@ -120,8 +124,10 @@
                 @if (isProcessing()) {
                   <mat-spinner diameter="20" />
                 } @else {
-                  <mat-icon>play_arrow</mat-icon>
-                  Iniciar proceso
+                  <span class="flex items-center gap-1">
+                    <mat-icon>play_arrow</mat-icon>
+                    Iniciar proceso
+                  </span>
                 }
               </button>
             </form>

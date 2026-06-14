@@ -1,11 +1,18 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatDialog } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RecibosService, ImpresionReciboFilters } from '@app/core/services/recibos.service';
+import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
+
+type PrintAction = 'recibos' | 'carta';
 
 @Component({
     selector: 'app-impresion-recibos',
@@ -15,16 +22,22 @@ import { MatSelectModule } from '@angular/material/select';
     imports: [
         FormsModule,
         MatButtonModule,
+        MatCardModule,
+        MatDividerModule,
         MatIconModule,
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
+        MatProgressSpinnerModule,
     ],
 })
-export class ImpresionRecibosComponent implements OnInit {
-    private http = inject(HttpClient);
+export class ImpresionRecibosComponent {
+    private readonly recibosService = inject(RecibosService);
+    private readonly dialog = inject(MatDialog);
 
-    public months = [
+    readonly loadingAction = signal<PrintAction | null>(null);
+
+    readonly months = [
         { value: '01', label: 'Enero' },
         { value: '02', label: 'Febrero' },
         { value: '03', label: 'Marzo' },
@@ -39,72 +52,74 @@ export class ImpresionRecibosComponent implements OnInit {
         { value: '12', label: 'Diciembre' },
     ];
 
-    public years = Array.from({ length: new Date().getFullYear() - 2000 + 1 }, (_, index) => {
-        const year = 2000 + index;
+    readonly years = Array.from({ length: new Date().getFullYear() - 2000 + 3 }, (_, i) => {
+        const year = 2000 + i;
         return { value: String(year), label: String(year) };
     });
 
-    public filters: {
-        month?: string | null;
-        year?: string | null;
-        nombre?: string | null;
-        apellidoPaterno?: string | null;
-        apellidoMaterno?: string | null;
-        numeroColector?: string | null;
-        folioInicio?: string | null;
-        folioFinal?: string | null;
-    } = {
-        month: null,
-        year: null,
-        nombre: null,
-        apellidoPaterno: null,
-        apellidoMaterno: null,
-        numeroColector: null,
-        folioInicio: null,
-        folioFinal: null,
+    private readonly now = new Date();
+
+    filters: ImpresionReciboFilters = {
+        month: String(this.now.getMonth() + 1).padStart(2, '0'),
+        year: String(this.now.getFullYear()),
+        firstname: null,
+        firstLastname: null,
+        secondLastname: null,
+        collectorNumber: null,
+        fromSequence: null,
+        toSequence: null,
     };
 
-    ngOnInit(): void {}
+    clearFilters(): void {
+        const now = new Date();
+        this.filters = {
+            month: String(now.getMonth() + 1).padStart(2, '0'),
+            year: String(now.getFullYear()),
+            firstname: null,
+            firstLastname: null,
+            secondLastname: null,
+            collectorNumber: null,
+            fromSequence: null,
+            toSequence: null,
+        };
+    }
 
     printRecibos(): void {
-        this.downloadReceiptPdf('imprimir', 'Imprimir_Recibos.pdf');
+        this.confirmAndPrint('recibos', 'Imprimir_Recibos.pdf');
     }
 
-    printCartaRecibosActual(): void {
-        this.downloadReceiptPdf('carta-actual', 'Carta_Recibos_Actual.pdf');
+    printCarta(): void {
+        this.confirmAndPrint('carta', 'Carta_Recibos.pdf');
     }
 
-    printCartaRecibosAnterior(): void {
-        this.downloadReceiptPdf('carta-anterior', 'Carta_Recibos_Anterior.pdf');
-    }
+    private confirmAndPrint(action: PrintAction, filename: string): void {
+        const ref = this.dialog.open(PdfPreviewDialogComponent, {
+            data: { filename },
+            width: '480px',
+        });
 
-    private downloadReceiptPdf(type: string, filename: string): void {
-        const endpoint = `/api/recibos/impresion/${type}`;
-        const payload = {
-            month: this.filters.month,
-            year: this.filters.year,
-            nombre: this.filters.nombre,
-            apellidoPaterno: this.filters.apellidoPaterno,
-            apellidoMaterno: this.filters.apellidoMaterno,
-            numeroColector: this.filters.numeroColector,
-            folioInicio: this.filters.folioInicio,
-            folioFinal: this.filters.folioFinal,
-        };
-
-        this.http.post(endpoint, payload, { responseType: 'blob' }).subscribe({
-            next: (blob) => this.downloadPdf(blob, filename),
-            error: (error) => {
-                console.error('Error descargando PDF de recibos:', error);
-            },
+        ref.afterClosed().subscribe((confirmed: boolean) => {
+            if (!confirmed) return;
+            this.fetchAndOpen(action, filename);
         });
     }
 
-    private downloadPdf(blob: Blob, filename: string): void {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.click();
-        window.URL.revokeObjectURL(url);
+    private fetchAndOpen(action: PrintAction, filename: string): void {
+        if (this.loadingAction() !== null) return;
+        this.loadingAction.set(action);
+
+        const source$ = action === 'recibos'
+            ? this.recibosService.imprimirRecibos(this.filters)
+            : this.recibosService.imprimirCartaActual(this.filters);
+
+        source$.subscribe({
+            next: (blob) => {
+                this.loadingAction.set(null);
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                setTimeout(() => URL.revokeObjectURL(url), 60_000);
+            },
+            error: () => this.loadingAction.set(null),
+        });
     }
 }

@@ -6,7 +6,7 @@
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
     <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_ROLE | hasPermission)" (click)="openCreateTab()">
-      <mat-icon>add</mat-icon> Nuevo rol
+      <span class="flex items-center gap-1"><mat-icon>add</mat-icon> Nuevo rol</span>
     </button>
   </section>
 
