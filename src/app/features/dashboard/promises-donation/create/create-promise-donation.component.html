@@ -105,9 +105,13 @@
         type="button"
         matButton="filled"
         (click)="createPromiseDonation()"
-        [disabled]="createPromiseDonationForm.invalid"
+        [disabled]="createPromiseDonationForm.invalid || isLoading()"
       >
-        Guardar
+        @if (isLoading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Guardar
+        }
       </button>
     </div>
   </form>

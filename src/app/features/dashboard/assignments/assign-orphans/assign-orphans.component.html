@@ -21,7 +21,11 @@
 
       @if (canAssign) {
         <button type="button" mat-flat-button color="primary" class="ml-auto" [disabled]="isSaving()" (click)="assign()">
-          Asignar seleccionados ({{ selection.selected.length }})
+          @if (isSaving()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            Asignar seleccionados ({{ selection.selected.length }})
+          }
         </button>
       }
     </div>

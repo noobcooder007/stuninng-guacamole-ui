@@ -164,9 +164,13 @@
         type="button"
         matButton="filled"
         (click)="createBeneficient()"
-        [disabled]="createBeneficientForm.invalid"
+        [disabled]="createBeneficientForm.invalid || isLoading()"
       >
-        Guardar
+        @if (isLoading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Guardar
+        }
       </button>
     </div>
   </form>

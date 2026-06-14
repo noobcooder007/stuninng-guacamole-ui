@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatAnchor, MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -24,7 +24,6 @@ import { TabService } from '@app/core/services/tab.service';
         MatSortModule,
         MatFormFieldModule,
         MatInputModule,
-        MatAnchor,
         MatButtonModule,
         MatIcon,
         MatProgressBarModule,
@@ -44,7 +43,7 @@ export class ChurchComponent implements OnInit, AfterViewInit {
         pageCount: 0
     };
     public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
-    public displayedColumns: string[] = ['name', 'vicaria', 'decanato', 'parroquia', 'capilla', 'priest', 'auxiliarPriest', 'address', 'phoneNumber', 'actions'];
+    public displayedColumns: string[] = ['name', 'vicaria', 'decanato', 'parroquia', 'capilla', 'priest', 'auxiliarPriest', 'address', 'phoneNumber'];
     public dataSource = new MatTableDataSource<Church>();
     public searchForm = new FormGroup({
         name: new FormControl(''),
@@ -122,7 +121,7 @@ export class ChurchComponent implements OnInit, AfterViewInit {
     addChurch() {
         this.tabService.openTab({
             id: 'create-church',
-            label: 'Añadir inglesia',
+            label: 'Añadir iglesia',
             link: '/churches/create',
             permission: 'add:church'
         });

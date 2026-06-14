@@ -99,6 +99,6 @@ export class RolesComponent implements OnInit, AfterViewInit {
     }
 
     getVisiblePermissions(role: Role): Permission[] {
-        return (role.permissions ?? []).slice(0, 3);
+        return role.permissions.slice(0, 3);
     }
 }

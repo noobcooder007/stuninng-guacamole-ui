@@ -50,8 +50,8 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
 
     public readonly displayedColumns = computed<string[]>(() =>
         this.viewMode() === 'activas'
-            ? ['beneficient-fullname', 'collector-fullname', 'updatedAt', 'actions']
-            : ['beneficient-fullname', 'updatedAt', 'actions']
+            ? ['beneficient-fullname', 'collector-fullname', 'updatedAt']
+            : ['beneficient-fullname', 'updatedAt']
     );
 
     public dataSource = new MatTableDataSource<Assignment>();
@@ -68,6 +68,16 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
+        this.dataSource.sortingDataAccessor = (item: Assignment, property: string): string => {
+            switch (property) {
+                case 'beneficient-fullname':
+                    return `${item.beneficient.firstname} ${item.beneficient.firstLastname} ${item.beneficient.secondLastname ?? ''}`;
+                case 'collector-fullname':
+                    return `${item.collector.firstname} ${item.collector.firstLastname} ${item.collector.secondLastname ?? ''}`;
+                default:
+                    return (item as any)[property] ?? '';
+            }
+        };
     }
 
     onViewModeChange(mode: ViewMode) {

@@ -40,7 +40,7 @@ export class CollectorComponent implements OnInit, AfterViewInit {
         pageCount: 0,
     };
     public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
-    public displayedColumns: string[] = ['profile', 'fullname', 'nss', 'phoneNumber', 'telephoneNumber', 'commissionPercent', 'actions'];
+    public displayedColumns: string[] = ['profile', 'fullname', 'nss', 'phoneNumber', 'telephoneNumber', 'commissionPercent'];
     public dataSource = new MatTableDataSource<Collector>();
     public searchForm = new FormGroup({
         firstname: new FormControl(''),

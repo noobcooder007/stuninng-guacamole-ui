@@ -37,12 +37,14 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     <tr *matNoDataRow>
-      <td [attr.colspan]="displayedColumns.length" class="py-20 text-center">
-        <div class="flex flex-col items-center gap-2">
-          <mat-icon class="!text-[56px] !w-14 !h-14 text-[color:var(--mat-sys-outline-variant)]">lock</mat-icon>
-          <span class="text-base font-medium text-[color:var(--mat-sys-on-surface-variant)]">Sin permisos</span>
-          <span class="text-sm text-[color:var(--mat-sys-outline)]">No hay permisos registrados</span>
-        </div>
+      <td [attr.colspan]="displayedColumns.length">
+        @if (!isLoading()) {
+          <div class="py-20 flex flex-col items-center gap-2">
+            <mat-icon class="!text-[56px] !w-14 !h-14 text-[color:var(--mat-sys-outline-variant)]">lock</mat-icon>
+            <span class="text-base font-medium text-[color:var(--mat-sys-on-surface-variant)]">Sin permisos</span>
+            <span class="text-sm text-[color:var(--mat-sys-outline)]">No hay permisos registrados</span>
+          </div>
+        }
       </td>
     </tr>
   </table>

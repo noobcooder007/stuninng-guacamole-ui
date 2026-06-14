@@ -34,7 +34,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 })
 
 export class CreateBeneficientComponent implements OnInit {
-    private isLoading = signal(false);
+    public isLoading = signal(false);
     private readonly beneficientService = inject(BeneficientService);
     private readonly churchService = inject(ChurchService);
 

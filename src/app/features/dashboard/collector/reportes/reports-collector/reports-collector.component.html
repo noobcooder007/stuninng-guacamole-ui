@@ -35,8 +35,12 @@
 
               <div class="form-row">
                 <button matButton="filled" type="button" (click)="downloadDepositsReport()" [disabled]="isLoading">
-                  <mat-icon>picture_as_pdf</mat-icon>
-                  Crear PDF
+                  @if (isLoading) {
+                    <mat-spinner diameter="20" />
+                  } @else {
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  }
                 </button>
               </div>
             </form>
@@ -84,13 +88,21 @@
 
               <div class="form-row">
                 <button matButton="filled" type="button" (click)="downloadLiquidationReportPdf()" [disabled]="isLoading">
-                  <mat-icon>picture_as_pdf</mat-icon>
-                  Crear PDF
+                  @if (isLoading) {
+                    <mat-spinner diameter="20" />
+                  } @else {
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  }
                 </button>
 
                 <button matButton="tonal" type="button" (click)="downloadLiquidationReportExcel()" [disabled]="isLoading">
-                  <mat-icon>table_chart</mat-icon>
-                  Crear Excel
+                  @if (isLoading) {
+                    <mat-spinner diameter="20" />
+                  } @else {
+                    <mat-icon>table_chart</mat-icon>
+                    Crear Excel
+                  }
                 </button>
               </div>
             </form>

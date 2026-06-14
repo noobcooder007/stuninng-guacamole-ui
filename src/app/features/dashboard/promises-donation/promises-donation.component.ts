@@ -52,7 +52,7 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
         pageCount: 0,
     };
     public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
-    public displayedColumns: string[] = ['fullname', 'beneficientNumber', 'currency', 'method', 'promiseAmount', 'startDate', 'lastDonation', 'nextDonation', 'recurrence', 'actions'];
+    public displayedColumns: string[] = ['fullname', 'beneficientNumber', 'currency', 'method', 'promiseAmount', 'startDate', 'lastDonation', 'nextDonation', 'recurrence'];
     public dataSource = new MatTableDataSource<PromiseDonation>();
     public searchForm = new FormGroup({
         currency: new FormControl(''),

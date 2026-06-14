@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DatePipe } from '@angular/common';
@@ -32,6 +33,7 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
         MatInputModule,
         MatPaginatorModule,
         MatProgressBarModule,
+        MatProgressSpinnerModule,
         MatTableModule,
         DatePipe,
         FullnamePipe,

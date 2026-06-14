@@ -168,9 +168,13 @@
         type="button"
         matButton="filled"
         (click)="createCollector()"
-        [disabled]="createCollectorForm.invalid"
+        [disabled]="createCollectorForm.invalid || isLoading()"
       >
-        Guardar
+        @if (isLoading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Guardar
+        }
       </button>
     </div>
   </form>

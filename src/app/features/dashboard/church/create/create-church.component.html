@@ -120,9 +120,13 @@
         type="button"
         matButton="filled"
         (click)="createChurch()"
-        [disabled]="createChurchForm.invalid"
+        [disabled]="createChurchForm.invalid || isLoading()"
       >
-        Guardar
+        @if (isLoading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Guardar
+        }
       </button>
     </div>
   </form>

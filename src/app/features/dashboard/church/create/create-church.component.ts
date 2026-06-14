@@ -4,6 +4,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from "@angular/material/button";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Address, ChurchService, CreateChurchDto, EcclesialIdentity, Priest } from '@app/core/services/church.service';
 
 @Component({
@@ -15,12 +16,13 @@ import { Address, ChurchService, CreateChurchDto, EcclesialIdentity, Priest } fr
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
+        MatProgressSpinnerModule,
     ]
 })
 
 export class CreateChurchComponent {
     private readonly churchService = inject(ChurchService);
-    private isLoading = signal(false);
+    public isLoading = signal(false);
 
     createChurchForm = new FormGroup({
         ecclesialIdentity: new FormGroup({

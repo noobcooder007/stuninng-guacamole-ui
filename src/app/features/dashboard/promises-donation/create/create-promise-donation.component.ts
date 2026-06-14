@@ -49,7 +49,7 @@ interface Instructions {
 })
 
 export class CreatePromiseDonationComponent implements OnInit {
-    private isLoading = signal(false);
+    public isLoading = signal(false);
     private readonly beneficientService = inject(BeneficientService);
     private readonly promiseDonationService = inject(PromisesDonationService);
     

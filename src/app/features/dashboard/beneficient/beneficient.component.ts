@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatAnchor, MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -24,7 +24,6 @@ import { TabService } from '@app/core/services/tab.service';
         MatSortModule,
         MatFormFieldModule,
         MatInputModule,
-        MatAnchor,
         MatButtonModule,
         MatIcon,
         MatProgressBarModule,
@@ -44,7 +43,7 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
         pageCount: 0
     };
     public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
-    public displayedColumns: string[] = ['title', 'firstname', 'firstLastname', 'secondLastname', 'beneficientNumber', 'genre', 'email', 'maritalStatus', 'rfc', 'status', 'actions'];
+    public displayedColumns: string[] = ['title', 'firstname', 'firstLastname', 'secondLastname', 'beneficientNumber', 'genre', 'email', 'rfc', 'status'];
     public dataSource = new MatTableDataSource<Beneficient>();
     public searchForm = new FormGroup({
         firstname: new FormControl(''),
@@ -88,15 +87,13 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
     loadData(page: number = 1, limit: number = 5) {
         this.isLoading.set(true);
         const filters = this.searchForm.value as BeneficientFilters;
-        // Llamar al servicio
         this.beneficientService.getBeneficents(page, limit, filters).subscribe({
             next: (response) => {
                 this.dataSource.data = response.data.items;
                 this.pagination.set(response.data.meta);
                 this.isLoading.set(false);
             },
-            error: (error) => {
-                console.error('Error al cargar bienhechores:', error);
+            error: () => {
                 this.isLoading.set(false);
             }
         });
@@ -115,7 +112,4 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
         });
     }
 
-    editBeneficient(id: string) {}
-
-    viewBeneficient(id: string) {}
 }

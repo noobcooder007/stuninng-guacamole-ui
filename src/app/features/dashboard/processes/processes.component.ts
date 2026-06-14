@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PeriodStatus, ProcessesService } from '@app/core/services/processes.service';
@@ -27,6 +28,7 @@ import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
         MatCardModule,
         MatChipsModule,
         MatDialogModule,
+        MatProgressSpinnerModule,
         ReactiveFormsModule,
     ],
 })
@@ -65,6 +67,7 @@ export class ProcessesComponent implements OnInit {
 
     public receiptsForm = new FormGroup({
         month: new FormControl('', Validators.required),
+        year: new FormControl<number | string>('', Validators.required),
     });
 
     ngOnInit(): void {
@@ -82,7 +85,7 @@ export class ProcessesComponent implements OnInit {
     private setCurrentMonth(): void {
         const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
         this.commissionForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
-        this.receiptsForm.patchValue({ month: currentMonth });
+        this.receiptsForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
     }
 
     loadPeriodStatus(): void {
@@ -131,10 +134,26 @@ export class ProcessesComponent implements OnInit {
 
     startCommissionProcess(): void {
         if (this.commissionForm.invalid) return;
+        const month = this.months.find(m => m.value === this.commissionForm.get('month')?.value)?.label ?? '';
+        const year = this.commissionForm.get('year')?.value?.toString() ?? '';
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                title: 'Iniciar proceso de comisión',
+                message: `¿Iniciar el proceso de comisión para ${month} ${year}? Esta acción no se puede deshacer.`,
+                confirmLabel: 'Iniciar',
+            },
+        });
+        dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+            if (!confirmed) return;
+            this._startCommissionProcess(month, year);
+        });
+    }
+
+    private _startCommissionProcess(month: string, year: string): void {
         this.isProcessing.set(true);
         const request = {
             month: this.commissionForm.get('month')?.value ?? '',
-            year: this.commissionForm.get('year')?.value?.toString(),
+            year,
         };
         this.processesService.startCommissionProcess(request).subscribe({
             next: () => {
@@ -150,8 +169,24 @@ export class ProcessesComponent implements OnInit {
 
     startReceiptsGenerationProcess(): void {
         if (this.receiptsForm.invalid) return;
+        const month = this.months.find(m => m.value === this.receiptsForm.get('month')?.value)?.label ?? '';
+        const year = this.receiptsForm.get('year')?.value?.toString() ?? '';
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                title: 'Generar recibos',
+                message: `¿Generar recibos para ${month} ${year}? Esta acción no se puede deshacer.`,
+                confirmLabel: 'Generar',
+            },
+        });
+        dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+            if (!confirmed) return;
+            this._startReceiptsGenerationProcess(year);
+        });
+    }
+
+    private _startReceiptsGenerationProcess(year: string): void {
         this.isProcessing.set(true);
-        const request = { month: this.receiptsForm.get('month')?.value ?? '' };
+        const request = { month: this.receiptsForm.get('month')?.value ?? '', year };
         this.processesService.startReceiptsGenerationProcess(request).subscribe({
             next: () => {
                 this.snackbar.open('Generación de recibos iniciada correctamente', 'Cerrar', { duration: 5000 });

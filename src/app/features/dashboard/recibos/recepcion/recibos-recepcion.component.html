@@ -33,8 +33,12 @@
         (click)="onAddFolioToTable()"
         [disabled]="isAddingFolio() || !folioAddControl.value?.trim()"
       >
-        <mat-icon>add</mat-icon>
-        Agregar
+        @if (isAddingFolio()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          <mat-icon>add</mat-icon>
+          Agregar
+        }
       </button>
     </div>
 
@@ -68,8 +72,12 @@
             [disabled]="isConfirming()"
             (click)="confirmarCola()"
           >
-            <mat-icon>task_alt</mat-icon>
-            Confirmar {{ queuedReceipts().length }} recibo{{ queuedReceipts().length !== 1 ? 's' : '' }}
+            @if (isConfirming()) {
+              <mat-spinner diameter="20" />
+            } @else {
+              <mat-icon>task_alt</mat-icon>
+              Confirmar {{ queuedReceipts().length }} recibo{{ queuedReceipts().length !== 1 ? 's' : '' }}
+            }
           </button>
         </div>
       }

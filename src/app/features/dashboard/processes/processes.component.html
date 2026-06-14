@@ -1,7 +1,7 @@
-<div class="processes-container p-6">
+<div class="p-6 flex flex-col gap-6">
 
   <!-- Card de estado del periodo -->
-  <mat-card class="mb-6">
+  <mat-card>
     @if (periodStatus(); as period) {
       <mat-card-header>
         <mat-card-title>{{ months[period.month - 1]?.label }} {{ period.year }}</mat-card-title>
@@ -46,39 +46,41 @@
 
     <!-- Pestaña: Comisión y Liquidación -->
     <mat-tab label="Comisión y Liquidación">
-      <div class="tab-content">
-        <h2>Generación de Comisión</h2>
-        <mat-card class="form-card">
-          <mat-card-content>
-            <form [formGroup]="commissionForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>Mes</mat-label>
-                  <mat-select formControlName="month">
-                    @for (month of months; track month.value) {
-                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>Año</mat-label>
-                  <mat-select formControlName="year">
-                    @for (year of years; track year) {
-                      <mat-option [value]="year">{{ year }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-                <button
-                  type="button"
-                  matButton="filled"
-                  (click)="startCommissionProcess()"
-                  [disabled]="isProcessing() || commissionForm.invalid"
-                  class="start-btn"
-                >
+      <div class="py-8 px-5 flex flex-col gap-5">
+        <h2 class="m-0 text-2xl font-medium text-[color:var(--mat-sys-on-surface)]">Generación de Comisión</h2>
+        <mat-card>
+          <mat-card-content class="pt-4">
+            <form [formGroup]="commissionForm" class="flex gap-4 items-end flex-wrap">
+              <mat-form-field appearance="outline" class="min-w-48 flex-1">
+                <mat-label>Mes</mat-label>
+                <mat-select formControlName="month">
+                  @for (month of months; track month.value) {
+                    <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="min-w-36 flex-1">
+                <mat-label>Año</mat-label>
+                <mat-select formControlName="year">
+                  @for (year of years; track year) {
+                    <mat-option [value]="year">{{ year }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <button
+                type="button"
+                matButton="filled"
+                (click)="startCommissionProcess()"
+                [disabled]="isProcessing() || commissionForm.invalid"
+                class="min-h-14 px-6 whitespace-nowrap"
+              >
+                @if (isProcessing()) {
+                  <mat-spinner diameter="20" />
+                } @else {
                   <mat-icon>play_arrow</mat-icon>
                   Iniciar proceso
-                </button>
-              </div>
+                }
+              </button>
             </form>
           </mat-card-content>
         </mat-card>
@@ -87,31 +89,41 @@
 
     <!-- Pestaña: Genera Recibos -->
     <mat-tab label="Genera Recibos">
-      <div class="tab-content">
-        <h2>Generación de Recibos</h2>
-        <mat-card class="form-card">
-          <mat-card-content>
-            <form [formGroup]="receiptsForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>Mes</mat-label>
-                  <mat-select formControlName="month">
-                    @for (month of months; track month.value) {
-                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-                <button
-                  type="button"
-                  matButton="filled"
-                  (click)="startReceiptsGenerationProcess()"
-                  [disabled]="isProcessing() || receiptsForm.invalid"
-                  class="start-btn"
-                >
+      <div class="py-8 px-5 flex flex-col gap-5">
+        <h2 class="m-0 text-2xl font-medium text-[color:var(--mat-sys-on-surface)]">Generación de Recibos</h2>
+        <mat-card>
+          <mat-card-content class="pt-4">
+            <form [formGroup]="receiptsForm" class="flex gap-4 items-end flex-wrap">
+              <mat-form-field appearance="outline" class="min-w-48 flex-1">
+                <mat-label>Mes</mat-label>
+                <mat-select formControlName="month">
+                  @for (month of months; track month.value) {
+                    <mat-option [value]="month.value">{{ month.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="min-w-36 flex-1">
+                <mat-label>Año</mat-label>
+                <mat-select formControlName="year">
+                  @for (year of years; track year) {
+                    <mat-option [value]="year">{{ year }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <button
+                type="button"
+                matButton="filled"
+                (click)="startReceiptsGenerationProcess()"
+                [disabled]="isProcessing() || receiptsForm.invalid"
+                class="min-h-14 px-6 whitespace-nowrap"
+              >
+                @if (isProcessing()) {
+                  <mat-spinner diameter="20" />
+                } @else {
                   <mat-icon>play_arrow</mat-icon>
                   Iniciar proceso
-                </button>
-              </div>
+                }
+              </button>
             </form>
           </mat-card-content>
         </mat-card>

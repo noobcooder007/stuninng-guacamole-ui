@@ -26,7 +26,7 @@ import { PasswordFieldComponent } from '@app/shared/components/password-field/pa
 })
 export class CreateCollectorComponent implements OnInit {
     public uploadingImage = signal(false);
-    private isLoading = signal(false);
+    public isLoading = signal(false);
     private readonly collectorService = inject(CollectorService);
     private readonly cd = inject(ChangeDetectorRef);
 
