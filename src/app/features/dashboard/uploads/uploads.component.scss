@@ -1,6 +1,4 @@
 .uploads-container {
-  padding: 20px;
-
   .tab-content {
     padding: 30px 20px;
 
@@ -14,16 +12,16 @@
 
         .section-data,
         .section-file {
-          border: 1px solid rgba(0, 0, 0, 0.12);
+          border: 1px solid var(--mat-sys-outline-variant);
           border-radius: 4px;
           padding: 20px;
-          background-color: #fafafa;
+          background-color: var(--mat-sys-surface-container-low);
 
           h3 {
             margin: 0 0 16px 0;
             font-size: 1rem;
             font-weight: 500;
-            color: #333;
+            color: var(--mat-sys-on-surface);
           }
 
           button {
@@ -33,19 +31,19 @@
           .file-info {
             margin: 0;
             font-size: 0.875rem;
-            color: #666;
+            color: var(--mat-sys-on-surface-variant);
           }
 
           .selected-file {
             margin-top: 12px;
             padding: 8px 12px;
-            background-color: #e8f5e9;
-            border-left: 3px solid #4caf50;
+            background-color: var(--mat-sys-secondary-container);
+            border-left: 3px solid var(--mat-sys-secondary);
             border-radius: 4px;
 
             span {
               font-size: 0.875rem;
-              color: #2e7d32;
+              color: var(--mat-sys-on-secondary-container);
               word-break: break-word;
             }
           }
@@ -62,7 +60,7 @@
 
           .progress-text {
             font-size: 0.875rem;
-            color: #666;
+            color: var(--mat-sys-on-surface-variant);
             text-align: center;
           }
         }

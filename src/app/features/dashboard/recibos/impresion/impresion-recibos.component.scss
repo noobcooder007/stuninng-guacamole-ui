@@ -1,5 +1,4 @@
 .impresion-recibos-container {
-    padding: 24px;
     max-width: 1120px;
     margin: 0 auto;
 }
@@ -12,7 +11,7 @@
         margin: 0;
         font-size: 32px;
         font-weight: 700;
-        color: #111;
+        color: var(--mat-sys-on-surface);
     }
 }
 
@@ -51,7 +50,7 @@
     gap: 16px;
     flex-wrap: wrap;
     padding-top: 8px;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid var(--mat-sys-outline-variant);
 }
 
 .folio-row mat-form-field {
@@ -80,7 +79,7 @@ mat-form-field {
     margin: 0 0 4px 0;
     font-size: 16px;
     font-weight: 600;
-    color: #000;
+    color: var(--mat-sys-on-surface);
 }
 
 @media (max-width: 960px) {

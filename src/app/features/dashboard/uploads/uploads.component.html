@@ -1,4 +1,4 @@
-<div class="uploads-container">
+<div class="uploads-container p-6">
   <mat-tab-group [(selectedIndex)]="activeTab">
     <!-- Pestaña: Cargas Depósito -->
     <mat-tab label="Carga Depósito">
@@ -27,9 +27,11 @@
                   accept=".xls,.xlsx"
                   aria-label="Seleccionar archivo de depósito"
                 />
-                <div class="selected-file" *ngIf="selectedDepositFile">
-                  <span>{{ selectedDepositFile.name }}</span>
-                </div>
+                @if (selectedDepositFile) {
+                  <div class="selected-file">
+                    <span>{{ selectedDepositFile.name }}</span>
+                  </div>
+                }
               </div>
 
               <!-- Sección Archivo de Carga -->
@@ -39,10 +41,12 @@
               </div>
 
               <!-- Barra de progreso -->
-              <div class="progress-section" *ngIf="isUploading">
-                <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
-                <span class="progress-text">{{ uploadProgress }}%</span>
-              </div>
+              @if (isUploading) {
+                <div class="progress-section">
+                  <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
+                  <span class="progress-text">{{ uploadProgress }}%</span>
+                </div>
+              }
 
               <!-- Botón de envío -->
               <div class="action-buttons">
@@ -88,9 +92,11 @@
                   accept=".xls,.xlsx"
                   aria-label="Seleccionar archivo de información"
                 />
-                <div class="selected-file" *ngIf="selectedInformationFile">
-                  <span>{{ selectedInformationFile.name }}</span>
-                </div>
+                @if (selectedInformationFile) {
+                  <div class="selected-file">
+                    <span>{{ selectedInformationFile.name }}</span>
+                  </div>
+                }
               </div>
 
               <!-- Sección Archivo de Carga -->
@@ -100,10 +106,12 @@
               </div>
 
               <!-- Barra de progreso -->
-              <div class="progress-section" *ngIf="isUploading">
-                <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
-                <span class="progress-text">{{ uploadProgress }}%</span>
-              </div>
+              @if (isUploading) {
+                <div class="progress-section">
+                  <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
+                  <span class="progress-text">{{ uploadProgress }}%</span>
+                </div>
+              }
 
               <!-- Botón de envío -->
               <div class="action-buttons">

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
 
 export interface Address {
@@ -61,6 +61,14 @@ export interface PaginatedResponse {
     timestamp: string;
 }
 
+export interface CollectorListItem {
+    id: string;
+    firstname: string;
+    firstLastname: string;
+    secondLastname?: string | null;
+    collectorNumber: number;
+}
+
 export interface CollectorFilters {
     firstname?: string;
     firstLastname?: string;
@@ -104,6 +112,18 @@ export class CollectorService {
         return this.http.get<PaginatedResponse>(`${this.apiUrl}/collector`, { params }).pipe(
             catchError((error) => {
                 this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    getActiveList(search?: string): Observable<CollectorListItem[]> {
+        let params = new HttpParams();
+        if (search?.trim()) params = params.set('search', search.trim());
+        return this.http.get<{ data: CollectorListItem[] }>(`${this.apiUrl}/collector/active-list`, { params }).pipe(
+            map(r => r?.data ?? []),
+            catchError((error) => {
+                this._snackbar.open('Error al buscar colectores', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

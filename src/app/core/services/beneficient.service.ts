@@ -120,6 +120,17 @@ export class BeneficientService {
             );
     }
 
+    getUnassigned(): Observable<PaginatedResponse> {
+        return this.http
+            .get<PaginatedResponse>(`${environment.apiBaseUrl}/beneficient/unassigned`)
+            .pipe(
+                catchError((error) => {
+                    this.snackbar.open('Error al obtener bienhechores sin asignar', 'Cerrar', { duration: 5000 });
+                    return throwError(() => error);
+                })
+            );
+    }
+
     getBeneficent(id: number): Observable<{ statusCode: number; data: Beneficient }> {
         return this.http.get<{ statusCode: number; data: Beneficient }>(
             `${environment.apiBaseUrl}/beneficents/${id}`

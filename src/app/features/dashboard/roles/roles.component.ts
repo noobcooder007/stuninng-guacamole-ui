@@ -58,6 +58,8 @@ export class RolesComponent implements OnInit, AfterViewInit {
     ngAfterViewInit() {
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
+        this.dataSource.sortingDataAccessor = (role, property) =>
+            property === 'description' ? (role.description ?? '') : (role as any)[property] ?? '';
         this.dataSource.filterPredicate = (role, filter) =>
             role.name.toLowerCase().includes(filter) ||
             (role.description ?? '').toLowerCase().includes(filter);
@@ -77,7 +79,7 @@ export class RolesComponent implements OnInit, AfterViewInit {
     openCreateTab() {
         this.tabService.openTab({
             id: 'create-role',
-            label: 'Nuevo rol',
+            label: 'Añadir rol',
             link: '/roles/create',
             permission: '',
         });

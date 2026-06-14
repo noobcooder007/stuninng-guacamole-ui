@@ -1,4 +1,4 @@
-<div class="flex flex-col h-full w-full p-6 max-w-lg">
+<div class="flex flex-col h-full w-full p-6 max-w-lg mx-auto">
   <h2 class="text-2xl font-semibold mb-2">Nuevo permiso</h2>
   <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] mb-6">
     El nombre del permiso se construye como <strong>acción:recurso</strong>
@@ -46,7 +46,7 @@
     </mat-form-field>
 
     <div class="flex justify-end gap-2 mt-2">
-      <button type="button" matButton routerLink="/permissions">Cancelar</button>
+      <button type="button" matButton (click)="cancel()">Cancelar</button>
       <button
         type="button"
         matButton="filled"

@@ -6,15 +6,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { RoleService } from '@app/core/services/role.service';
+import { TabService } from '@app/core/services/tab.service';
 
 @Component({
     selector: 'create-role',
     templateUrl: './create-role.component.html',
     imports: [
         ReactiveFormsModule,
-        RouterLink,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
@@ -33,6 +33,12 @@ export class CreateRoleComponent {
     private readonly roleService = inject(RoleService);
     private readonly snackBar = inject(MatSnackBar);
     private readonly router = inject(Router);
+    private readonly tabService = inject(TabService);
+
+    cancel() {
+        const idx = this.tabService.tabs.findIndex(t => t.link === this.router.url);
+        if (idx !== -1) this.tabService.removeTab(idx, this.tabService.tabs[idx]);
+    }
 
     submit() {
         if (this.form.invalid) return;

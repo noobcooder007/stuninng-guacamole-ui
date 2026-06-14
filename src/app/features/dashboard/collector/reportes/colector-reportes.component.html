@@ -21,9 +21,9 @@
               <mat-form-field appearance="outline">
                 <mat-label>Mes</mat-label>
                 <mat-select formControlName="mes">
-                  <mat-option *ngFor="let mes of meses" [value]="mes.value">
-                    {{ mes.label }}
-                  </mat-option>
+                  @for (mes of meses; track mes.value) {
+                    <mat-option [value]="mes.value">{{ mes.label }}</mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
 
@@ -31,9 +31,9 @@
               <mat-form-field appearance="outline">
                 <mat-label>Año</mat-label>
                 <mat-select formControlName="anio">
-                  <mat-option *ngFor="let anio of anios" [value]="anio.value">
-                    {{ anio.label }}
-                  </mat-option>
+                  @for (anio of anios; track anio.value) {
+                    <mat-option [value]="anio.value">{{ anio.label }}</mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
 
@@ -41,9 +41,9 @@
               <mat-form-field appearance="outline">
                 <mat-label>Tipo de Reporte</mat-label>
                 <mat-select formControlName="tipoReporte">
-                  <mat-option *ngFor="let tipo of tiposReporte" [value]="tipo.value">
-                    {{ tipo.label }}
-                  </mat-option>
+                  @for (tipo of tiposReporte; track tipo.value) {
+                    <mat-option [value]="tipo.value">{{ tipo.label }}</mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
 
@@ -87,9 +87,9 @@
               <mat-form-field appearance="outline">
                 <mat-label>Mes</mat-label>
                 <mat-select formControlName="mes">
-                  <mat-option *ngFor="let mes of meses" [value]="mes.value">
-                    {{ mes.label }}
-                  </mat-option>
+                  @for (mes of meses; track mes.value) {
+                    <mat-option [value]="mes.value">{{ mes.label }}</mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
 
@@ -97,9 +97,9 @@
               <mat-form-field appearance="outline">
                 <mat-label>Año</mat-label>
                 <mat-select formControlName="anio">
-                  <mat-option *ngFor="let anio of anios" [value]="anio.value">
-                    {{ anio.label }}
-                  </mat-option>
+                  @for (anio of anios; track anio.value) {
+                    <mat-option [value]="anio.value">{{ anio.label }}</mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
 

@@ -5,35 +5,56 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
 import { PaginatedMetadata } from './collector.service';
 
+export type ReceiptType = 'RECURRING' | 'SPECIAL';
+
 export interface Recibo {
     id: string;
-    receiptFolio: string;
-    beneficient: {
-        firstname: string;
-        firstLastname: string;
-        secondLastname?: string;
-    };
-    collector: {
-        firstname: string;
-        firstLastname: string;
-        secondLastname?: string;
-    };
-    amount: number;
-    currency: string;
-    date: string;
-    paymentMethod?: string;
+    folio: string;
+    type: ReceiptType;
+    origin: string;
     status: string;
-    isReprint?: boolean;
+    amount: string;
+    currency: string;
+    paymentMethod: string | null;
+    externalReference: string | null;
+    promiseDonationId: string | null;
+    periodMonth: number;
+    periodYear: number;
+    beneficientId: string;
+    collectorId: string;
+    printCount: number;
+    lastPrintedAt: string | null;
+    voidReason: string | null;
+    createdAt: string;
+    updatedAt: string;
+    paidAt: string | null;
 }
 
 export interface ReciboFilters {
     month?: string;
     year?: string;
-    receiptFolio?: string;
+    folio?: string;
+    status?: string;
+    type?: ReceiptType;
+}
+
+export interface ValidateReciboData {
+    valid: boolean;
+    folio: string;
+    status: string;
+    amount: string;
+    currency: string;
+    type?: ReceiptType;
+}
+
+export interface ValidateReciboResponse {
+    statusCode: number;
+    data: ValidateReciboData;
+    timestamp: string;
 }
 
 export interface MarkAsPaidReceiptDto {
-    receiptFolio: string;
+    folio: string;
     paymentMethod: string;
 }
 
@@ -66,11 +87,19 @@ export class RecibosService {
             }
         });
 
-        return this.http.get<RecibosPaginatedResponse>(`${environment.apiBaseUrl}/receipts/pending`, { params }).pipe(
+        return this.http.get<RecibosPaginatedResponse>(`${environment.apiBaseUrl}/receipts`, { params }).pipe(
             catchError((error) => {
                 this.snackbar.open('Error al obtener los recibos', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
+        );
+    }
+
+    validarFolio(folio: string): Observable<ValidateReciboResponse> {
+        return this.http.get<ValidateReciboResponse>(
+            `${environment.apiBaseUrl}/receipts/validate/${folio}`
+        ).pipe(
+            catchError(error => throwError(() => error))
         );
     }
 

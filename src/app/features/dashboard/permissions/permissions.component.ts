@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatChipListbox, MatChipsModule } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Permission, RoleService } from '@app/core/services/role.service';
 import { TabService } from '@app/core/services/tab.service';
@@ -58,6 +58,8 @@ export class PermissionsComponent implements OnInit, AfterViewInit {
     ngAfterViewInit() {
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
+        this.dataSource.sortingDataAccessor = (permission, property) =>
+            property === 'description' ? (permission.description ?? '') : (permission as any)[property] ?? '';
         this.dataSource.filterPredicate = (permission, filter) =>
             permission.name.toLowerCase().includes(filter) ||
             (permission.description ?? '').toLowerCase().includes(filter);
@@ -87,11 +89,4 @@ export class PermissionsComponent implements OnInit, AfterViewInit {
         this.roleService.deletePermission(permission.id).subscribe(() => this.loadData());
     }
 
-    getAction(name: string): string {
-        return name.split(':')[0] ?? name;
-    }
-
-    getResource(name: string): string {
-        return name.split(':')[1] ?? '';
-    }
 }

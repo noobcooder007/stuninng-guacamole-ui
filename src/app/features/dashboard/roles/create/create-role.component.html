@@ -1,4 +1,4 @@
-<div class="flex flex-col h-full w-full p-6 max-w-lg">
+<div class="flex flex-col h-full w-full p-6 max-w-lg mx-auto">
   <h2 class="text-2xl font-semibold mb-6">Nuevo rol</h2>
 
   <form [formGroup]="form" class="flex flex-col gap-4">
@@ -30,7 +30,7 @@
     </mat-form-field>
 
     <div class="flex justify-end gap-2 mt-2">
-      <button type="button" matButton routerLink="/roles">Cancelar</button>
+      <button type="button" matButton (click)="cancel()">Cancelar</button>
       <button
         type="button"
         matButton="filled"
