@@ -5,6 +5,7 @@ import { environment } from 'environments/environment.development';
 import { catchError, Observable, throwError } from 'rxjs';
 
 export interface AssignmentPerson {
+    id: string;
     firstname: string;
     firstLastname: string;
     secondLastname?: string;
@@ -85,12 +86,30 @@ export class AssignmentService {
         );
     }
 
-    // create(collector: CreateCollectorDto) {
-    //     return this.http.post(`${environment.apiBaseUrl}/collector`, formData).pipe(
-    //         catchError((error) => {
-    //             this._snackbar.open('Error al crear colector', 'Cerrar', { duration: 5000 });
-    //             return throwError(() => error);
-    //         })
-    //     );
-    // }
+    create(dto: CreateAssignmentDto): Observable<any> {
+        return this.http.post(`${environment.apiBaseUrl}/assignment`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al crear asignaciones', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    deactivate(id: string): Observable<any> {
+        return this.http.delete(`${environment.apiBaseUrl}/assignment/${id}`).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al desactivar asignación', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    reassign(dto: ReasignAssignmentDto): Observable<any> {
+        return this.http.post(`${environment.apiBaseUrl}/assignment/reassign`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al reasignar asignaciones', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
 }

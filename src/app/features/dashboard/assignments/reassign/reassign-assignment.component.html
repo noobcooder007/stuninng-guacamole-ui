@@ -1,0 +1,84 @@
+<div class="flex flex-col h-full w-full overflow-y-auto no-scrollbar p-6 items-center">
+  <div class="flex flex-col w-full max-w-3xl">
+    <h2 class="text-xl font-semibold mb-6">Reasignar asignaciones</h2>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Colector de origen</mat-label>
+        <input matInput [formControl]="originCtrl" [matAutocomplete]="originAuto" placeholder="Buscar colector…">
+        <mat-autocomplete #originAuto [displayWith]="displayCollector">
+          @for (c of filteredOrigin(); track c.id) {
+            <mat-option [value]="c">{{ c.firstname }} {{ c.firstLastname }} {{ c.secondLastname ?? '' }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Colector destino</mat-label>
+        <input matInput [formControl]="destCtrl" [matAutocomplete]="destAuto" placeholder="Buscar colector…">
+        <mat-autocomplete #destAuto [displayWith]="displayCollector">
+          @for (c of filteredDest(); track c.id) {
+            <mat-option [value]="c">{{ c.firstname }} {{ c.firstLastname }} {{ c.secondLastname ?? '' }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="w-full mb-6">
+      <mat-label>Motivo de reasignación</mat-label>
+      <input matInput [formControl]="reasonCtrl" placeholder="Indique el motivo…">
+    </mat-form-field>
+
+    <div class="grid grid-cols-[1fr_48px_1fr] gap-4 items-start mb-6">
+      <div class="border rounded-lg p-3 min-h-[220px]">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-sm font-medium">Disponibles</span>
+          @if (isLoadingAssignments()) { <mat-spinner diameter="16" /> }
+        </div>
+        <div class="flex flex-col gap-1">
+          @for (a of availableAssignments; track a.id) {
+            <div class="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-100">
+              <span class="text-sm">{{ a.beneficient | fullname }}</span>
+              <button type="button" mat-icon-button (click)="moveRight(a)">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+          } @empty {
+            <p class="text-sm text-slate-400 mt-4 text-center">Sin donadores disponibles</p>
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2 justify-center mt-10">
+        <mat-icon class="text-slate-400">swap_horiz</mat-icon>
+      </div>
+
+      <div class="border rounded-lg p-3 min-h-[220px]">
+        <p class="mb-2 text-sm font-medium">Seleccionados ({{ selectedAssignments.length }})</p>
+        <div class="flex flex-col gap-1">
+          @for (a of selectedAssignments; track a.id) {
+            <div class="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-100">
+              <button type="button" mat-icon-button (click)="moveLeft(a)">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+              <span class="text-sm">{{ a.beneficient | fullname }}</span>
+            </div>
+          } @empty {
+            <p class="text-sm text-slate-400 mt-4 text-center">Ninguno seleccionado</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <button type="button" mat-button (click)="cancel()">Cancelar</button>
+      <button type="button" mat-flat-button color="primary" [disabled]="!canSave || isSaving()" (click)="save()">
+        @if (isSaving()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Reasignar
+        }
+      </button>
+    </div>
+  </div>
+</div>

@@ -175,7 +175,7 @@ export const MENU_CONFIG: NavCategory[] = [
         items: [
             {
                 id: 'roles',
-                label: 'Roles',
+                label: 'Rol',
                 icon: 'manage_accounts',
                 route: '/roles',
                 permission: Permissions.VIEW_ROLE,

@@ -1,0 +1,91 @@
+<div class="flex flex-col h-full w-full overflow-y-auto no-scrollbar p-6 items-center">
+  <div class="flex flex-col w-full max-w-4xl">
+    <h2 class="text-xl font-semibold mb-6">Asignar huérfanas</h2>
+
+    <div class="flex items-center gap-4 mb-4 flex-wrap">
+      <mat-form-field appearance="outline" class="w-72">
+        <mat-label>Asignar a colector</mat-label>
+        <input matInput [formControl]="collectorCtrl" [matAutocomplete]="collectorAuto" placeholder="Buscar colector…">
+        <mat-autocomplete #collectorAuto [displayWith]="displayCollector" (optionSelected)="onCollectorSelected($event.option.value)">
+          @for (c of filteredCollectors(); track c.id) {
+            <mat-option [value]="c">{{ c.firstname }} {{ c.firstLastname }} {{ c.secondLastname ?? '' }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      @if (selectedCollector) {
+        <button type="button" mat-icon-button (click)="clearCollector()" matTooltip="Quitar colector">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+
+      @if (canAssign) {
+        <button type="button" mat-flat-button color="primary" class="ml-auto" [disabled]="isSaving()" (click)="assign()">
+          Asignar seleccionados ({{ selection.selected.length }})
+        </button>
+      }
+    </div>
+
+    @if (isLoading()) {
+      <mat-progress-bar mode="indeterminate" />
+    }
+
+    <table mat-table [dataSource]="dataSource" class="w-full">
+
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="toggleAll()"
+            [checked]="isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+          />
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="selection.toggle(row)"
+            [checked]="selection.isSelected(row)"
+          />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="beneficient-fullname">
+        <th mat-header-cell *matHeaderCellDef>Bienhechor</th>
+        <td mat-cell *matCellDef="let element">{{ element.beneficient | fullname }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="updatedAt">
+        <th mat-header-cell *matHeaderCellDef>Último cambio</th>
+        <td mat-cell *matCellDef="let element">{{ element.updatedAt | date:'mediumDate' }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"
+          class="cursor-pointer hover:bg-slate-50"
+          (click)="selection.toggle(row)">
+      </tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length" class="py-20 text-center">
+          <div class="flex flex-col items-center gap-2">
+            <mat-icon class="!text-[56px] !w-14 !h-14 text-[color:var(--mat-sys-outline-variant)]">assignment_turned_in</mat-icon>
+            <span class="text-base font-medium text-[color:var(--mat-sys-on-surface-variant)]">Sin asignaciones huérfanas</span>
+            <span class="text-sm text-[color:var(--mat-sys-outline)]">Todos los bienhechores tienen colector activo</span>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <mat-paginator
+      [length]="pagination().itemCount"
+      [pageSize]="pagination().limit"
+      [pageIndex]="pagination().page - 1"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    />
+
+    <div class="flex justify-end mt-4">
+      <button type="button" mat-button (click)="cancel()">Cerrar</button>
+    </div>
+  </div>
+</div>

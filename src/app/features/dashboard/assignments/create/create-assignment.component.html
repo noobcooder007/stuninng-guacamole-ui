@@ -1,0 +1,109 @@
+<div class="flex flex-col h-full w-full overflow-y-auto no-scrollbar p-6 items-center">
+  <div class="flex flex-col w-full max-w-lg">
+    <h2 class="text-xl font-semibold mb-6">Crear asignación</h2>
+
+    <!-- Donador -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Donador</mat-label>
+      <input matInput [formControl]="beneficentCtrl" [matAutocomplete]="beneficentAuto"
+             placeholder="Busca por nombre o apellido…">
+      @if (beneficentCtrl.value) {
+        <button matSuffix mat-icon-button type="button" (click)="clearBeneficent()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <mat-autocomplete #beneficentAuto [displayWith]="displayBeneficent"
+                        (optionSelected)="onBeneficientSelected($event.option.value)">
+        @if (isLoadingBeneficents()) {
+          <mat-option disabled>Cargando…</mat-option>
+        } @else {
+          @for (option of filteredBeneficents(); track option.id) {
+            <mat-option [value]="option">{{ option.label }}</mat-option>
+          } @empty {
+            <mat-option disabled>Sin resultados</mat-option>
+          }
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- Colector -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Colector</mat-label>
+      <input matInput [formControl]="collectorCtrl" [matAutocomplete]="collectorAuto"
+             placeholder="Busca por nombre o apellido…">
+      @if (collectorCtrl.value) {
+        <button matSuffix mat-icon-button type="button" (click)="clearCollector()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <mat-autocomplete #collectorAuto [displayWith]="displayCollector"
+                        (optionSelected)="onCollectorSelected($event.option.value)">
+        @if (isLoadingCollectors()) {
+          <mat-option disabled>Cargando…</mat-option>
+        } @else {
+          @for (option of filteredCollectors(); track option.id) {
+            <mat-option [value]="option">
+              {{ option.firstname }} {{ option.firstLastname }} {{ option.secondLastname ?? '' }}
+            </mat-option>
+          } @empty {
+            <mat-option disabled>Sin resultados</mat-option>
+          }
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- Botón agregar -->
+    <div class="mb-6">
+      <button type="button" mat-stroked-button class="w-full"
+              [disabled]="!canAddPair" (click)="addPair()">
+        Agregar par
+      </button>
+      @if (!canAddPair) {
+        <p class="text-xs text-center mt-1 text-[color:var(--mat-sys-on-surface-variant)]">
+          {{ addPairHint }}
+        </p>
+      }
+    </div>
+
+    <!-- Lista de pares -->
+    <div class="rounded-lg p-4 min-h-[160px] mb-6 border border-[color:var(--mat-sys-outline-variant)] bg-[color:var(--mat-sys-surface-container)]">
+      <p class="mb-3 font-medium text-sm text-[color:var(--mat-sys-on-surface)]">
+        Pares a crear ({{ addedDonors.length }})
+      </p>
+
+      @if (addedDonors.length > 0) {
+        <div class="flex flex-col gap-2">
+          @for (pair of addedDonors; track pair.beneficentId; let i = $index) {
+            <div class="flex items-center justify-between rounded-lg px-4 py-2 border border-[color:var(--mat-sys-outline-variant)] bg-[color:var(--mat-sys-surface-container-high)]">
+              <div class="flex flex-col min-w-0">
+                <span class="text-sm font-medium truncate text-[color:var(--mat-sys-on-surface)]">{{ pair.beneficentLabel }}</span>
+                <span class="text-xs truncate text-[color:var(--mat-sys-on-surface-variant)]">{{ pair.collectorLabel }}</span>
+              </div>
+              <button type="button" mat-icon-button color="warn" (click)="removePair(i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="flex flex-col items-center gap-2 mt-4">
+          <mat-icon class="!text-[40px] !w-10 !h-10 text-[color:var(--mat-sys-outline-variant)]">group_add</mat-icon>
+          <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Agrega al menos un par para guardar</p>
+        </div>
+      }
+    </div>
+
+    <!-- Acciones -->
+    <div class="flex justify-end gap-3">
+      <button type="button" mat-button (click)="cancel()">Cancelar</button>
+      <button type="button" mat-flat-button color="primary"
+              [disabled]="!addedDonors.length || isSaving()" (click)="save()">
+        @if (isSaving()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Crear asignaciones
+        }
+      </button>
+    </div>
+  </div>
+</div>

@@ -61,6 +61,26 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(m => m.AssignmentsComponent),
             },
             {
+                path: 'assignments/create',
+                loadComponent: () => import('./assignments/create/create-assignment.component')
+                    .then(m => m.CreateAssignmentComponent),
+            },
+            {
+                path: 'assignments/deactivate',
+                loadComponent: () => import('./assignments/deactivate/deactivate-assignment.component')
+                    .then(m => m.DeactivateAssignmentComponent),
+            },
+            {
+                path: 'assignments/reassign',
+                loadComponent: () => import('./assignments/reassign/reassign-assignment.component')
+                    .then(m => m.ReassignAssignmentComponent),
+            },
+            {
+                path: 'assignments/assign-orphans',
+                loadComponent: () => import('./assignments/assign-orphans/assign-orphans.component')
+                    .then(m => m.AssignOrphansComponent),
+            },
+            {
                 path: 'promises-donation',
                 loadComponent: () => import('./promises-donation/promises-donation.component')
                     .then((m) => m.PromisesDonationComponent)

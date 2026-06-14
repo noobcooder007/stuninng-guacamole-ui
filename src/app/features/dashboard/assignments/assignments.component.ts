@@ -10,9 +10,9 @@ import { Collector, PaginatedMetadata } from '@app/core/services/collector.servi
 import { Assignment, AssignmentService } from '@app/core/services/assignment.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { SearchCollectorComponent } from './search-collector/search-collector.component';
-import { CreateAssignmentDialogComponent } from './create/create-assignment-dialog.component';
 import { DatePipe } from '@angular/common';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
+import { TabService } from '@app/core/services/tab.service';
 
 type ViewMode = 'activas' | 'huerfanas';
 
@@ -60,6 +60,7 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
 
     private readonly assignmentsService = inject(AssignmentService);
     private readonly dialog = inject(MatDialog);
+    private readonly tabService = inject(TabService);
 
     ngOnInit() {
         this.loadData(1, this.initialPagination.limit);
@@ -89,8 +90,14 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
             : this.assignmentsService.getAssignments(page, limit, collectorId ? { collectorId } : {});
 
         source$.subscribe({
-            next: ({ data: { items, meta } }) => {
-                this.pagination.set(meta);
+            next: ({ data }) => {
+                const items: Assignment[] = (data as any)?.items ?? [];
+                const meta = (data as any)?.meta;
+                this.pagination.set({
+                    ...this.initialPagination,
+                    ...(meta ?? {}),
+                    itemCount: meta?.itemCount ?? items.length,
+                });
                 this.dataSource.data = items;
                 this.dataSource.sort = this.sort;
                 this.isLoading.set(false);
@@ -104,14 +111,38 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
     }
 
     addAssignment() {
-        const dialogRef = this.dialog.open(CreateAssignmentDialogComponent, {
-            minWidth: '80vw',
-            maxWidth: '1200px',
-            disableClose: true,
-            hasBackdrop: true,
+        this.tabService.openTab({
+            id: 'add-assignment',
+            label: 'Añadir asignación',
+            link: '/assignments/create',
+            permission: '',
         });
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) this.loadData(1, this.pagination().limit, this.selectedCollector()?.id);
+    }
+
+    deactivateAssignment() {
+        this.tabService.openTab({
+            id: 'deactivate-assignment',
+            label: 'Desactivar asignación',
+            link: '/assignments/deactivate',
+            permission: '',
+        });
+    }
+
+    reassignAssignment() {
+        this.tabService.openTab({
+            id: 'reassign-assignment',
+            label: 'Reasignar asignación',
+            link: '/assignments/reassign',
+            permission: '',
+        });
+    }
+
+    assignOrphans() {
+        this.tabService.openTab({
+            id: 'assign-orphans',
+            label: 'Asignar huérfanas',
+            link: '/assignments/assign-orphans',
+            permission: '',
         });
     }
 
