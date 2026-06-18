@@ -74,6 +74,35 @@ export interface CreateChurchDto {
     phoneNumber: string;
 }
 
+export interface UpdateIdentityDto {
+    name?: string;
+    vicaria?: string;
+    decanato?: string;
+    parroquia?: string;
+    capilla?: string;
+}
+
+export interface UpdateAddressDto {
+    street?: string;
+    noExt?: string;
+    noInt?: string | null;
+    neighborhood?: string | null;
+    locality?: string | null;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+}
+
+export interface UpdatePriestDto {
+    firstname?: string;
+    firstLastname?: string;
+    secondLastname?: string;
+}
+
+export interface UpdatePhoneDto {
+    phoneNumber?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ChurchService {
     private readonly http = inject(HttpClient);
@@ -94,11 +123,65 @@ export class ChurchService {
             })
         );
     }
-    
+
+    getChurch(id: string): Observable<{ statusCode: number; data: Church }> {
+        return this.http.get<{ statusCode: number; data: Church }>(`${environment.apiBaseUrl}/church/${id}`).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al obtener datos de la iglesia', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
     create(church: CreateChurchDto) {
         return this.http.post(`${environment.apiBaseUrl}/church`, church).pipe(
             catchError((error) => {
                 this._snackbar.open('Oops algo salio mal', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchIdentity(id: string, dto: UpdateIdentityDto): Observable<any> {
+        return this.http.patch(`${environment.apiBaseUrl}/church/${id}/identity`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar identidad eclesiástica', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchAddress(id: string, dto: UpdateAddressDto): Observable<any> {
+        return this.http.patch(`${environment.apiBaseUrl}/church/${id}/address`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar domicilio', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchPriest(id: string, dto: UpdatePriestDto): Observable<any> {
+        return this.http.patch(`${environment.apiBaseUrl}/church/${id}/priest`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar datos del párroco', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchAuxiliar(id: string, dto: UpdatePriestDto): Observable<any> {
+        return this.http.patch(`${environment.apiBaseUrl}/church/${id}/auxiliar`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar datos del vicario', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchPhone(id: string, dto: UpdatePhoneDto): Observable<any> {
+        return this.http.patch(`${environment.apiBaseUrl}/church/${id}/phone`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar teléfono', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

@@ -57,6 +57,8 @@
           class="min-w-40 max-w-72 shrink-0 h-12 !inline-flex align-middle items-center justify-center animate-fade-in-down"
           mat-tab-link
           [routerLink]="tab.link"
+          routerLinkActive=""
+          [routerLinkActiveOptions]="{ exact: true }"
           [active]="router.url === tab.link"
         >
           <div class="flex items-center justify-between w-full h-full pl-4 pr-2 gap-2">

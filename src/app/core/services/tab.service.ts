@@ -35,11 +35,16 @@ export class TabService {
 
     public openTab(tab: Tab) {
         const exists = this.tabs.find(t => t.id === tab.id);
-        if (!exists) {
-            this.tabs.push(tab);
-            this.saveTabs();
+        if (exists) {
+            this.router.navigateByUrl(tab.link);
+            return;
         }
-        this.router.navigateByUrl(tab.link);
+        this.router.navigateByUrl(tab.link).then((success) => {
+            if (success !== false && !this.tabs.find(t => t.id === tab.id)) {
+                this.tabs.push(tab);
+                this.saveTabs();
+            }
+        });
     }
 
     public removeTab(index: number, tab: Tab) {

@@ -1,0 +1,415 @@
+<section class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6 gap-6">
+
+  @if (isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (beneficient(); as b) {
+    <div class="flex items-center gap-3">
+      <div class="flex flex-col">
+        <h1 class="text-2xl font-semibold m-0">{{ b.title }} {{ b.firstname }} {{ b.firstLastname }} {{ b.secondLastname }}</h1>
+        <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Bienhechor #{{ b.beneficientNumber }}</span>
+      </div>
+      <span class="ml-auto px-3 py-1 rounded-full text-sm font-medium"
+        [class]="b.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+        {{ b.isActive ? 'Activo' : 'Inactivo' }}
+      </span>
+    </div>
+
+    <!-- Personal -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Información personal</p>
+        @if (editingSection() !== 'personal') {
+          <button type="button" matIconButton (click)="startEdit('personal')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'personal') {
+          <form [formGroup]="personalForm" class="grid grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Título</mat-label>
+              <mat-select formControlName="title">
+                <mat-option value="Sr">Señor</mat-option>
+                <mat-option value="Sra">Señora</mat-option>
+                <mat-option value="Srta">Señorita</mat-option>
+                <mat-option value="Srto">Señorito</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input matInput formControlName="firstname" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido paterno</mat-label>
+              <input matInput formControlName="firstLastname" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido materno</mat-label>
+              <input matInput formControlName="secondLastname" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Género</mat-label>
+              <mat-select formControlName="genre">
+                <mat-option value="M">Masculino</mat-option>
+                <mat-option value="F">Femenino</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha de nacimiento</mat-label>
+              <input matInput formControlName="birthday" [matDatepicker]="pickerBirthday" />
+              <mat-datepicker-toggle matIconSuffix [for]="pickerBirthday"></mat-datepicker-toggle>
+              <mat-datepicker #pickerBirthday></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Estado civil</mat-label>
+              <mat-select formControlName="maritalStatus">
+                <mat-option value="Soltero">Soltero/a</mat-option>
+                <mat-option value="Casado">Casado/a</mat-option>
+                <mat-option value="Divorciado">Divorciado/a</mat-option>
+                <mat-option value="Viudo">Viudo/a</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Aniversario de boda</mat-label>
+              <input matInput formControlName="weddingAnniversary" [matDatepicker]="pickerAnniv" />
+              <mat-datepicker-toggle matIconSuffix [for]="pickerAnniv"></mat-datepicker-toggle>
+              <mat-datepicker #pickerAnniv></mat-datepicker>
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="savePersonal()" [disabled]="personalForm.invalid || isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Título</span>
+              <span class="text-sm">{{ b.title || '-' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre</span>
+              <span class="text-sm">{{ b.firstname }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Apellido paterno</span>
+              <span class="text-sm">{{ b.firstLastname }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Apellido materno</span>
+              <span class="text-sm">{{ b.secondLastname || '-' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Género</span>
+              <span class="text-sm">{{ b.genre | gender }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Fecha de nacimiento</span>
+              <span class="text-sm">{{ b.birthday | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Estado civil</span>
+              <span class="text-sm">{{ b.maritalStatus }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Aniversario de boda</span>
+              <span class="text-sm">{{ b.weddingAniversary ? (b.weddingAniversary | date:'dd/MM/yyyy') : '-' }}</span>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Domicilio -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Domicilio</p>
+        @if (editingSection() !== 'address') {
+          <button type="button" matIconButton (click)="startEdit('address')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'address') {
+          <form [formGroup]="addressForm" class="grid grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Calle</mat-label>
+              <input matInput formControlName="street" />
+            </mat-form-field>
+            <div class="grid grid-cols-2 gap-4">
+              <mat-form-field appearance="outline">
+                <mat-label>No. exterior</mat-label>
+                <input matInput formControlName="noExt" />
+                <span matTextPrefix>#</span>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>No. interior</mat-label>
+                <input matInput formControlName="noInt" />
+              </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Colonia / Barrio</mat-label>
+              <input matInput formControlName="neighborhood" />
+              @if (addressForm.hasError('exclusiveFields')) {
+                <mat-error>Solo uno de Colonia o Localidad</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Localidad</mat-label>
+              <input matInput formControlName="locality" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Municipio / Delegación</mat-label>
+              <input matInput formControlName="city" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Estado</mat-label>
+              <input matInput formControlName="state" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Código postal</mat-label>
+              <input matInput formControlName="zipCode" maxlength="5" />
+              @if (addressForm.get('zipCode')?.hasError('pattern')) {
+                <mat-error>Debe tener exactamente 5 dígitos</mat-error>
+              }
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="saveAddress()" [disabled]="addressForm.invalid || isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Calle</span>
+              <span class="text-sm">{{ b.address.street }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Número ext / int</span>
+              <span class="text-sm">#{{ b.address.numeration.noExt }}{{ b.address.numeration.noInt ? ' ' + b.address.numeration.noInt : '' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Colonia / Localidad</span>
+              <span class="text-sm">{{ b.address.neighborhood || b.address.locality || '-' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Municipio / Delegación</span>
+              <span class="text-sm">{{ b.address.city }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Estado</span>
+              <span class="text-sm">{{ b.address.state }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Código postal</span>
+              <span class="text-sm">{{ b.address.zipCode }}</span>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Contacto -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Contacto</p>
+        @if (editingSection() !== 'contact') {
+          <button type="button" matIconButton (click)="startEdit('contact')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'contact') {
+          <form [formGroup]="contactForm" class="grid grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Correo electrónico</mat-label>
+              <input type="email" matInput formControlName="email" />
+              @if (contactForm.get('email')?.hasError('email')) {
+                <mat-error>Correo inválido</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Teléfono</mat-label>
+              <input type="tel" matInput formControlName="phoneNumber" />
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="saveContact()" [disabled]="contactForm.invalid || isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <div class="grid grid-cols-2 gap-4 py-2">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Correo electrónico</span>
+              <span class="text-sm">{{ b.maskedEmail || b.email || '-' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Teléfono</span>
+              <span class="text-sm">{{ b.phoneNumber || '-' }}</span>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Iglesia -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Iglesia</p>
+        @if (editingSection() !== 'church') {
+          <button type="button" matIconButton (click)="startEdit('church')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'church') {
+          <form [formGroup]="churchForm" class="pt-2">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Iglesia</mat-label>
+              <input matInput formControlName="church" [matAutocomplete]="churchAuto" />
+              <mat-autocomplete #churchAuto="matAutocomplete" [displayWith]="displayChurchFn">
+                @for (c of churchList; track c.id) {
+                  <mat-option [value]="c">
+                    <div class="flex flex-col">
+                      <span class="font-semibold">{{ c.ecclesialIdentity.name }}</span>
+                      <span class="text-xs">{{ c.ecclesialIdentity.parroquia }} · {{ c.address.city }}</span>
+                    </div>
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="saveChurch()" [disabled]="churchForm.invalid || isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <div class="py-2">
+            @if (b.church) {
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre</span>
+                  <span class="text-sm">{{ b.church.ecclesialIdentity.name }}</span>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Vicaría</span>
+                  <span class="text-sm">{{ b.church.ecclesialIdentity.vicaria || '-' }}</span>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Decanato</span>
+                  <span class="text-sm">{{ b.church.ecclesialIdentity.decanato || '-' }}</span>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Parroquia</span>
+                  <span class="text-sm">{{ b.church.ecclesialIdentity.parroquia || '-' }}</span>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Capilla</span>
+                  <span class="text-sm">{{ b.church.ecclesialIdentity.capilla || '-' }}</span>
+                </div>
+              </div>
+            } @else {
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Sin iglesia asignada</span>
+            }
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Datos fiscales -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Datos fiscales</p>
+        @if (editingSection() !== 'tax') {
+          <button type="button" matIconButton (click)="startEdit('tax')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'tax') {
+          <form [formGroup]="taxForm" class="grid grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Persona</mat-label>
+              <mat-select formControlName="person">
+                <mat-option [value]="null">Sin datos fiscales</mat-option>
+                <mat-option value="FISICA">Física</mat-option>
+                <mat-option value="MORAL">Moral</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre registrado</mat-label>
+              <input matInput formControlName="registeredName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>RFC</mat-label>
+              <input matInput formControlName="rfc" />
+              @if (taxForm.get('rfc')?.hasError('minlength') || taxForm.get('rfc')?.hasError('maxlength')) {
+                <mat-error>RFC inválido para el tipo de persona</mat-error>
+              }
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="saveTax()" [disabled]="taxForm.invalid || isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          @if (b.person) {
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
+              <div class="flex flex-col gap-0.5">
+                <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Tipo de persona</span>
+                <span class="text-sm">{{ b.person }}</span>
+              </div>
+              <div class="flex flex-col gap-0.5">
+                <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre registrado</span>
+                <span class="text-sm">{{ b.registeredName || '-' }}</span>
+              </div>
+              <div class="flex flex-col gap-0.5">
+                <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">RFC</span>
+                <span class="text-sm">{{ b.maskedRFC || b.rfc || '-' }}</span>
+              </div>
+            </div>
+          } @else {
+            <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] py-2">Sin datos fiscales registrados</p>
+          }
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Privacidad -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Privacidad</p>
+        @if (editingSection() !== 'privacy') {
+          <button type="button" matIconButton (click)="startEdit('privacy')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'privacy') {
+          <form [formGroup]="privacyForm" class="pt-2">
+            <mat-checkbox formControlName="keepPrivate">Mantener datos privados</mat-checkbox>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="savePrivacy()" [disabled]="isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <div class="py-2 flex items-center gap-2">
+            <mat-icon class="text-[color:var(--mat-sys-on-surface-variant)]">
+              {{ b.keepPrivate ? 'lock' : 'lock_open' }}
+            </mat-icon>
+            <span class="text-sm">{{ b.keepPrivate ? 'Datos privados' : 'Datos visibles' }}</span>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+
+</section>

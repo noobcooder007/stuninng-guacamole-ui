@@ -109,4 +109,13 @@ export class CollectorComponent implements OnInit, AfterViewInit {
             permission: 'add:collector'
         });
     }
+
+    openDetail(row: Collector) {
+        this.tabService.openTab({
+            id: `collector-${row.id}`,
+            label: `${row.firstname} ${row.firstLastname}`,
+            link: `/collectors/${row.id}`,
+            permission: 'view:collector'
+        });
+    }
 }

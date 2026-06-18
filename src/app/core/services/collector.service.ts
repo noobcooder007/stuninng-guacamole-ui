@@ -19,6 +19,8 @@ export interface Address {
 
 export interface PaymentData {
     commissionPercent: number;
+    nomina?: number;
+    transportAllowance?: number;
     bank: string;
     reference: string;
 }
@@ -95,6 +97,40 @@ export interface CreateCollectorDto {
     password: string;
 }
 
+export interface UpdateCollectorPersonalDto {
+    firstname?: string;
+    firstLastname?: string;
+    secondLastname?: string | null;
+}
+
+export interface UpdateCollectorAddressDto {
+    street?: string;
+    noExt?: string;
+    noInt?: string;
+    neighborhood?: string | null;
+    locality?: string | null;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+}
+
+export interface UpdateCollectorContactDto {
+    phoneNumber?: string;
+    telephoneNumber?: string | null;
+}
+
+export interface UpdateCollectorPaymentDto {
+    commissionPercent?: number;
+    nomina?: number;
+    transportAllowance?: number;
+    bank?: string;
+    reference?: string;
+}
+
+export interface UpdateCollectorNotesDto {
+    notes: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CollectorService {
     private readonly http = inject(HttpClient);
@@ -112,6 +148,15 @@ export class CollectorService {
         return this.http.get<PaginatedResponse>(`${this.apiUrl}/collector`, { params }).pipe(
             catchError((error) => {
                 this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    getCollector(id: string): Observable<{ statusCode: number; data: Collector }> {
+        return this.http.get<{ statusCode: number; data: Collector }>(`${this.apiUrl}/collector/${id}`).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al obtener datos del colector', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -155,6 +200,51 @@ export class CollectorService {
         return this.http.post(`${environment.apiBaseUrl}/collector`, formData).pipe(
             catchError((error) => {
                 this._snackbar.open('Error al crear colector', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchPersonal(id: string, dto: UpdateCollectorPersonalDto): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/collector/${id}/personal`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar información personal', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchAddress(id: string, dto: UpdateCollectorAddressDto): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/collector/${id}/address`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar domicilio', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchContact(id: string, dto: UpdateCollectorContactDto): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/collector/${id}/contact`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar contacto', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchPayment(id: string, dto: UpdateCollectorPaymentDto): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/collector/${id}/payment`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar datos de pago', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    patchNotes(id: string, dto: UpdateCollectorNotesDto): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/collector/${id}/notes`, dto).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al actualizar notas', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

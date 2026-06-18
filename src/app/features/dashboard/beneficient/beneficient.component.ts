@@ -112,4 +112,13 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
         });
     }
 
+    openDetail(row: Beneficient) {
+        this.tabService.openTab({
+            id: `beneficient-${row.id}`,
+            label: `${row.firstname} ${row.firstLastname}`,
+            link: `/beneficents/${row.id}`,
+            permission: 'view:beneficient'
+        });
+    }
+
 }

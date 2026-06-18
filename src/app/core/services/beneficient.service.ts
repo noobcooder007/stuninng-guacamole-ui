@@ -18,7 +18,7 @@ export interface Address {
 }
 
 export interface Beneficient {
-    id: number;
+    id: string | number;
     title: string;
     firstname: string;
     firstLastname: string;
@@ -36,6 +36,22 @@ export interface Beneficient {
     createdAt: Date;
     isActive: boolean;
     beneficientNumber: number;
+    maskedEmail?: string;
+    maskedRFC?: string;
+}
+
+export interface BeneficientDetail extends Beneficient {
+    keepPrivate: boolean;
+    church?: {
+        id: string;
+        ecclesialIdentity: {
+            name: string;
+            vicaria?: string;
+            decanato?: string;
+            parroquia?: string;
+            capilla?: string;
+        };
+    };
 }
 
 export interface PaginatedMetadata {
@@ -88,6 +104,47 @@ export interface UpdateBeneficientDto extends CreateBeneficientDto {
     id: number;
 }
 
+export interface UpdatePersonalDto {
+    title?: string;
+    firstname?: string;
+    firstLastname?: string;
+    secondLastname?: string;
+    birthday?: Date | string;
+    genre?: string;
+    maritalStatus?: string;
+    weddingAnniversary?: Date | string | null;
+}
+
+export interface UpdateAddressDto {
+    street?: string;
+    noExt?: string;
+    noInt?: string;
+    neighborhood?: string | null;
+    locality?: string | null;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+}
+
+export interface UpdateContactDto {
+    email?: string | null;
+    phoneNumber?: string | null;
+}
+
+export interface UpdateChurchDto {
+    churchId: string;
+}
+
+export interface UpdateTaxDto {
+    person?: 'FISICA' | 'MORAL' | null;
+    registeredName?: string;
+    rfc?: string;
+}
+
+export interface UpdatePrivacyDto {
+    keepPrivate: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class BeneficientService {
     private readonly http = inject(HttpClient);
@@ -112,9 +169,7 @@ export class BeneficientService {
             .get<PaginatedResponse>(`${environment.apiBaseUrl}/beneficient`, { params })
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al obtener bienhechores', 'Cerrar', {
-                        duration: 5000,
-                    });
+                    this.snackbar.open('Error al obtener bienhechores', 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -131,17 +186,15 @@ export class BeneficientService {
             );
     }
 
-    getBeneficent(id: number): Observable<{ statusCode: number; data: Beneficient }> {
-        return this.http.get<{ statusCode: number; data: Beneficient }>(
-            `${environment.apiBaseUrl}/beneficents/${id}`
-        ).pipe(
-            catchError((error) => {
-                this.snackbar.open('Error al obtener datos del bienhechore', 'Cerrar', {
-                    duration: 5000,
-                });
-                return throwError(() => error);
-            })
-        );
+    getBeneficent(id: string | number): Observable<{ statusCode: number; data: BeneficientDetail }> {
+        return this.http
+            .get<{ statusCode: number; data: BeneficientDetail }>(`${environment.apiBaseUrl}/beneficient/${id}`)
+            .pipe(
+                catchError((error) => {
+                    this.snackbar.open('Error al obtener datos del bienhechore', 'Cerrar', { duration: 5000 });
+                    return throwError(() => error);
+                })
+            );
     }
 
     create(beneficent: CreateBeneficientDto): Observable<any> {
@@ -149,9 +202,7 @@ export class BeneficientService {
             .post(`${environment.apiBaseUrl}/beneficient`, beneficent)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al crear bienhechore', 'Cerrar', {
-                        duration: 5000,
-                    });
+                    this.snackbar.open('Error al crear bienhechore', 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -163,9 +214,7 @@ export class BeneficientService {
             .put(`${environment.apiBaseUrl}/beneficents/${id}`, updateData)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al actualizar bienhechore', 'Cerrar', {
-                        duration: 5000,
-                    });
+                    this.snackbar.open('Error al actualizar bienhechore', 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -176,11 +225,63 @@ export class BeneficientService {
             .delete(`${environment.apiBaseUrl}/beneficents/${id}`)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al eliminar bienhechore', 'Cerrar', {
-                        duration: 5000,
-                    });
+                    this.snackbar.open('Error al eliminar bienhechore', 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
+    }
+
+    patchPersonal(id: string | number, dto: UpdatePersonalDto): Observable<any> {
+        return this.http
+            .patch(`${environment.apiBaseUrl}/beneficient/${id}/personal`, dto)
+            .pipe(catchError((error) => {
+                this.snackbar.open('Error al actualizar información personal', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            }));
+    }
+
+    patchAddress(id: string | number, dto: UpdateAddressDto): Observable<any> {
+        return this.http
+            .patch(`${environment.apiBaseUrl}/beneficient/${id}/address`, dto)
+            .pipe(catchError((error) => {
+                this.snackbar.open('Error al actualizar domicilio', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            }));
+    }
+
+    patchContact(id: string | number, dto: UpdateContactDto): Observable<any> {
+        return this.http
+            .patch(`${environment.apiBaseUrl}/beneficient/${id}/contact`, dto)
+            .pipe(catchError((error) => {
+                this.snackbar.open('Error al actualizar contacto', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            }));
+    }
+
+    patchChurch(id: string | number, dto: UpdateChurchDto): Observable<any> {
+        return this.http
+            .patch(`${environment.apiBaseUrl}/beneficient/${id}/church`, dto)
+            .pipe(catchError((error) => {
+                this.snackbar.open('Error al actualizar iglesia', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            }));
+    }
+
+    patchTax(id: string | number, dto: UpdateTaxDto): Observable<any> {
+        return this.http
+            .patch(`${environment.apiBaseUrl}/beneficient/${id}/tax`, dto)
+            .pipe(catchError((error) => {
+                this.snackbar.open('Error al actualizar datos fiscales', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            }));
+    }
+
+    patchPrivacy(id: string | number, dto: UpdatePrivacyDto): Observable<any> {
+        return this.http
+            .patch(`${environment.apiBaseUrl}/beneficient/${id}/privacy`, dto)
+            .pipe(catchError((error) => {
+                this.snackbar.open('Error al actualizar privacidad', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            }));
     }
 }

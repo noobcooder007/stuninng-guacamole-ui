@@ -26,6 +26,11 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(m => m.CreateCollectorComponent),
             },
             {
+                path: 'collectors/:id',
+                loadComponent: () => import('./collector/detail/colector-detail.component')
+                    .then(m => m.ColectorDetailComponent),
+            },
+            {
                 path: 'beneficients',
                 loadComponent: () => import('./beneficient/beneficient.component')
                     .then(m => m.BeneficientComponent),
@@ -49,6 +54,11 @@ export const DASHBOARD_ROUTES: Routes = [
                 path: 'churches/create',
                 loadComponent: () => import('./church/create/create-church.component')
                     .then(c => c.CreateChurchComponent),
+            },
+            {
+                path: 'churches/:id',
+                loadComponent: () => import('./church/detail/church-detail.component')
+                    .then(m => m.ChurchDetailComponent),
             },
             {
                 path: 'receipts/specials',

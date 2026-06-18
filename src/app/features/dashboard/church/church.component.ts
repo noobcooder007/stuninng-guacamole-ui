@@ -126,4 +126,13 @@ export class ChurchComponent implements OnInit, AfterViewInit {
             permission: 'add:church'
         });
     }
+
+    openDetail(row: Church) {
+        this.tabService.openTab({
+            id: `church-${row.id}`,
+            label: row.ecclesialIdentity.name,
+            link: `/churches/${row.id}`,
+            permission: 'view:church'
+        });
+    }
 }

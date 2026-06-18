@@ -1,0 +1,283 @@
+<section class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6 gap-6">
+
+  @if (isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (church(); as c) {
+    <div class="flex items-center gap-3">
+      <div class="flex flex-col">
+        <h1 class="text-2xl font-semibold m-0">{{ c.ecclesialIdentity.name }}</h1>
+        <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">
+          {{ c.ecclesialIdentity.parroquia }}{{ c.ecclesialIdentity.capilla ? ' · ' + c.ecclesialIdentity.capilla : '' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Identidad eclesiástica -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Identidad eclesiástica</p>
+        @if (editingSection() !== 'identity') {
+          <button type="button" matIconButton (click)="startEdit('identity')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'identity') {
+          <form [formGroup]="identityForm" class="grid grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input matInput formControlName="name" aria-label="Nombre" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Vicaría</mat-label>
+              <input matInput formControlName="vicaria" aria-label="Vicaría" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Decanato</mat-label>
+              <input matInput formControlName="decanato" aria-label="Decanato" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Parroquia</mat-label>
+              <input matInput formControlName="parroquia" aria-label="Parroquia" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Capilla</mat-label>
+              <input matInput formControlName="capilla" aria-label="Capilla" />
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="saveIdentity()" [disabled]="identityForm.invalid || isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre</span>
+              <span class="text-sm">{{ c.ecclesialIdentity.name }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Vicaría</span>
+              <span class="text-sm">{{ c.ecclesialIdentity.vicaria || '-' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Decanato</span>
+              <span class="text-sm">{{ c.ecclesialIdentity.decanato || '-' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Parroquia</span>
+              <span class="text-sm">{{ c.ecclesialIdentity.parroquia || '-' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Capilla</span>
+              <span class="text-sm">{{ c.ecclesialIdentity.capilla || '-' }}</span>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Domicilio -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Domicilio</p>
+        @if (editingSection() !== 'address') {
+          <button type="button" matIconButton (click)="startEdit('address')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'address') {
+          <form [formGroup]="addressForm" class="grid grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Calle</mat-label>
+              <input matInput formControlName="street" aria-label="Calle" />
+            </mat-form-field>
+            <div class="grid grid-cols-2 gap-4">
+              <mat-form-field appearance="outline">
+                <mat-label>No. exterior</mat-label>
+                <input matInput formControlName="noExt" aria-label="Número exterior" />
+                <span matTextPrefix>#</span>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>No. interior</mat-label>
+                <input matInput formControlName="noInt" aria-label="Número interior" />
+              </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Colonia / Barrio</mat-label>
+              <input matInput formControlName="neighborhood" aria-label="Colonia" />
+              @if (addressForm.hasError('exclusiveFields')) {
+                <mat-error>Solo uno de Colonia o Localidad</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Localidad</mat-label>
+              <input matInput formControlName="locality" aria-label="Localidad" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Municipio / Delegación</mat-label>
+              <input matInput formControlName="city" aria-label="Ciudad" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Estado</mat-label>
+              <input matInput formControlName="state" aria-label="Estado" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Código postal</mat-label>
+              <input matInput formControlName="zipCode" maxlength="5" aria-label="Código postal" />
+              @if (addressForm.get('zipCode')?.hasError('pattern')) {
+                <mat-error>Debe tener exactamente 5 dígitos</mat-error>
+              }
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="saveAddress()" [disabled]="addressForm.invalid || isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Calle</span>
+              <span class="text-sm">{{ c.address.street }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Número ext / int</span>
+              <span class="text-sm">#{{ c.address.numeration.noExt }}{{ c.address.numeration.noInt ? ' ' + c.address.numeration.noInt : '' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Colonia / Localidad</span>
+              <span class="text-sm">{{ c.address.neighborhood || c.address.locality || '-' }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Municipio / Delegación</span>
+              <span class="text-sm">{{ c.address.city }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Estado</span>
+              <span class="text-sm">{{ c.address.state }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Código postal</span>
+              <span class="text-sm">{{ c.address.zipCode }}</span>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Párroco -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Párroco</p>
+        @if (editingSection() !== 'priest') {
+          <button type="button" matIconButton (click)="startEdit('priest')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'priest') {
+          <form [formGroup]="priestForm" class="grid grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input matInput formControlName="firstname" aria-label="Nombre del párroco" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido paterno</mat-label>
+              <input matInput formControlName="firstLastname" aria-label="Apellido paterno del párroco" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido materno</mat-label>
+              <input matInput formControlName="secondLastname" aria-label="Apellido materno del párroco" />
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="savePriest()" [disabled]="priestForm.invalid || isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <div class="py-2">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre completo</span>
+              <span class="text-sm">{{ c.priest | fullname }}</span>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Vicario auxiliar -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Vicario auxiliar</p>
+        @if (editingSection() !== 'auxiliar') {
+          <button type="button" matIconButton (click)="startEdit('auxiliar')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'auxiliar') {
+          <form [formGroup]="auxiliarForm" class="grid grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input matInput formControlName="firstname" aria-label="Nombre del vicario" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido paterno</mat-label>
+              <input matInput formControlName="firstLastname" aria-label="Apellido paterno del vicario" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido materno</mat-label>
+              <input matInput formControlName="secondLastname" aria-label="Apellido materno del vicario" />
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="saveAuxiliar()" [disabled]="auxiliarForm.invalid || isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <div class="py-2">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre completo</span>
+              <span class="text-sm">{{ c.auxiliarPriest | fullname }}</span>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Teléfono -->
+    <mat-card>
+      <div class="flex items-center justify-between px-4 pt-4 pb-2">
+        <p class="text-base font-semibold m-0">Teléfono</p>
+        @if (editingSection() !== 'phone') {
+          <button type="button" matIconButton (click)="startEdit('phone')"><mat-icon>edit</mat-icon></button>
+        }
+      </div>
+      <mat-card-content>
+        @if (editingSection() === 'phone') {
+          <form [formGroup]="phoneForm" class="pt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Teléfono</mat-label>
+              <input type="tel" matInput formControlName="phoneNumber" aria-label="Teléfono de la iglesia" />
+            </mat-form-field>
+          </form>
+          <div class="flex gap-2 justify-end mt-4">
+            <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
+            <button type="button" matButton="filled" (click)="savePhone()" [disabled]="isSaving()">
+              @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
+            </button>
+          </div>
+        } @else {
+          <p class="text-sm py-2">{{ c.phoneNumber || '-' }}</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+
+</section>
