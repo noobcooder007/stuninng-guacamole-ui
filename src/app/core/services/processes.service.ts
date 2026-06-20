@@ -1,9 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from 'environments/environment.development';
 import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface ProcessRequest {
     month: string;
@@ -29,16 +28,10 @@ export interface PeriodStatus {
 @Injectable({ providedIn: 'root' })
 export class ProcessesService {
     private readonly http = inject(HttpClient);
-    private readonly _snackbar = inject(MatSnackBar);
     private readonly apiUrl = environment.apiBaseUrl;
 
     getPeriodStatus(): Observable<PeriodStatusResponse> {
-        return this.http.get<PeriodStatusResponse>(`${this.apiUrl}/periods/current`).pipe(
-            catchError((error) => {
-                this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
-                return throwError(() => error);
-            })
-        );
+        return this.http.get<PeriodStatusResponse>(`${this.apiUrl}/periods/current`);
     }
 
     openPeriod(): Observable<PeriodStatusResponse> {

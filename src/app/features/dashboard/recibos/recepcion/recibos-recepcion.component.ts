@@ -258,7 +258,7 @@ export class RecibosRecepcionComponent implements OnInit, AfterViewInit {
         dialogRef.afterClosed().subscribe((paymentMethod: string | undefined) => {
             if (!paymentMethod) return;
             const dto: { receipts: MarkAsPaidReceiptDto[] } = {
-                receipts: recibos.map(r => ({ folio: r.folio, paymentMethod })),
+                receipts: recibos.map(r => ({ receiptFolio: r.folio, paymentMethod })),
             };
             this.isConfirming.set(true);
             this.recibosService.marcarComoPagados(dto).subscribe({

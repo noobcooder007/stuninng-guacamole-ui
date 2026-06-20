@@ -1,8 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { vi } from 'vitest';
 import { ProcessesService } from '@app/core/services/processes.service';
 import { environment } from 'environments/environment.development';
 
@@ -11,15 +9,14 @@ const BASE = `${environment.apiBaseUrl}`;
 describe('ProcessesService', () => {
   let service: ProcessesService;
   let httpMock: HttpTestingController;
-  const snackBarSpy = { open: vi.fn() };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         ProcessesService,
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: MatSnackBar, useValue: snackBarSpy },
       ],
     });
     service = TestBed.inject(ProcessesService);
@@ -28,7 +25,6 @@ describe('ProcessesService', () => {
 
   afterEach(() => {
     httpMock.verify();
-    vi.clearAllMocks();
   });
 
   describe('getPeriodStatus', () => {
@@ -39,11 +35,12 @@ describe('ProcessesService', () => {
       req.flush({ statusCode: 200, data: {}, timestamp: '' });
     });
 
-    it('should show snackbar on error', () => {
-      service.getPeriodStatus().subscribe({ error: () => {} });
+    it('should propagate errors for the component to handle', () => {
+      let caught = false;
+      service.getPeriodStatus().subscribe({ error: () => { caught = true; } });
       httpMock.expectOne(`${BASE}/periods/current`)
         .flush('err', { status: 500, statusText: 'Server Error' });
-      expect(snackBarSpy.open).toHaveBeenCalledWith('Error al obtener colectores', 'Cerrar', { duration: 5000 });
+      expect(caught).toBe(true);
     });
   });
 

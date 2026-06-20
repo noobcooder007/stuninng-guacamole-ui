@@ -14,6 +14,7 @@ describe('BeneficientService', () => {
   const snackBarSpy = { open: vi.fn() };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         BeneficientService,
@@ -84,16 +85,16 @@ describe('BeneficientService', () => {
   });
 
   describe('getBeneficent', () => {
-    it('should GET /beneficents/:id', () => {
+    it('should GET /beneficient/:id', () => {
       service.getBeneficent(42).subscribe();
-      const req = httpMock.expectOne(`${environment.apiBaseUrl}/beneficents/42`);
+      const req = httpMock.expectOne(`${BASE}/42`);
       expect(req.request.method).toBe('GET');
       req.flush({ statusCode: 200, data: {} });
     });
 
     it('should show snackbar on error', () => {
       service.getBeneficent(99).subscribe({ error: () => {} });
-      httpMock.expectOne(`${environment.apiBaseUrl}/beneficents/99`).flush('err', { status: 404, statusText: 'Not Found' });
+      httpMock.expectOne(`${BASE}/99`).flush('err', { status: 404, statusText: 'Not Found' });
       expect(snackBarSpy.open).toHaveBeenCalledWith('Error al obtener datos del bienhechore', 'Cerrar', { duration: 5000 });
     });
   });

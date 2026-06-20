@@ -9,11 +9,13 @@ const TAB_B: Tab = { id: 'collectors', label: 'Colectores', link: '/dashboard/co
 
 describe('TabService', () => {
   let service: TabService;
-  const routerSpy = { navigateByUrl: vi.fn(), url: '/dashboard/assignments' };
+  // navigateByUrl returns a Promise; the service calls .then() on it when adding a new tab
+  const routerSpy = { navigateByUrl: vi.fn().mockResolvedValue(true), url: '/dashboard/assignments' };
   const authSpy = { hasPermission: vi.fn().mockReturnValue(true) };
 
   beforeEach(() => {
     sessionStorage.clear();
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         TabService,
@@ -23,30 +25,37 @@ describe('TabService', () => {
     });
     service = TestBed.inject(TabService);
     vi.clearAllMocks();
+    routerSpy.navigateByUrl.mockResolvedValue(true);
   });
 
   describe('openTab', () => {
-    it('should add a new tab and navigate to its link', () => {
+    it('should add a new tab and navigate to its link', async () => {
       service.openTab(TAB_A);
+      await Promise.resolve();
       expect(service.tabs).toContain(TAB_A);
       expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(TAB_A.link);
     });
 
-    it('should not duplicate an existing tab', () => {
+    it('should not duplicate an existing tab', async () => {
       service.openTab(TAB_A);
+      await Promise.resolve();
       service.openTab(TAB_A);
+      await Promise.resolve();
       expect(service.tabs.filter(t => t.id === TAB_A.id)).toHaveLength(1);
     });
 
-    it('should navigate even when tab already exists', () => {
+    it('should navigate even when tab already exists', async () => {
       service.openTab(TAB_A);
+      await Promise.resolve();
       vi.clearAllMocks();
+      routerSpy.navigateByUrl.mockResolvedValue(true);
       service.openTab(TAB_A);
       expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(TAB_A.link);
     });
 
-    it('should persist tabs in sessionStorage', () => {
+    it('should persist tabs in sessionStorage', async () => {
       service.openTab(TAB_A);
+      await Promise.resolve();
       const stored = JSON.parse(sessionStorage.getItem('open_tabs')!);
       expect(stored).toHaveLength(1);
       expect(stored[0].id).toBe(TAB_A.id);
@@ -54,10 +63,13 @@ describe('TabService', () => {
   });
 
   describe('removeTab', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       service.openTab(TAB_A);
+      await Promise.resolve();
       service.openTab(TAB_B);
+      await Promise.resolve();
       vi.clearAllMocks();
+      routerSpy.navigateByUrl.mockResolvedValue(true);
     });
 
     it('should remove the tab at the given index', () => {
@@ -74,6 +86,7 @@ describe('TabService', () => {
     it('should navigate to "/" when closing the last remaining tab', () => {
       service.removeTab(1, TAB_B);
       vi.clearAllMocks();
+      routerSpy.navigateByUrl.mockResolvedValue(true);
       Object.defineProperty(routerSpy, 'url', { get: () => TAB_A.link, configurable: true });
       service.removeTab(0, TAB_A);
       expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/');

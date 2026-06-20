@@ -83,7 +83,7 @@ describe('RecibosService', () => {
 
   describe('marcarComoPagados', () => {
     it('should POST to /receipts/mark-as-paid with dto', () => {
-      const dto = { receipts: [{ folio: 'REC-001', paymentMethod: 'CASH' }] };
+      const dto = { receipts: [{ receiptFolio: 'REC-001', paymentMethod: 'CASH' }] };
       service.marcarComoPagados(dto).subscribe();
       const req = httpMock.expectOne(`${BASE}/mark-as-paid`);
       expect(req.request.method).toBe('POST');

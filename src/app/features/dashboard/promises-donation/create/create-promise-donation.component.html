@@ -18,7 +18,7 @@
           @for (beneficient of beneficientList(); track beneficient.id) {
             <mat-option [value]="beneficient">
               {{
-                `${beneficient.beneficientNumber} - ${beneficient.firstname} ${beneficient.firstLastname} ${beneficient.secondLastname ?? ''}`
+                `${beneficient.beneficientNumber} - ${beneficient.firstname} ${beneficient.firstLastname} ${beneficient.secondLastname}`
               }}
             </mat-option>
           }

@@ -8,10 +8,12 @@ import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '@app/core/services/auth.service';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
 import { Tab, TabService } from '@app/core/services/tab.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { OverviewComponent } from "./overview/overview.component";
 
 export interface NavItem {
@@ -205,7 +207,7 @@ export const MENU_CONFIG: NavCategory[] = [
     RouterLinkWithHref,
     RouterLinkActive,
     HasPermissionPipe,
-    OverviewComponent
+    OverviewComponent,
 ],
     templateUrl: './dashboard-layout.component.html',
 })
@@ -222,6 +224,7 @@ export class DashboardLayoutComponent implements OnDestroy {
     constructor(
         public readonly tabService: TabService,
         public readonly router: Router,
+        private readonly dialog: MatDialog,
     ) {
         const media = inject(MediaMatcher);
         this._mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -246,8 +249,17 @@ export class DashboardLayoutComponent implements OnDestroy {
     });
 
     public logout(): void {
-        this.authService.logout().subscribe(() => {
-            this.router.navigateByUrl('/auth/login');
+        this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                title: 'Cerrar sesión',
+                message: '¿Estás seguro de que deseas cerrar sesión?',
+                confirmLabel: 'Cerrar sesión',
+            },
+        }).afterClosed().subscribe((confirmed) => {
+            if (!confirmed) return;
+            this.authService.logout().subscribe(() => {
+                this.router.navigateByUrl('/auth/login');
+            });
         });
     }
 

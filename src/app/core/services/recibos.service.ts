@@ -65,7 +65,7 @@ export interface ValidateReciboResponse {
 }
 
 export interface MarkAsPaidReceiptDto {
-    folio: string;
+    receiptFolio: string;
     paymentMethod: string;
 }
 

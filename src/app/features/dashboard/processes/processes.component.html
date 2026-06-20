@@ -2,10 +2,17 @@
 
   <!-- Card de estado del periodo -->
   <mat-card>
-    @if (periodStatus(); as period) {
+    @if (isLoadingPeriod()) {
+      <mat-card-content>
+        <div class="flex items-center gap-3 py-2">
+          <mat-spinner diameter="20" />
+          <span class="text-sm text-[color:var(--mat-sys-outline)]">Cargando estado del periodo…</span>
+        </div>
+      </mat-card-content>
+    } @else if (periodStatus(); as period) {
       <mat-card-header>
         <mat-card-title>{{ months[period.month - 1]?.label }} {{ period.year }}</mat-card-title>
-        <mat-card-subtitle>Periodo activo</mat-card-subtitle>
+        <mat-card-subtitle>Periodo {{ period.status === PeriodStatusEnum.OPEN ? 'activo' : 'cerrado' }}</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
@@ -22,25 +29,49 @@
               </mat-chip>
             </mat-chip-set>
           </div>
-          <div class="flex flex-col gap-2">
-            <span class="text-xs font-semibold uppercase tracking-wider text-[color:var(--mat-sys-outline)]">Recibos pendientes</span>
-            <span class="text-xl font-semibold">{{ period.pendingReceiptsCount }}</span>
-          </div>
+          @if (period.status === PeriodStatusEnum.OPEN) {
+            <div class="flex flex-col gap-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-[color:var(--mat-sys-outline)]">Recibos pendientes</span>
+              <span class="text-xl font-semibold">{{ period.pendingReceiptsCount }}</span>
+            </div>
+          }
         </div>
       </mat-card-content>
 
       <mat-card-actions align="end">
         <button type="button" matButton="filled" [disabled]="isTogglingPeriod()" (click)="togglePeriod()">
-          <span class="flex items-center gap-1">
-            <mat-icon>{{ period.status === PeriodStatusEnum.OPEN ? 'lock' : 'lock_open' }}</mat-icon>
-            {{ period.status === PeriodStatusEnum.OPEN ? 'Cerrar periodo' : 'Abrir periodo' }}
-          </span>
+          @if (isTogglingPeriod()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            <span class="flex items-center gap-1">
+              <mat-icon>{{ period.status === PeriodStatusEnum.OPEN ? 'lock' : 'lock_open' }}</mat-icon>
+              {{ period.status === PeriodStatusEnum.OPEN ? 'Cerrar periodo' : 'Abrir nuevo periodo' }}
+            </span>
+          }
         </button>
       </mat-card-actions>
     } @else {
+      <mat-card-header>
+        <mat-card-title>Sin periodo activo</mat-card-title>
+        <mat-card-subtitle>No existe ningún periodo registrado en el sistema</mat-card-subtitle>
+      </mat-card-header>
       <mat-card-content>
-        <span class="text-sm text-[color:var(--mat-sys-outline)]">Cargando estado…</span>
+        <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] mt-2">
+          Abre un nuevo periodo para comenzar a registrar comisiones y generar recibos.
+        </p>
       </mat-card-content>
+      <mat-card-actions align="end">
+        <button type="button" matButton="filled" [disabled]="isTogglingPeriod()" (click)="togglePeriod()">
+          @if (isTogglingPeriod()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            <span class="flex items-center gap-1">
+              <mat-icon>lock_open</mat-icon>
+              Abrir nuevo periodo
+            </span>
+          }
+        </button>
+      </mat-card-actions>
     }
   </mat-card>
 

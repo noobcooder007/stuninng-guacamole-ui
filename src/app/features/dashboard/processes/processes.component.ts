@@ -42,6 +42,7 @@ export class ProcessesComponent implements OnInit {
     public isProcessing = signal(false);
     public periodStatus = signal<PeriodStatus | null>(null);
     public isTogglingPeriod = signal(false);
+    public isLoadingPeriod = signal(true);
     public currentYear = new Date().getFullYear();
     public years: number[] = [];
 
@@ -89,9 +90,19 @@ export class ProcessesComponent implements OnInit {
     }
 
     loadPeriodStatus(): void {
+        this.isLoadingPeriod.set(true);
         this.processesService.getPeriodStatus().subscribe({
-            next: (res) => this.periodStatus.set(res.data),
-            error: () => this.snackbar.open('Error al obtener el estado del periodo', 'Cerrar', { duration: 5000 }),
+            next: (res) => {
+                this.periodStatus.set(res.data);
+                this.isLoadingPeriod.set(false);
+            },
+            error: (err) => {
+                this.periodStatus.set(null);
+                this.isLoadingPeriod.set(false);
+                if (err?.status !== 404) {
+                    this.snackbar.open('Error al obtener el estado del periodo', 'Cerrar', { duration: 5000 });
+                }
+            },
         });
     }
 
