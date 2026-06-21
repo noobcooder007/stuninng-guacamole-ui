@@ -14,6 +14,8 @@ import { addressExclusiveFieldsValidator } from '@app/shared/validators/exclusiv
 import { debounceTime } from 'rxjs';
 import { AddressPipe } from '@app/shared/pipes/address.pipe';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'create-beneficient',
@@ -30,10 +32,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatIconModule,
         MatProgressSpinnerModule,
         AddressPipe,
+        HasPermissionPipe,
     ]
 })
 
 export class CreateBeneficientComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     public isLoading = signal(false);
     private readonly beneficientService = inject(BeneficientService);
     private readonly churchService = inject(ChurchService);

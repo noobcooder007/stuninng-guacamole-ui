@@ -17,118 +17,157 @@ export const DASHBOARD_ROUTES: Routes = [
             },
             {
                 path: 'collectors',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_COLLECTOR },
                 loadComponent: () => import('./collector/collector.component')
                     .then(m => m.CollectorComponent),
             },
             {
                 path: 'collectors/create',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_COLLECTOR },
                 loadComponent: () => import('./collector/create/create-collector.component')
                     .then(m => m.CreateCollectorComponent),
             },
             {
                 path: 'collectors/:id',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_COLLECTOR },
                 loadComponent: () => import('./collector/detail/colector-detail.component')
                     .then(m => m.ColectorDetailComponent),
             },
             {
                 path: 'beneficients',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_BENEFICIENT },
                 loadComponent: () => import('./beneficient/beneficient.component')
                     .then(m => m.BeneficientComponent),
             },
             {
                 path: 'beneficients/create',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_BENEFICIENT },
                 loadComponent: () => import('./beneficient/create/create-beneficient.component')
                     .then(m => m.CreateBeneficientComponent),
             },
             {
                 path: 'beneficents/:id',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_BENEFICIENT },
                 loadComponent: () => import('./beneficient/detail/beneficient-detail.component')
                     .then(m => m.BeneficientDetailComponent),
             },
             {
                 path: 'churches',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_CHURCH },
                 loadComponent: () => import('./church/church.component')
                     .then(c => c.ChurchComponent),
             },
             {
                 path: 'churches/create',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_CHURCH },
                 loadComponent: () => import('./church/create/create-church.component')
                     .then(c => c.CreateChurchComponent),
             },
             {
                 path: 'churches/:id',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_CHURCH },
                 loadComponent: () => import('./church/detail/church-detail.component')
                     .then(m => m.ChurchDetailComponent),
             },
             {
                 path: 'receipts/specials',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_INVOICE },
                 loadComponent: () => import('./recibos/especiales/recibos-especiales.component')
                     .then(m => m.RecibosEspecialesComponent),
             },
             {
                 path: 'assignments',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_ASSIGNMENT },
                 loadComponent: () => import('./assignments/assignments.component')
                     .then(m => m.AssignmentsComponent),
             },
             {
                 path: 'assignments/create',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_ASSIGNMENT },
                 loadComponent: () => import('./assignments/create/create-assignment.component')
                     .then(m => m.CreateAssignmentComponent),
             },
             {
                 path: 'assignments/deactivate',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.DELETE_ASSIGNMENT },
                 loadComponent: () => import('./assignments/deactivate/deactivate-assignment.component')
                     .then(m => m.DeactivateAssignmentComponent),
             },
             {
                 path: 'assignments/reassign',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_ASSIGNMENT },
                 loadComponent: () => import('./assignments/reassign/reassign-assignment.component')
                     .then(m => m.ReassignAssignmentComponent),
             },
             {
                 path: 'assignments/assign-orphans',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_ASSIGNMENT },
                 loadComponent: () => import('./assignments/assign-orphans/assign-orphans.component')
                     .then(m => m.AssignOrphansComponent),
             },
             {
                 path: 'promises-donation',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_PROMISE },
                 loadComponent: () => import('./promises-donation/promises-donation.component')
                     .then((m) => m.PromisesDonationComponent)
             },
             {
                 path: 'promises-donation/create',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.ADD_PROMISE },
                 loadComponent: () => import('./promises-donation/create/create-promise-donation.component')
                     .then((m) => m.CreatePromiseDonationComponent)
             },
             {
                 path: 'receipts',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.PRINT_INVOICE },
                 loadComponent: () => import('./recibos/impresion/impresion-recibos.component')
                     .then(m => m.ImpresionRecibosComponent),
             },
             {
                 path: 'receipts/received',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_INVOICE },
                 loadComponent: () => import('./recibos/recepcion/recibos-recepcion.component')
                     .then(m => m.RecibosRecepcionComponent),
             },
             {
                 path: 'reports/collector',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_REPORT },
                 loadComponent: () => import('./collector/reportes/colector-reportes.component')
                     .then(m => m.ColectorReportesComponent),
             },
             {
                 path: 'reports',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_REPORT },
                 loadComponent: () => import('./collector/reportes/reports.component')
                     .then(m => m.ReportsComponent),
             },
             {
                 path: 'processes',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_PROCESS },
                 loadComponent: () => import('./processes/processes.component')
                     .then(m => m.ProcessesComponent),
-            },
-            {
-                path: 'uploads',
-                loadComponent: () => import('./uploads/uploads.component')
-                    .then(m => m.UploadsComponent),
             },
             {
                 path: 'roles',

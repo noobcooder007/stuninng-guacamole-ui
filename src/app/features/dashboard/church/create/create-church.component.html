@@ -120,7 +120,7 @@
         type="button"
         matButton="filled"
         (click)="createChurch()"
-        [disabled]="createChurchForm.invalid || isLoading()"
+        [disabled]="createChurchForm.invalid || isLoading() || !(Permissions.ADD_CHURCH | hasPermission)"
       >
         @if (isLoading()) {
           <mat-spinner diameter="20" />

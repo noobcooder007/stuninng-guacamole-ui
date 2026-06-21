@@ -8,6 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'colector-reportes',
@@ -22,9 +24,11 @@ import { MatSelectModule } from '@angular/material/select';
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
+        HasPermissionPipe,
     ],
 })
 export class ColectorReportesComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     // Tab 1: Reporte Liquidación
     reporteLiquidacionForm = new FormGroup({
         mes: new FormControl(''),

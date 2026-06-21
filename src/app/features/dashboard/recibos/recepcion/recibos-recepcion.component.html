@@ -31,7 +31,7 @@
         type="button"
         matButton="filled"
         (click)="onAddFolioToTable()"
-        [disabled]="isAddingFolio() || !folioAddControl.value.trim()"
+        [disabled]="isAddingFolio() || !folioAddControl.value.trim() || !(Permissions.ADD_INVOICE | hasPermission)"
       >
         @if (isAddingFolio()) {
           <mat-spinner diameter="20" />
@@ -71,7 +71,7 @@
           <button
             type="button"
             matButton="filled"
-            [disabled]="isConfirming()"
+            [disabled]="isConfirming() || !(Permissions.ADD_INVOICE | hasPermission)"
             (click)="confirmarCola()"
           >
             @if (isConfirming()) {

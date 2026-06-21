@@ -9,6 +9,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { forkJoin } from 'rxjs';
 import { Permission, RoleService } from '@app/core/services/role.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 interface SelectablePermission extends Permission {
     selected: boolean;
@@ -30,9 +32,11 @@ interface PermissionGroup {
         MatProgressBarModule,
         MatProgressSpinnerModule,
         MatDividerModule,
+        HasPermissionPipe,
     ],
 })
 export class RolePermissionsComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     private readonly roleService = inject(RoleService);
     private readonly snackBar = inject(MatSnackBar);
     private readonly route = inject(ActivatedRoute);

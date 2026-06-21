@@ -31,7 +31,7 @@
                   </mat-select>
                 </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateQuantityDifferenceReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateQuantityDifferenceReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -79,7 +79,7 @@
                   </mat-select>
                 </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateMonthlyReportPdf()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateMonthlyReportPdf()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -90,7 +90,7 @@
                   }
                 </button>
 
-                <button matButton="tonal" type="button" (click)="generateMonthlyReportExcel()" [disabled]="isLoading">
+                <button matButton="tonal" type="button" (click)="generateMonthlyReportExcel()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -166,7 +166,7 @@
                   </mat-select>
                 </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateEfficiencyReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateEfficiencyReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -238,7 +238,7 @@
                   <input matInput formControlName="collectorNum" type="text" />
                 </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateConcentratedEfficiencyReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateConcentratedEfficiencyReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -282,7 +282,7 @@
                   <mat-datepicker #pickerEnd2></mat-datepicker>
                 </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateDecreasedDonationReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateDecreasedDonationReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -326,7 +326,7 @@
                   <mat-datepicker #pickerEnd3></mat-datepicker>
                 </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateIncreasedDonationReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateIncreasedDonationReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -370,7 +370,7 @@
                   <mat-datepicker #pickerEnd4></mat-datepicker>
                 </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateDonationReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateDonationReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -438,7 +438,7 @@
                   </mat-select>
                 </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateIssuedReceiptsReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="generateIssuedReceiptsReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {

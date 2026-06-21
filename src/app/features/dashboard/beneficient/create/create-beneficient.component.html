@@ -164,7 +164,7 @@
         type="button"
         matButton="filled"
         (click)="createBeneficient()"
-        [disabled]="createBeneficientForm.invalid || isLoading()"
+        [disabled]="createBeneficientForm.invalid || isLoading() || !(Permissions.ADD_BENEFICIENT | hasPermission)"
       >
         @if (isLoading()) {
           <mat-spinner diameter="20" />

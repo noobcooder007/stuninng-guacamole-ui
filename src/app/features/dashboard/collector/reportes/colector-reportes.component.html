@@ -60,6 +60,7 @@
                 mat-raised-button
                 color="primary"
                 (click)="imprimirLiquidacion()"
+                [disabled]="!(Permissions.VIEW_REPORT | hasPermission)"
                 type="button">
                 <mat-icon>print</mat-icon>
                 Imprimir
@@ -134,6 +135,7 @@
                 mat-raised-button
                 color="primary"
                 (click)="imprimirComision()"
+                [disabled]="!(Permissions.VIEW_REPORT | hasPermission)"
                 type="button">
                 <mat-icon>print</mat-icon>
                 Imprimir

@@ -18,6 +18,9 @@ import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 import { PaginatedMetadata } from '@app/core/services/collector.service';
 import { MarkAsPaidReceiptDto, Recibo, ReceiptType, RecibosService, ReciboFilters, ValidateReciboData } from '@app/core/services/recibos.service';
 import { PaymentMethodDialogComponent } from './payment-method-dialog.component';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
+
 
 @Component({
     selector: 'recibos-recepcion',
@@ -37,9 +40,11 @@ import { PaymentMethodDialogComponent } from './payment-method-dialog.component'
         MatDividerModule,
         MatDialogModule,
         CurrencyPipe,
+        HasPermissionPipe,
     ],
 })
 export class RecibosRecepcionComponent implements OnInit, AfterViewInit {
+    protected readonly Permissions = Permissions;
     public isLoading = signal(true);
     public isConfirming = signal(false);
     public isAddingFolio = signal(false);

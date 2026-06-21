@@ -9,6 +9,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { RoleService } from '@app/core/services/role.service';
 import { TabService } from '@app/core/services/tab.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'create-role',
@@ -20,9 +22,11 @@ import { TabService } from '@app/core/services/tab.service';
         MatButtonModule,
         MatIconModule,
         MatProgressSpinnerModule,
+        HasPermissionPipe,
     ],
 })
 export class CreateRoleComponent {
+    protected readonly Permissions = Permissions;
     public isLoading = signal(false);
 
     public form = new FormGroup({

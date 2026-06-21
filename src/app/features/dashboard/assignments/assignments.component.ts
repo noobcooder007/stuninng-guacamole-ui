@@ -13,6 +13,8 @@ import { SearchCollectorComponent } from './search-collector/search-collector.co
 import { DatePipe } from '@angular/common';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 import { TabService } from '@app/core/services/tab.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 type ViewMode = 'activas' | 'huerfanas';
 
@@ -30,9 +32,11 @@ type ViewMode = 'activas' | 'huerfanas';
         MatProgressBarModule,
         DatePipe,
         FullnamePipe,
+        HasPermissionPipe,
     ],
 })
 export class AssignmentsComponent implements OnInit, AfterViewInit {
+    protected readonly Permissions = Permissions;
     public isLoading = signal(true);
     public viewMode = signal<ViewMode>('activas');
     public selectedCollector = signal<Collector | null>(null);

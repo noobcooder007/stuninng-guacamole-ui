@@ -11,6 +11,8 @@ import { debounceTime, distinctUntilChanged, filter, forkJoin, map, switchMap } 
 import { BeneficientService } from '@app/core/services/beneficient.service';
 import { CollectorService, CollectorListItem } from '@app/core/services/collector.service';
 import { AssignmentService, CreateAssignmentDto } from '@app/core/services/assignment.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 interface BeneficentOption { id: number; label: string; }
 
@@ -32,10 +34,12 @@ interface AssignedDonor {
         MatButtonModule,
         MatIconModule,
         MatProgressSpinnerModule,
+        HasPermissionPipe,
     ],
     templateUrl: './create-assignment.component.html',
 })
 export class CreateAssignmentComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     private readonly router = inject(Router);
     private readonly beneficientService = inject(BeneficientService);
     private readonly collectorService = inject(CollectorService);

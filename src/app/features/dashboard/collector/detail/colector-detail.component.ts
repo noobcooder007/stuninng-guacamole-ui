@@ -19,6 +19,8 @@ import {
     UpdateCollectorNotesDto,
 } from '@app/core/services/collector.service';
 import { Observable } from 'rxjs';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 const atMostOneAddressField: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const neighborhood = control.get('neighborhood')?.value;
@@ -40,9 +42,11 @@ const atMostOneAddressField: ValidatorFn = (control: AbstractControl): Validatio
         MatInputModule,
         MatProgressBarModule,
         MatProgressSpinnerModule,
+        HasPermissionPipe,
     ],
 })
 export class ColectorDetailComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     private readonly collectorService = inject(CollectorService);
     private readonly route = inject(ActivatedRoute);
     collector = signal<Collector | null>(null);

@@ -13,6 +13,8 @@ import { BeneficientService, PaginatedMetadata, BeneficientFilters, Beneficient 
 import { GenderPipe } from '@app/shared/pipes/gender.pipe';
 import { StatusPipe } from '@app/shared/pipes/status.pipe';
 import { TabService } from '@app/core/services/tab.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'beneficient-component',
@@ -29,10 +31,12 @@ import { TabService } from '@app/core/services/tab.service';
         MatProgressBarModule,
         GenderPipe,
         StatusPipe,
+        HasPermissionPipe,
     ],
 })
 
 export class BeneficientComponent implements OnInit, AfterViewInit {
+    protected readonly Permissions = Permissions;
     public isLoading = signal(true);
     private initialPaginatedMetadata: PaginatedMetadata = {
         hasNextPage: false,

@@ -168,7 +168,7 @@
         type="button"
         matButton="filled"
         (click)="createCollector()"
-        [disabled]="createCollectorForm.invalid || isLoading()"
+        [disabled]="createCollectorForm.invalid || isLoading() || !(Permissions.ADD_COLLECTOR | hasPermission)"
       >
         @if (isLoading()) {
           <mat-spinner diameter="20" />

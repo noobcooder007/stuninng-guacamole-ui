@@ -38,6 +38,7 @@
       class="whitespace-nowrap ml-2"
       type="button"
       matButton="filled"
+      [disabled]="!(Permissions.ADD_PROMISE | hasPermission)"
       (click)="addPromiseDonation()"
     >
       Añadir promesa

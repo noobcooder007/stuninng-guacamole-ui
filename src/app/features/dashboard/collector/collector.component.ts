@@ -12,6 +12,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Collector, CollectorFilters, CollectorService, PaginatedMetadata } from '@app/core/services/collector.service';
 import { TabService } from '@app/core/services/tab.service';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'collector-component',
@@ -27,9 +29,11 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
         MatIcon,
         MatProgressBarModule,
         FullnamePipe,
+        HasPermissionPipe,
     ],
 })
 export class CollectorComponent implements OnInit, AfterViewInit {
+    protected readonly Permissions = Permissions;
     public isLoading = signal(true);
     private initialPaginatedMetadata: PaginatedMetadata = {
         hasNextPage: false,

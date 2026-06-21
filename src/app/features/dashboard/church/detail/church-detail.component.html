@@ -48,7 +48,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveIdentity()" [disabled]="identityForm.invalid || isSaving()">
+            <button type="button" matButton="filled" (click)="saveIdentity()" [disabled]="identityForm.invalid || isSaving() || !(Permissions.EDIT_CHURCH | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -134,7 +134,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveAddress()" [disabled]="addressForm.invalid || isSaving()">
+            <button type="button" matButton="filled" (click)="saveAddress()" [disabled]="addressForm.invalid || isSaving() || !(Permissions.EDIT_CHURCH | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -195,7 +195,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="savePriest()" [disabled]="priestForm.invalid || isSaving()">
+            <button type="button" matButton="filled" (click)="savePriest()" [disabled]="priestForm.invalid || isSaving() || !(Permissions.EDIT_CHURCH | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -236,7 +236,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveAuxiliar()" [disabled]="auxiliarForm.invalid || isSaving()">
+            <button type="button" matButton="filled" (click)="saveAuxiliar()" [disabled]="auxiliarForm.invalid || isSaving() || !(Permissions.EDIT_CHURCH | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -269,7 +269,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="savePhone()" [disabled]="isSaving()">
+            <button type="button" matButton="filled" (click)="savePhone()" [disabled]="isSaving() || !(Permissions.EDIT_CHURCH | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>

@@ -20,7 +20,7 @@
       }
 
       @if (selection.hasValue()) {
-        <button type="button" mat-flat-button color="warn" class="ml-auto" (click)="deactivateSelected()">
+        <button type="button" mat-flat-button color="warn" class="ml-auto" [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission)" (click)="deactivateSelected()">
           Desactivar seleccionados ({{ selection.selected.length }})
         </button>
       }
@@ -67,7 +67,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef aria-label="Acciones"></th>
         <td mat-cell *matCellDef="let element">
-          <button type="button" mat-stroked-button color="warn" (click)="deactivateOne(element)">
+          <button type="button" mat-stroked-button color="warn" [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission)" (click)="deactivateOne(element)">
             Desactivar
           </button>
         </td>

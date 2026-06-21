@@ -6,6 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from "@angular/material/button";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Address, ChurchService, CreateChurchDto, EcclesialIdentity, Priest } from '@app/core/services/church.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'create-church',
@@ -17,10 +19,12 @@ import { Address, ChurchService, CreateChurchDto, EcclesialIdentity, Priest } fr
         MatInputModule,
         MatButtonModule,
         MatProgressSpinnerModule,
+        HasPermissionPipe,
     ]
 })
 
 export class CreateChurchComponent {
+    protected readonly Permissions = Permissions;
     private readonly churchService = inject(ChurchService);
     public isLoading = signal(false);
 

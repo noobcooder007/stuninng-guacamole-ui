@@ -9,6 +9,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { forkJoin } from 'rxjs';
 import { Permission, Role, RoleService } from '@app/core/services/role.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 export interface RolePermissionsDialogData {
     role: Role;
@@ -35,9 +37,11 @@ interface PermissionGroup {
         MatProgressSpinnerModule,
         MatProgressBarModule,
         MatDividerModule,
+        HasPermissionPipe,
     ],
 })
 export class RolePermissionsDialogComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     public readonly dialogRef = inject(MatDialogRef<RolePermissionsDialogComponent>);
     public readonly data = inject<RolePermissionsDialogData>(MAT_DIALOG_DATA);
     private readonly roleService = inject(RoleService);

@@ -36,7 +36,7 @@
   <button
     matButton="filled"
     type="button"
-    [disabled]="form.invalid || isLoading()"
+    [disabled]="form.invalid || isLoading() || !(isEditMode ? (Permissions.EDIT_ROLE | hasPermission) : (Permissions.ADD_ROLE | hasPermission))"
     (click)="submit()"
   >
     @if (isLoading()) {

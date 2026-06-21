@@ -34,7 +34,7 @@
       <button
         type="button"
         matButton="filled"
-        [disabled]="form.invalid || isLoading()"
+        [disabled]="form.invalid || isLoading() || !(Permissions.ADD_ROLE | hasPermission)"
         (click)="submit()"
       >
         @if (isLoading()) {

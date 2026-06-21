@@ -18,6 +18,8 @@ import { Assignment, AssignmentService, PaginatedMetadata } from '@app/core/serv
 import { CollectorListItem, CollectorService } from '@app/core/services/collector.service';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/confirm-dialog.component';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'deactivate-assignment',
@@ -36,10 +38,12 @@ import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/co
         MatTableModule,
         DatePipe,
         FullnamePipe,
+        HasPermissionPipe,
     ],
     templateUrl: './deactivate-assignment.component.html',
 })
 export class DeactivateAssignmentComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     private readonly router = inject(Router);
     private readonly assignmentService = inject(AssignmentService);
     private readonly collectorService = inject(CollectorService);

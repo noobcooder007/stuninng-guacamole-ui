@@ -20,12 +20,12 @@
 
     <div class="flex gap-2">
       @if (viewMode() === 'activas') {
-        <button type="button" matButton="filled" (click)="addAssignment()">Añadir asignación</button>
-        <button type="button" mat-stroked-button (click)="deactivateAssignment()">Desactivar</button>
-        <button type="button" mat-stroked-button (click)="reassignAssignment()">Reasignar</button>
+        <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="addAssignment()">Añadir asignación</button>
+        <button type="button" mat-stroked-button [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission)" (click)="deactivateAssignment()">Desactivar</button>
+        <button type="button" mat-stroked-button [disabled]="!(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="reassignAssignment()">Reasignar</button>
       }
       @if (viewMode() === 'huerfanas') {
-        <button type="button" matButton="filled" (click)="assignOrphans()">Asignar huérfanas</button>
+        <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="assignOrphans()">Asignar huérfanas</button>
       }
     </div>
   </section>

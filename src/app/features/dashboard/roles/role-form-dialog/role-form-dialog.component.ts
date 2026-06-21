@@ -7,6 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CreateRoleDto, Role, RoleService, UpdateRoleDto } from '@app/core/services/role.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 export interface RoleFormDialogData {
     role?: Role;
@@ -23,9 +25,11 @@ export interface RoleFormDialogData {
         MatFormFieldModule,
         MatInputModule,
         MatProgressSpinnerModule,
+        HasPermissionPipe,
     ],
 })
 export class RoleFormDialogComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     public readonly dialogRef = inject(MatDialogRef<RoleFormDialogComponent>);
     public readonly data = inject<RoleFormDialogData>(MAT_DIALOG_DATA);
     private readonly roleService = inject(RoleService);

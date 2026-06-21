@@ -18,6 +18,8 @@ import { PromiseDonation, PromisesDonationFilters, PromisesDonationService } fro
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RecurrencePipe } from '@app/shared/pipes/recurrence.pipe';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'promises-donation-component',
@@ -39,9 +41,11 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
         DatePipe,
         RecurrencePipe,
         FullnamePipe,
+        HasPermissionPipe,
     ],
 })
 export class PromisesDonationComponent implements OnInit, AfterViewInit {
+    protected readonly Permissions = Permissions;
     public isLoading = signal(true);
     private initialPaginatedMetadata: PaginatedMetadata = {
         hasNextPage: false,

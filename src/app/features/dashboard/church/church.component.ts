@@ -13,6 +13,8 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 import { AddressPipe } from '@app/shared/pipes/address.pipe';
 import { Church, ChurchFilters, ChurchService, PaginatedMetadata } from '@app/core/services/church.service';
 import { TabService } from '@app/core/services/tab.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'church',
@@ -29,10 +31,12 @@ import { TabService } from '@app/core/services/tab.service';
         MatProgressBarModule,
         FullnamePipe,
         AddressPipe,
+        HasPermissionPipe,
     ],
 })
 
 export class ChurchComponent implements OnInit, AfterViewInit {
+    protected readonly Permissions = Permissions;
     public isLoading = signal(true);
     private initialPaginatedMetadata: PaginatedMetadata = {
         hasNextPage: false,

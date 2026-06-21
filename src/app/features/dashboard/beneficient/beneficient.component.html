@@ -2,7 +2,7 @@
 
   <section class="flex flex-col gap-3 px-4">
     <div class="flex justify-end">
-      <button type="button" matButton="filled" (click)="addBeneficient()">
+      <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_BENEFICIENT | hasPermission)" (click)="addBeneficient()">
         Añadir bienhechor
       </button>
     </div>

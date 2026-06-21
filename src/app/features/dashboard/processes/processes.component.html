@@ -39,7 +39,7 @@
       </mat-card-content>
 
       <mat-card-actions align="end">
-        <button type="button" matButton="filled" [disabled]="isTogglingPeriod()" (click)="togglePeriod()">
+        <button type="button" matButton="filled" [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)" (click)="togglePeriod()">
           @if (isTogglingPeriod()) {
             <mat-spinner diameter="20" />
           } @else {
@@ -61,7 +61,7 @@
         </p>
       </mat-card-content>
       <mat-card-actions align="end">
-        <button type="button" matButton="filled" [disabled]="isTogglingPeriod()" (click)="togglePeriod()">
+        <button type="button" matButton="filled" [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)" (click)="togglePeriod()">
           @if (isTogglingPeriod()) {
             <mat-spinner diameter="20" />
           } @else {
@@ -104,7 +104,7 @@
                 type="button"
                 matButton="filled"
                 (click)="startCommissionProcess()"
-                [disabled]="isProcessing() || commissionForm.invalid"
+                [disabled]="isProcessing() || commissionForm.invalid || !(Permissions.RUN_PROCESS | hasPermission)"
                 class="min-h-14 px-6 whitespace-nowrap"
               >
                 @if (isProcessing()) {
@@ -149,7 +149,7 @@
                 type="button"
                 matButton="filled"
                 (click)="startReceiptsGenerationProcess()"
-                [disabled]="isProcessing() || receiptsForm.invalid"
+                [disabled]="isProcessing() || receiptsForm.invalid || !(Permissions.RUN_PROCESS | hasPermission)"
                 class="min-h-14 px-6 whitespace-nowrap"
               >
                 @if (isProcessing()) {

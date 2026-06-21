@@ -79,7 +79,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="savePersonal()" [disabled]="personalForm.invalid || isSaving()">
+            <button type="button" matButton="filled" (click)="savePersonal()" [disabled]="personalForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -177,7 +177,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveAddress()" [disabled]="addressForm.invalid || isSaving()">
+            <button type="button" matButton="filled" (click)="saveAddress()" [disabled]="addressForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -237,7 +237,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveContact()" [disabled]="contactForm.invalid || isSaving()">
+            <button type="button" matButton="filled" (click)="saveContact()" [disabled]="contactForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -284,7 +284,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveChurch()" [disabled]="churchForm.invalid || isSaving()">
+            <button type="button" matButton="filled" (click)="saveChurch()" [disabled]="churchForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -354,7 +354,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveTax()" [disabled]="taxForm.invalid || isSaving()">
+            <button type="button" matButton="filled" (click)="saveTax()" [disabled]="taxForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -396,7 +396,7 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="savePrivacy()" [disabled]="isSaving()">
+            <button type="button" matButton="filled" (click)="savePrivacy()" [disabled]="isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>

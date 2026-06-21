@@ -11,6 +11,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RecibosService, ImpresionReciboFilters } from '@app/core/services/recibos.service';
 import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 type PrintAction = 'recibos' | 'carta';
 
@@ -29,9 +31,11 @@ type PrintAction = 'recibos' | 'carta';
         MatInputModule,
         MatSelectModule,
         MatProgressSpinnerModule,
+        HasPermissionPipe,
     ],
 })
 export class ImpresionRecibosComponent {
+    protected readonly Permissions = Permissions;
     private readonly recibosService = inject(RecibosService);
     private readonly dialog = inject(MatDialog);
 

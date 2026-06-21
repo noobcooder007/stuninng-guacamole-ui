@@ -34,7 +34,7 @@
               </div>
 
               <div class="form-row">
-                <button matButton="filled" type="button" (click)="downloadDepositsReport()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="downloadDepositsReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -89,7 +89,7 @@
               </div>
 
               <div class="form-row">
-                <button matButton="filled" type="button" (click)="downloadLiquidationReportPdf()" [disabled]="isLoading">
+                <button matButton="filled" type="button" (click)="downloadLiquidationReportPdf()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {
@@ -100,7 +100,7 @@
                   }
                 </button>
 
-                <button matButton="tonal" type="button" (click)="downloadLiquidationReportExcel()" [disabled]="isLoading">
+                <button matButton="tonal" type="button" (click)="downloadLiquidationReportExcel()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
                   @if (isLoading) {
                     <mat-spinner diameter="20" />
                   } @else {

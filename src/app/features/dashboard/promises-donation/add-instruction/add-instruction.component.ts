@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'add-instruction',
@@ -17,11 +19,13 @@ import { MatSelectModule } from '@angular/material/select';
         MatInputModule,
         MatSelectModule,
         MatButtonModule,
-        MatIconModule
+        MatIconModule,
+        HasPermissionPipe,
     ],
 })
 
 export class AddInstructionComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     public instructionForm = new FormGroup({
         day: new FormControl(null, [Validators.required]),
         hour: new FormControl(null, [Validators.required]),

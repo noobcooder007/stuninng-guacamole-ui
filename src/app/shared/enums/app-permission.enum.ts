@@ -40,10 +40,6 @@ export enum Permissions {
     VIEW_PROCESS = 'view:process',
     RUN_PROCESS = 'run:process',
 
-    // Cargas
-    VIEW_UPLOAD = 'view:upload',
-    ADD_UPLOAD = 'add:upload',
-
     // Roles
     VIEW_ROLE = 'view:role',
     ADD_ROLE = 'add:role',

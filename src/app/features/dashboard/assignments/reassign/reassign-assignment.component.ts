@@ -11,6 +11,8 @@ import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
 import { Assignment, AssignmentService } from '@app/core/services/assignment.service';
 import { CollectorListItem, CollectorService } from '@app/core/services/collector.service';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'reassign-assignment',
@@ -24,10 +26,12 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
         MatInputModule,
         MatProgressSpinnerModule,
         FullnamePipe,
+        HasPermissionPipe,
     ],
     templateUrl: './reassign-assignment.component.html',
 })
 export class ReassignAssignmentComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     private readonly router = inject(Router);
     private readonly assignmentService = inject(AssignmentService);
     private readonly collectorService = inject(CollectorService);

@@ -21,33 +21,45 @@
       fixedTopGap="56"
     >
       <div class="flex flex-col h-full overflow-hidden">
-        <mat-nav-list class="flex-grow overflow-y-auto min-h-0">
-          <div class="flex flex-row gap-2 ml-4 mb-8">
-            <img class="w-16 rounded-full" [src]="avatarPath()" alt="profile-pic" />
-            <div class="flex flex-col justify-center ml-4">
-              <p class="text-2xl font-semibold">{{ currentUser()?.role }}</p>
-              <p class="text-xl font-light">{{ currentUser()?.username }}</p>
+        <div class="flex-grow overflow-y-auto min-h-0">
+          <div class="flex items-center gap-3 px-4 py-5">
+            <img class="w-12 h-12 rounded-full shrink-0" [src]="avatarPath()" alt="profile-pic" />
+            <div class="flex flex-col min-w-0">
+              <p class="text-sm font-semibold truncate m-0">{{ currentUser()?.role }}</p>
+              <p class="text-xs opacity-60 truncate m-0">{{ currentUser()?.username }}</p>
             </div>
           </div>
+
           @for (category of categories; track category.name) {
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>{{ category.name }}</mat-expansion-panel-header>
-            @for (item of category.items; track $index) {
-            <mat-list-item
-              [routerLink]="(item.permission | hasPermission) ? item.route : null"
-              (click)="onMenuItemClick(item, snav)"
-              [class.opacity-50]="!(item.permission | hasPermission)"
-              [class.cursor-not-allowed]="!(item.permission | hasPermission)"
-              routerLinkActive
-            >
-              <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-              <span matListItemTitle>{{ item.label }}</span>
-            </mat-list-item>
-            }
-          </mat-expansion-panel>
+            <mat-expansion-panel class="!shadow-none !rounded-none">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="flex items-center gap-3">
+                  <mat-icon class="!text-[20px] !w-5 !h-5 shrink-0">{{ category.icon }}</mat-icon>
+                  {{ category.name }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <mat-nav-list class="-mx-6 -mb-4">
+                @for (item of category.items; track item.id) {
+                  <mat-list-item
+                    [routerLink]="(item.permission | hasPermission) ? item.route : null"
+                    (click)="onMenuItemClick(item, snav)"
+                    [class.opacity-40]="!(item.permission | hasPermission)"
+                    [class.cursor-not-allowed]="!(item.permission | hasPermission)"
+                    [class.pointer-events-none]="!(item.permission | hasPermission)"
+                    routerLinkActive
+                  >
+                    <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                    <span matListItemTitle>{{ item.label }}</span>
+                  </mat-list-item>
+                }
+              </mat-nav-list>
+            </mat-expansion-panel>
           }
-        </mat-nav-list>
-        <button class="shrink-0 mt-2" mat-flat-button type="button" aria-label="logout" (click)="logout()">Cerrar sesión</button>
+        </div>
+        <div class="shrink-0 p-4">
+          <button mat-flat-button class="w-full" type="button" aria-label="logout" (click)="logout()">Cerrar sesión</button>
+        </div>
       </div>
     </mat-sidenav>
     <mat-sidenav-content>

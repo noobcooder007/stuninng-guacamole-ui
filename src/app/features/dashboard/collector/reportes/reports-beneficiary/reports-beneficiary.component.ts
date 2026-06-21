@@ -11,6 +11,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReportsService } from '@app/core/services/reports.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
   selector: 'app-reports-beneficiary',
@@ -29,9 +31,11 @@ import { ReportsService } from '@app/core/services/reports.service';
     MatNativeDateModule,
     MatCheckboxModule,
     ReactiveFormsModule,
+    HasPermissionPipe,
   ],
 })
 export class ReportsBeneficiaryComponent implements OnInit {
+  protected readonly Permissions = Permissions;
   private reportsService = inject(ReportsService);
 
   public activeTab: number = 0;

@@ -10,6 +10,8 @@ import { CollectorService, CreateCollectorDto } from '@app/core/services/collect
 import { addressExclusiveFieldsValidator } from '@app/shared/validators/exclusive-fields-validators.validator';
 import { passwordMatchValidator } from '@app/shared/validators/password-match-validator.validator';
 import { PasswordFieldComponent } from '@app/shared/components/password-field/password-field.component';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'create-collector',
@@ -22,9 +24,11 @@ import { PasswordFieldComponent } from '@app/shared/components/password-field/pa
         MatIconModule,
         MatProgressSpinnerModule,
         PasswordFieldComponent,
+        HasPermissionPipe,
     ]
 })
 export class CreateCollectorComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     public uploadingImage = signal(false);
     public isLoading = signal(false);
     private readonly collectorService = inject(CollectorService);

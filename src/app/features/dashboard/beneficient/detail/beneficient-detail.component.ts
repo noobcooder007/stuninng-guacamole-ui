@@ -27,6 +27,8 @@ import {
 import { Church, ChurchService } from '@app/core/services/church.service';
 import { GenderPipe } from '@app/shared/pipes/gender.pipe';
 import { Observable } from 'rxjs';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 const atMostOneAddressField: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const neighborhood = control.get('neighborhood')?.value;
@@ -54,9 +56,11 @@ const atMostOneAddressField: ValidatorFn = (control: AbstractControl): Validatio
         MatAutocompleteModule,
         MatProgressBarModule,
         MatProgressSpinnerModule,
+        HasPermissionPipe,
     ],
 })
 export class BeneficientDetailComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     private readonly beneficientService = inject(BeneficientService);
     private readonly churchService = inject(ChurchService);
     private readonly route = inject(ActivatedRoute);

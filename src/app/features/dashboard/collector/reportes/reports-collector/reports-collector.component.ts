@@ -11,6 +11,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReportsService } from '@app/core/services/reports.service';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
   selector: 'app-reports-collector',
@@ -29,9 +31,11 @@ import { ReportsService } from '@app/core/services/reports.service';
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
+    HasPermissionPipe,
   ],
 })
 export class ReportsCollectorComponent implements OnInit {
+  protected readonly Permissions = Permissions;
   private reportsService = inject(ReportsService);
 
   public activeTab: number = 0;

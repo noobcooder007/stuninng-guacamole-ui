@@ -13,6 +13,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { PeriodStatus, ProcessesService } from '@app/core/services/processes.service';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 @Component({
     selector: 'app-processes',
@@ -30,9 +32,11 @@ import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
         MatDialogModule,
         MatProgressSpinnerModule,
         ReactiveFormsModule,
+        HasPermissionPipe,
     ],
 })
 export class ProcessesComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     private readonly processesService = inject(ProcessesService);
     private readonly dialog = inject(MatDialog);
     private readonly snackbar = inject(MatSnackBar);

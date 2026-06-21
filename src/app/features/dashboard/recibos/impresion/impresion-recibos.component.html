@@ -98,7 +98,7 @@
       <button
         type="button"
         matButton="filled"
-        [disabled]="loadingAction() !== null"
+        [disabled]="loadingAction() !== null || !(Permissions.PRINT_INVOICE | hasPermission)"
         (click)="printCarta()"
       >
         @if (loadingAction() === 'carta') {
@@ -113,7 +113,7 @@
       <button
         type="button"
         matButton="filled"
-        [disabled]="loadingAction() !== null"
+        [disabled]="loadingAction() !== null || !(Permissions.PRINT_INVOICE | hasPermission)"
         (click)="printRecibos()"
       >
         @if (loadingAction() === 'recibos') {

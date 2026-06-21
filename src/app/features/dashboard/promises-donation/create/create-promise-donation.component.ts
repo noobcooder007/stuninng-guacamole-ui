@@ -17,6 +17,8 @@ import { SearchBeneficientComponent } from '../../beneficient/search-beneficient
 import { CreatePromiseDonationDto, PromisesDonationService } from '@app/core/services/promise-donation.service';
 import { AddInstructionComponent } from '../add-instruction/add-instruction.component';
 import { HourPipe } from '@app/shared/pipes/hour.pipe';
+import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
+import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 interface WeeklySchedule {
     day: string;
@@ -45,10 +47,12 @@ interface Instructions {
         MatTableModule,
         MatProgressSpinnerModule,
         HourPipe,
+        HasPermissionPipe,
     ]
 })
 
 export class CreatePromiseDonationComponent implements OnInit {
+    protected readonly Permissions = Permissions;
     public isLoading = signal(false);
     private readonly beneficientService = inject(BeneficientService);
     private readonly promiseDonationService = inject(PromisesDonationService);
