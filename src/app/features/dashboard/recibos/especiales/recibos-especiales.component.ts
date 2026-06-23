@@ -1,5 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTabsModule } from '@angular/material/tabs';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
+import { BeneficientService, Beneficient } from '@app/core/services/beneficient.service';
+import { CollectorService, CollectorListItem } from '@app/core/services/collector.service';
+import { CreateSpecialReceiptDto, RecibosService } from '@app/core/services/recibos.service';
 
 @Component({
     selector: 'app-recibos-especiales',
@@ -7,22 +19,149 @@ import { MatTabsModule } from '@angular/material/tabs';
     templateUrl: './recibos-especiales.component.html',
     styleUrl: './recibos-especiales.component.scss',
     imports: [
-        MatTabsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
     ],
 })
 export class RecibosEspecialesComponent implements OnInit {
-    public activeTab: number = 0;
-    public sections = [
-        { label: 'Reporte Recibos', id: 'reporte' },
-        { label: 'Recepción Recibos en Blanco (Proceso)', id: 'recepcion-proceso' },
-        { label: 'Recepción Recibos en Blanco', id: 'recepcion' },
-        { label: 'Cancelación Recibos', id: 'cancelacion' },
-        { label: 'Generación Recibos en Blanco (Proceso)', id: 'generacion-proceso' },
-        { label: 'Recibos en Blanco', id: 'recibos-blanco' },
-        { label: 'Recibos Especiales', id: 'especiales' }
+    private readonly beneficientService = inject(BeneficientService);
+    private readonly collectorService = inject(CollectorService);
+    private readonly recibosService = inject(RecibosService);
+    private readonly snackbar = inject(MatSnackBar);
+
+    isSaving = signal(false);
+    isLoadingBeneficients = signal(false);
+    isLoadingCollectors = signal(false);
+
+    filteredBeneficients = signal<Beneficient[]>([]);
+    filteredCollectors = signal<CollectorListItem[]>([]);
+
+    private selectedBeneficient: Beneficient | null = null;
+    private selectedCollector: CollectorListItem | null = null;
+
+    readonly currencies: { value: 'MXN' | 'USD'; label: string }[] = [
+        { value: 'MXN', label: 'MXN' },
+        { value: 'USD', label: 'USD' },
     ];
 
+    beneficientCtrl = new FormControl('');
+    collectorCtrl = new FormControl('');
+
+    form = new FormGroup({
+        amount: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
+        currency: new FormControl<'MXN' | 'USD'>('MXN', Validators.required),
+    });
+
+    get canSave(): boolean {
+        return this.form.valid && this.selectedBeneficient !== null && this.selectedCollector !== null;
+    }
+
+    displayBeneficient = (b: Beneficient | null): string =>
+        b ? `${b.firstname} ${b.firstLastname} ${b.secondLastname ?? ''}`.trim() : '';
+
+    displayCollector = (c: CollectorListItem | null): string =>
+        c ? `${c.firstname} ${c.firstLastname} ${c.secondLastname ?? ''}`.trim() : '';
+
     ngOnInit(): void {
-        // Lógica de inicialización
+        this.setupBeneficientSearch();
+        this.setupCollectorSearch();
+    }
+
+    private setupBeneficientSearch(): void {
+        this.isLoadingBeneficients.set(true);
+        this.beneficientService.getActiveList().subscribe({
+            next: items => { this.filteredBeneficients.set(items); this.isLoadingBeneficients.set(false); },
+            error: () => this.isLoadingBeneficients.set(false),
+        });
+
+        this.beneficientCtrl.valueChanges.pipe(
+            filter(v => typeof v === 'string'),
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap(v => {
+                const term = (v as string).trim();
+                this.isLoadingBeneficients.set(true);
+                return this.beneficientService.getActiveList(term || undefined);
+            }),
+        ).subscribe({
+            next: items => { this.filteredBeneficients.set(items); this.isLoadingBeneficients.set(false); },
+            error: () => this.isLoadingBeneficients.set(false),
+        });
+    }
+
+    private setupCollectorSearch(): void {
+        this.isLoadingCollectors.set(true);
+        this.collectorService.getActiveList().subscribe({
+            next: items => { this.filteredCollectors.set(items); this.isLoadingCollectors.set(false); },
+            error: () => this.isLoadingCollectors.set(false),
+        });
+
+        this.collectorCtrl.valueChanges.pipe(
+            filter(v => typeof v === 'string'),
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap(v => {
+                const term = (v as string).trim();
+                this.isLoadingCollectors.set(true);
+                return this.collectorService.getActiveList(term || undefined);
+            }),
+        ).subscribe({
+            next: items => { this.filteredCollectors.set(items); this.isLoadingCollectors.set(false); },
+            error: () => this.isLoadingCollectors.set(false),
+        });
+    }
+
+    onBeneficientSelected(b: Beneficient): void {
+        this.selectedBeneficient = b;
+    }
+
+    onCollectorSelected(c: CollectorListItem): void {
+        this.selectedCollector = c;
+    }
+
+    clearBeneficient(): void {
+        this.beneficientCtrl.reset('');
+        this.selectedBeneficient = null;
+    }
+
+    clearCollector(): void {
+        this.collectorCtrl.reset('');
+        this.selectedCollector = null;
+    }
+
+    onSave(): void {
+        if (!this.canSave) return;
+
+        const { amount, currency } = this.form.value;
+        const dto: CreateSpecialReceiptDto = {
+            beneficientId: this.selectedBeneficient!.id,
+            collectorId: this.selectedCollector!.id,
+            amount: amount!,
+            currency: currency!,
+        };
+
+        this.isSaving.set(true);
+        this.recibosService.crearReciboEspecial(dto).subscribe({
+            next: (blob) => {
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                this.snackbar.open('Recibo especial creado correctamente', 'Cerrar', { duration: 5000 });
+                this.isSaving.set(false);
+                this.resetForm();
+            },
+            error: () => this.isSaving.set(false),
+        });
+    }
+
+    resetForm(): void {
+        this.form.reset({ currency: 'MXN' });
+        this.clearBeneficient();
+        this.clearCollector();
     }
 }

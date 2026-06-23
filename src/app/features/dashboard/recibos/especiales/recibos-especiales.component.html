@@ -1,14 +1,142 @@
-<div class="recibos-especiales-container p-6">
-  <mat-tab-group [(selectedIndex)]="activeTab">
-    @for (section of sections; track section.id) {
-      <mat-tab>
-        <ng-template mat-tab-label>
-          {{ section.label }}
-        </ng-template>
-        <div class="tab-content">
-          <p>Contenido para: {{ section.label }}</p>
-        </div>
-      </mat-tab>
-    }
-  </mat-tab-group>
+<div class="p-6 max-w-2xl mx-auto">
+  <h2 class="text-xl font-semibold mb-6">Crear Recibo Especial</h2>
+
+  <div class="flex flex-col gap-5">
+
+    <!-- Bienhechore -->
+    <mat-form-field appearance="outline">
+      <mat-label>Bienhechore</mat-label>
+      <input
+        matInput
+        [formControl]="beneficientCtrl"
+        [matAutocomplete]="autoBeneficient"
+        placeholder="Buscar por nombre..."
+      />
+      <mat-autocomplete
+        #autoBeneficient="matAutocomplete"
+        [displayWith]="displayBeneficient"
+        (optionSelected)="onBeneficientSelected($event.option.value)"
+      >
+        @if (isLoadingBeneficients()) {
+          <mat-option disabled>
+            <div class="flex items-center gap-2">
+              <mat-spinner diameter="16" />
+              <span>Buscando...</span>
+            </div>
+          </mat-option>
+        } @else {
+          @for (b of filteredBeneficients(); track b.id) {
+            <mat-option [value]="b">
+              {{ displayBeneficient(b) }}
+            </mat-option>
+          }
+          @if (!filteredBeneficients().length) {
+            <mat-option disabled>Sin resultados</mat-option>
+          }
+        }
+      </mat-autocomplete>
+      @if (beneficientCtrl.value) {
+        <button matSuffix mat-icon-button (click)="clearBeneficient()" type="button">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <!-- Colector -->
+    <mat-form-field appearance="outline">
+      <mat-label>Colector</mat-label>
+      <input
+        matInput
+        [formControl]="collectorCtrl"
+        [matAutocomplete]="autoCollector"
+        placeholder="Buscar por nombre..."
+      />
+      <mat-autocomplete
+        #autoCollector="matAutocomplete"
+        [displayWith]="displayCollector"
+        (optionSelected)="onCollectorSelected($event.option.value)"
+      >
+        @if (isLoadingCollectors()) {
+          <mat-option disabled>
+            <div class="flex items-center gap-2">
+              <mat-spinner diameter="16" />
+              <span>Buscando...</span>
+            </div>
+          </mat-option>
+        } @else {
+          @for (c of filteredCollectors(); track c.id) {
+            <mat-option [value]="c">
+              {{ displayCollector(c) }}
+            </mat-option>
+          }
+          @if (!filteredCollectors().length) {
+            <mat-option disabled>Sin resultados</mat-option>
+          }
+        }
+      </mat-autocomplete>
+      @if (collectorCtrl.value) {
+        <button matSuffix mat-icon-button (click)="clearCollector()" type="button">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <form [formGroup]="form" class="flex flex-col gap-5">
+
+      <!-- Monto y moneda -->
+      <div class="flex gap-4">
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Monto</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="amount"
+            min="0.01"
+            step="0.01"
+            placeholder="0.00"
+          />
+          @if (form.get('amount')?.hasError('required') && form.get('amount')?.touched) {
+            <mat-error>El monto es requerido</mat-error>
+          }
+          @if (form.get('amount')?.hasError('min')) {
+            <mat-error>El monto debe ser mayor a 0</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 140px">
+          <mat-label>Moneda</mat-label>
+          <mat-select formControlName="currency">
+            @for (c of currencies; track c.value) {
+              <mat-option [value]="c.value">{{ c.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+    </form>
+
+    <!-- Acciones -->
+    <div class="flex justify-end gap-3 mt-2">
+      <button
+        matButton
+        type="button"
+        (click)="resetForm()"
+        [disabled]="isSaving()"
+      >
+        Limpiar
+      </button>
+      <button
+        matButton="filled"
+        type="button"
+        [disabled]="!canSave || isSaving()"
+        (click)="onSave()"
+      >
+        @if (isSaving()) {
+          <mat-spinner diameter="18" class="mr-2" />
+        }
+        Crear recibo especial
+      </button>
+    </div>
+
+  </div>
 </div>

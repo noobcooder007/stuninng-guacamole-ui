@@ -73,12 +73,25 @@ export interface MarkAsPaidDto {
     receipts: MarkAsPaidReceiptDto[];
 }
 
+export interface CreateSpecialReceiptDto {
+    beneficientId: string | number;
+    collectorId: string;
+    amount: number;
+    currency: 'MXN' | 'USD';
+}
+
 export interface RecibosPaginatedResponse {
     statusCode: number;
     data: {
         items: Recibo[];
         meta: PaginatedMetadata;
     };
+    timestamp: string;
+}
+
+export interface ReciboResponse {
+    statusCode: number;
+    data: Recibo;
     timestamp: string;
 }
 
@@ -154,6 +167,33 @@ export class RecibosService {
         }).pipe(
             catchError((error) => {
                 this.snackbar.open('Error al generar la carta de recibos anterior', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    getRecibo(folio: string): Observable<ReciboResponse> {
+        return this.http.get<ReciboResponse>(`${environment.apiBaseUrl}/receipts/${folio}`).pipe(
+            catchError((error) => {
+                this.snackbar.open('Error al obtener el recibo', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    crearReciboEspecial(dto: CreateSpecialReceiptDto): Observable<Blob> {
+        return this.http.post(`${environment.apiBaseUrl}/receipts/generate/special`, dto, { responseType: 'blob' }).pipe(
+            catchError((error) => {
+                this.snackbar.open('Error al crear el recibo especial', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    cancelarRecibo(folio: string, reason: string): Observable<void> {
+        return this.http.put<void>(`${environment.apiBaseUrl}/receipts/${folio}/cancel`, { reason }).pipe(
+            catchError((error) => {
+                this.snackbar.open('Error al cancelar el recibo', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
