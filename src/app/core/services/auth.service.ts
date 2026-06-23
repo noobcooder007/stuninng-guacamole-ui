@@ -171,6 +171,7 @@ export class AuthService {
 
     public hasPermission(permission: string | undefined): boolean {
         if (!permission) return true;
+        if (this._authenticatedUser()?.role === 'superadministrator') return true;
         return this._userPermissions().includes(permission);
     }
 

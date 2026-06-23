@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
 
 export interface Address {
     street: string;
-    numeration: {
+    numeration?: {
         noExt: string;
         noInt?: string;
     };
@@ -117,8 +117,10 @@ export interface UpdatePersonalDto {
 
 export interface UpdateAddressDto {
     street?: string;
-    noExt?: string;
-    noInt?: string;
+    numeration?: {
+        noExt?: string;
+        noInt?: string;
+    };
     neighborhood?: string | null;
     locality?: string | null;
     city?: string;
@@ -149,6 +151,18 @@ export interface UpdatePrivacyDto {
 export class BeneficientService {
     private readonly http = inject(HttpClient);
     private readonly snackbar = inject(MatSnackBar);
+
+    getActiveList(search?: string): Observable<Beneficient[]> {
+        let params = new HttpParams();
+        if (search?.trim()) params = params.set('search', search.trim());
+        return this.http.get<{ data: Beneficient[] }>(`${environment.apiBaseUrl}/beneficient/active-list`, { params }).pipe(
+            map(r => r?.data ?? []),
+            catchError((error) => {
+                this.snackbar.open('Error al buscar bienhechores', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
 
     getBeneficents(
         page: number = 1,

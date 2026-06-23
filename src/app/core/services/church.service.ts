@@ -14,7 +14,7 @@ export interface EcclesialIdentity {
 
 export interface Address {
     street: string;
-    numeration: {
+    numeration?: {
         noExt: string;
         noInt?: string;
     };
@@ -84,8 +84,10 @@ export interface UpdateIdentityDto {
 
 export interface UpdateAddressDto {
     street?: string;
-    noExt?: string;
-    noInt?: string | null;
+    numeration?: {
+        noExt?: string;
+        noInt?: string | null;
+    };
     neighborhood?: string | null;
     locality?: string | null;
     city?: string;

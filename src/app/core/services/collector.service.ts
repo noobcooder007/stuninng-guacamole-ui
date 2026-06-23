@@ -6,7 +6,7 @@ import { environment } from 'environments/environment.development';
 
 export interface Address {
     street: string;
-    numeration: {
+    numeration?: {
         noExt: string;
         noInt?: string;
     };
@@ -105,8 +105,10 @@ export interface UpdateCollectorPersonalDto {
 
 export interface UpdateCollectorAddressDto {
     street?: string;
-    noExt?: string;
-    noInt?: string;
+    numeration?: {
+        noExt?: string;
+        noInt?: string;
+    };
     neighborhood?: string | null;
     locality?: string | null;
     city?: string;
@@ -182,8 +184,8 @@ export class CollectorService {
         collector.secondLastname && formData.append('secondLastname', collector.secondLastname);
         formData.append('nss', collector.nss);
         formData.append('address[street]', collector.address.street);
-        formData.append('address[numeration][noExt]', collector.address.numeration.noExt);
-        collector.address.numeration.noInt && formData.append('address[numeration][noInt]', collector.address.numeration.noInt);
+        formData.append('address[numeration][noExt]', collector.address.numeration!.noExt);
+        collector.address.numeration!.noInt && formData.append('address[numeration][noInt]', collector.address.numeration!.noInt);
         collector.address.neighborhood && formData.append('address[neighborhood]', collector.address.neighborhood);
         collector.address.locality && formData.append('address[locality]', collector.address.locality);
         formData.append('address[city]', collector.address.city);
