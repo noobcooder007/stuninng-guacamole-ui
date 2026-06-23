@@ -1,29 +1,48 @@
-<section class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6 gap-6">
+<div class="flex flex-col h-full w-full overflow-y-auto no-scrollbar p-6 gap-6">
 
   @if (isLoading()) {
     <mat-progress-bar mode="indeterminate" />
   }
 
   @if (beneficient(); as b) {
-    <div class="flex items-center gap-3">
-      <div class="flex flex-col">
-        <h1 class="text-2xl font-semibold m-0">{{ b.title }} {{ b.firstname }} {{ b.firstLastname }} {{ b.secondLastname }}</h1>
-        <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Bienhechor #{{ b.beneficientNumber }}</span>
-      </div>
-      <span class="ml-auto px-3 py-1 rounded-full text-sm font-medium"
-        [class]="b.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-        {{ b.isActive ? 'Activo' : 'Inactivo' }}
+
+    <!-- ── Hero ──────────────────────────────────────────────────────── -->
+    <div class="flex flex-col gap-3">
+      <span class="text-xs font-semibold uppercase tracking-widest text-[color:var(--mat-sys-on-surface-variant)]">
+        Detalle de bienhechor
       </span>
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div class="flex flex-col gap-2">
+          <h1 class="text-2xl font-bold leading-none">
+            {{ b.title }} {{ b.firstname }} {{ b.firstLastname }} {{ b.secondLastname }}
+          </h1>
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">
+              Bienhechor #{{ b.beneficientNumber }}
+            </span>
+            <span [class]="b.isActive
+              ? 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-green-100 text-green-700'
+              : 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-red-100 text-red-700'">
+              {{ b.isActive ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Personal -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Información personal</p>
+    <!-- ── Información personal ──────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">person</mat-icon>
+          Información personal
+        </mat-card-title>
         @if (editingSection() !== 'personal') {
-          <button type="button" matIconButton (click)="startEdit('personal')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('personal')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'personal') {
           <form [formGroup]="personalForm" class="grid grid-cols-2 gap-4 pt-2">
@@ -79,57 +98,65 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="savePersonal()" [disabled]="personalForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+            <button type="button" matButton="filled" (click)="savePersonal()"
+              [disabled]="personalForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Título</span>
-              <span class="text-sm">{{ b.title || '-' }}</span>
+          <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Título</span>
+              <span class="text-sm font-medium">{{ b.title || '-' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre</span>
-              <span class="text-sm">{{ b.firstname }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Nombre</span>
+              <span class="text-sm font-medium">{{ b.firstname }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Apellido paterno</span>
-              <span class="text-sm">{{ b.firstLastname }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Apellido paterno</span>
+              <span class="text-sm font-medium">{{ b.firstLastname }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Apellido materno</span>
-              <span class="text-sm">{{ b.secondLastname || '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Apellido materno</span>
+              <span class="text-sm font-medium">{{ b.secondLastname || '-' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Género</span>
-              <span class="text-sm">{{ b.genre | gender }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Género</span>
+              <span class="text-sm font-medium">{{ b.genre | gender }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Fecha de nacimiento</span>
-              <span class="text-sm">{{ b.birthday | date:'dd/MM/yyyy' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Fecha de nacimiento</span>
+              <span class="text-sm font-medium">{{ b.birthday | date:'dd/MM/yyyy' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Estado civil</span>
-              <span class="text-sm">{{ b.maritalStatus }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Estado civil</span>
+              <span class="text-sm font-medium">{{ b.maritalStatus }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Aniversario de boda</span>
-              <span class="text-sm">{{ b.weddingAniversary ? (b.weddingAniversary | date:'dd/MM/yyyy') : '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Aniversario de boda</span>
+              <span class="text-sm font-medium">
+                {{ b.weddingAniversary ? (b.weddingAniversary | date:'dd/MM/yyyy') : '-' }}
+              </span>
             </div>
           </div>
         }
       </mat-card-content>
     </mat-card>
 
-    <!-- Domicilio -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Domicilio</p>
+    <!-- ── Domicilio ──────────────────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">home</mat-icon>
+          Domicilio
+        </mat-card-title>
         @if (editingSection() !== 'address') {
-          <button type="button" matIconButton (click)="startEdit('address')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('address')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'address') {
           <form [formGroup]="addressForm" class="grid grid-cols-2 gap-4 pt-2">
@@ -177,49 +204,57 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveAddress()" [disabled]="addressForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+            <button type="button" matButton="filled" (click)="saveAddress()"
+              [disabled]="addressForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Calle</span>
-              <span class="text-sm">{{ b.address.street }}</span>
+          <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Calle</span>
+              <span class="text-sm font-medium">{{ b.address.street }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Número ext / int</span>
-              <span class="text-sm">#{{ b.address.numeration.noExt }}{{ b.address.numeration.noInt ? ' ' + b.address.numeration.noInt : '' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Número ext / int</span>
+              <span class="text-sm font-medium">
+                #{{ b.address.numeration?.noExt }}{{ b.address.numeration?.noInt ? ' ' + b.address.numeration?.noInt : '' }}
+              </span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Colonia / Localidad</span>
-              <span class="text-sm">{{ b.address.neighborhood || b.address.locality || '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Colonia / Localidad</span>
+              <span class="text-sm font-medium">{{ b.address.neighborhood || b.address.locality || '-' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Municipio / Delegación</span>
-              <span class="text-sm">{{ b.address.city }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Municipio / Delegación</span>
+              <span class="text-sm font-medium">{{ b.address.city }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Estado</span>
-              <span class="text-sm">{{ b.address.state }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Estado</span>
+              <span class="text-sm font-medium">{{ b.address.state }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Código postal</span>
-              <span class="text-sm">{{ b.address.zipCode }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Código postal</span>
+              <span class="text-sm font-medium">{{ b.address.zipCode }}</span>
             </div>
           </div>
         }
       </mat-card-content>
     </mat-card>
 
-    <!-- Contacto -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Contacto</p>
+    <!-- ── Contacto ───────────────────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">contacts</mat-icon>
+          Contacto
+        </mat-card-title>
         @if (editingSection() !== 'contact') {
-          <button type="button" matIconButton (click)="startEdit('contact')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('contact')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'contact') {
           <form [formGroup]="contactForm" class="grid grid-cols-2 gap-4 pt-2">
@@ -237,33 +272,39 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveContact()" [disabled]="contactForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+            <button type="button" matButton="filled" (click)="saveContact()"
+              [disabled]="contactForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <div class="grid grid-cols-2 gap-4 py-2">
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Correo electrónico</span>
-              <span class="text-sm">{{ b.maskedEmail || b.email || '-' }}</span>
+          <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Correo electrónico</span>
+              <span class="text-sm font-medium">{{ b.maskedEmail || b.email || '-' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Teléfono</span>
-              <span class="text-sm">{{ b.phoneNumber || '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Teléfono</span>
+              <span class="text-sm font-medium">{{ b.phoneNumber || '-' }}</span>
             </div>
           </div>
         }
       </mat-card-content>
     </mat-card>
 
-    <!-- Iglesia -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Iglesia</p>
+    <!-- ── Iglesia ────────────────────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">church</mat-icon>
+          Iglesia
+        </mat-card-title>
         @if (editingSection() !== 'church') {
-          <button type="button" matIconButton (click)="startEdit('church')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('church')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'church') {
           <form [formGroup]="churchForm" class="pt-2">
@@ -284,51 +325,55 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveChurch()" [disabled]="churchForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+            <button type="button" matButton="filled" (click)="saveChurch()"
+              [disabled]="churchForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <div class="py-2">
-            @if (b.church) {
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div class="flex flex-col gap-0.5">
-                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre</span>
-                  <span class="text-sm">{{ b.church.ecclesialIdentity.name }}</span>
-                </div>
-                <div class="flex flex-col gap-0.5">
-                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Vicaría</span>
-                  <span class="text-sm">{{ b.church.ecclesialIdentity.vicaria || '-' }}</span>
-                </div>
-                <div class="flex flex-col gap-0.5">
-                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Decanato</span>
-                  <span class="text-sm">{{ b.church.ecclesialIdentity.decanato || '-' }}</span>
-                </div>
-                <div class="flex flex-col gap-0.5">
-                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Parroquia</span>
-                  <span class="text-sm">{{ b.church.ecclesialIdentity.parroquia || '-' }}</span>
-                </div>
-                <div class="flex flex-col gap-0.5">
-                  <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Capilla</span>
-                  <span class="text-sm">{{ b.church.ecclesialIdentity.capilla || '-' }}</span>
-                </div>
+          @if (b.church) {
+            <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+              <div class="flex justify-between items-center py-3">
+                <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Nombre</span>
+                <span class="text-sm font-medium">{{ b.church.ecclesialIdentity.name }}</span>
               </div>
-            } @else {
-              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Sin iglesia asignada</span>
-            }
-          </div>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Vicaría</span>
+                <span class="text-sm font-medium">{{ b.church.ecclesialIdentity.vicaria || '-' }}</span>
+              </div>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Decanato</span>
+                <span class="text-sm font-medium">{{ b.church.ecclesialIdentity.decanato || '-' }}</span>
+              </div>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Parroquia</span>
+                <span class="text-sm font-medium">{{ b.church.ecclesialIdentity.parroquia || '-' }}</span>
+              </div>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Capilla</span>
+                <span class="text-sm font-medium">{{ b.church.ecclesialIdentity.capilla || '-' }}</span>
+              </div>
+            </div>
+          } @else {
+            <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] py-3">Sin iglesia asignada</p>
+          }
         }
       </mat-card-content>
     </mat-card>
 
-    <!-- Datos fiscales -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Datos fiscales</p>
+    <!-- ── Datos fiscales ─────────────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">receipt_long</mat-icon>
+          Datos fiscales
+        </mat-card-title>
         @if (editingSection() !== 'tax') {
-          <button type="button" matIconButton (click)="startEdit('tax')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('tax')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'tax') {
           <form [formGroup]="taxForm" class="grid grid-cols-2 gap-4 pt-2">
@@ -354,41 +399,47 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveTax()" [disabled]="taxForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+            <button type="button" matButton="filled" (click)="saveTax()"
+              [disabled]="taxForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
           @if (b.person) {
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Tipo de persona</span>
-                <span class="text-sm">{{ b.person }}</span>
+            <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+              <div class="flex justify-between items-center py-3">
+                <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Tipo de persona</span>
+                <span class="text-sm font-medium">{{ b.person }}</span>
               </div>
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre registrado</span>
-                <span class="text-sm">{{ b.registeredName || '-' }}</span>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Nombre registrado</span>
+                <span class="text-sm font-medium">{{ b.registeredName || '-' }}</span>
               </div>
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">RFC</span>
-                <span class="text-sm">{{ b.maskedRFC || b.rfc || '-' }}</span>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">RFC</span>
+                <span class="text-sm font-medium font-mono">{{ b.maskedRFC || b.rfc || '-' }}</span>
               </div>
             </div>
           } @else {
-            <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] py-2">Sin datos fiscales registrados</p>
+            <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] py-3">Sin datos fiscales registrados</p>
           }
         }
       </mat-card-content>
     </mat-card>
 
-    <!-- Privacidad -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Privacidad</p>
+    <!-- ── Privacidad ─────────────────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">lock</mat-icon>
+          Privacidad
+        </mat-card-title>
         @if (editingSection() !== 'privacy') {
-          <button type="button" matIconButton (click)="startEdit('privacy')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('privacy')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'privacy') {
           <form [formGroup]="privacyForm" class="pt-2">
@@ -396,20 +447,21 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="savePrivacy()" [disabled]="isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+            <button type="button" matButton="filled" (click)="savePrivacy()"
+              [disabled]="isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <div class="py-2 flex items-center gap-2">
+          <div class="flex items-center gap-2 py-3">
             <mat-icon class="text-[color:var(--mat-sys-on-surface-variant)]">
               {{ b.keepPrivate ? 'lock' : 'lock_open' }}
             </mat-icon>
-            <span class="text-sm">{{ b.keepPrivate ? 'Datos privados' : 'Datos visibles' }}</span>
+            <span class="text-sm font-medium">{{ b.keepPrivate ? 'Datos privados' : 'Datos visibles' }}</span>
           </div>
         }
       </mat-card-content>
     </mat-card>
-  }
 
-</section>
+  }
+</div>

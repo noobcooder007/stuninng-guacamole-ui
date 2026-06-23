@@ -1,30 +1,51 @@
-<section class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6 gap-6">
+<div class="flex flex-col h-full w-full overflow-y-auto no-scrollbar p-6 gap-6">
 
   @if (isLoading()) {
     <mat-progress-bar mode="indeterminate" />
   }
 
   @if (collector(); as c) {
-    <div class="flex items-center gap-3">
-      <img class="rounded-full size-14 object-cover" [src]="c.profilePictureUrl" alt="foto de perfil" />
-      <div class="flex flex-col">
-        <h1 class="text-2xl font-semibold m-0">{{ c.firstname }} {{ c.firstLastname }} {{ c.secondLastname }}</h1>
-        <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">NSS {{ c.maskedNSS || c.nss }}</span>
-      </div>
-      <span class="ml-auto px-3 py-1 rounded-full text-sm font-medium"
-        [class]="c.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-        {{ c.isActive ? 'Activo' : 'Inactivo' }}
+
+    <!-- ── Hero ──────────────────────────────────────────────────────── -->
+    <div class="flex flex-col gap-3">
+      <span class="text-xs font-semibold uppercase tracking-widest text-[color:var(--mat-sys-on-surface-variant)]">
+        Detalle de colector
       </span>
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div class="flex items-center gap-4">
+          <img class="rounded-full size-14 object-cover shrink-0" [src]="c.profilePictureUrl" alt="foto de perfil" />
+          <div class="flex flex-col gap-2">
+            <h1 class="text-2xl font-bold leading-none">
+              {{ c.firstname }} {{ c.firstLastname }} {{ c.secondLastname }}
+            </h1>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">
+                NSS {{ c.maskedNSS || c.nss }}
+              </span>
+              <span [class]="c.isActive
+                ? 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-green-100 text-green-700'
+                : 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-red-100 text-red-700'">
+                {{ c.isActive ? 'Activo' : 'Inactivo' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Personal -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Información personal</p>
+    <!-- ── Información personal ──────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">person</mat-icon>
+          Información personal
+        </mat-card-title>
         @if (editingSection() !== 'personal') {
-          <button type="button" matIconButton (click)="startEdit('personal')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('personal')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'personal') {
           <form [formGroup]="personalForm" class="grid grid-cols-2 gap-4 pt-2">
@@ -43,37 +64,43 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="savePersonal()" [disabled]="personalForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
+            <button type="button" matButton="filled" (click)="savePersonal()"
+              [disabled]="personalForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nombre</span>
-              <span class="text-sm">{{ c.firstname }}</span>
+          <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Nombre</span>
+              <span class="text-sm font-medium">{{ c.firstname }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Apellido paterno</span>
-              <span class="text-sm">{{ c.firstLastname }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Apellido paterno</span>
+              <span class="text-sm font-medium">{{ c.firstLastname }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Apellido materno</span>
-              <span class="text-sm">{{ c.secondLastname || '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Apellido materno</span>
+              <span class="text-sm font-medium">{{ c.secondLastname || '-' }}</span>
             </div>
           </div>
         }
       </mat-card-content>
     </mat-card>
 
-    <!-- Domicilio -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Domicilio</p>
+    <!-- ── Domicilio ──────────────────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">home</mat-icon>
+          Domicilio
+        </mat-card-title>
         @if (editingSection() !== 'address') {
-          <button type="button" matIconButton (click)="startEdit('address')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('address')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'address') {
           <form [formGroup]="addressForm" class="grid grid-cols-2 gap-4 pt-2">
@@ -121,49 +148,57 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveAddress()" [disabled]="addressForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
+            <button type="button" matButton="filled" (click)="saveAddress()"
+              [disabled]="addressForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Calle</span>
-              <span class="text-sm">{{ c.address.street }}</span>
+          <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Calle</span>
+              <span class="text-sm font-medium">{{ c.address.street }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Número ext / int</span>
-              <span class="text-sm">#{{ c.address.numeration.noExt }}{{ c.address.numeration.noInt ? ' ' + c.address.numeration.noInt : '' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Número ext / int</span>
+              <span class="text-sm font-medium">
+                #{{ c.address.numeration?.noExt }}{{ c.address.numeration?.noInt ? ' ' + c.address.numeration?.noInt : '' }}
+              </span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Colonia / Localidad</span>
-              <span class="text-sm">{{ c.address.neighborhood || c.address.locality || '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Colonia / Localidad</span>
+              <span class="text-sm font-medium">{{ c.address.neighborhood || c.address.locality || '-' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Municipio / Delegación</span>
-              <span class="text-sm">{{ c.address.city }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Municipio / Delegación</span>
+              <span class="text-sm font-medium">{{ c.address.city }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Estado</span>
-              <span class="text-sm">{{ c.address.state }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Estado</span>
+              <span class="text-sm font-medium">{{ c.address.state }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Código postal</span>
-              <span class="text-sm">{{ c.address.zipCode }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Código postal</span>
+              <span class="text-sm font-medium">{{ c.address.zipCode }}</span>
             </div>
           </div>
         }
       </mat-card-content>
     </mat-card>
 
-    <!-- Contacto -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Contacto</p>
+    <!-- ── Contacto ───────────────────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">contacts</mat-icon>
+          Contacto
+        </mat-card-title>
         @if (editingSection() !== 'contact') {
-          <button type="button" matIconButton (click)="startEdit('contact')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('contact')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'contact') {
           <form [formGroup]="contactForm" class="grid grid-cols-2 gap-4 pt-2">
@@ -178,33 +213,39 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveContact()" [disabled]="contactForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
+            <button type="button" matButton="filled" (click)="saveContact()"
+              [disabled]="contactForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <div class="grid grid-cols-2 gap-4 py-2">
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Teléfono celular</span>
-              <span class="text-sm">{{ c.maskedPhoneNumber || c.phoneNumber || '-' }}</span>
+          <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Teléfono celular</span>
+              <span class="text-sm font-medium">{{ c.maskedPhoneNumber || c.phoneNumber || '-' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Teléfono fijo</span>
-              <span class="text-sm">{{ c.maskedTelephoneNumber || c.telephoneNumber || '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Teléfono fijo</span>
+              <span class="text-sm font-medium">{{ c.maskedTelephoneNumber || c.telephoneNumber || '-' }}</span>
             </div>
           </div>
         }
       </mat-card-content>
     </mat-card>
 
-    <!-- Pago -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Datos de pago</p>
+    <!-- ── Datos de pago ──────────────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">payments</mat-icon>
+          Datos de pago
+        </mat-card-title>
         @if (editingSection() !== 'payment') {
-          <button type="button" matIconButton (click)="startEdit('payment')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('payment')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'payment') {
           <form [formGroup]="paymentForm" class="grid grid-cols-2 gap-4 pt-2">
@@ -234,45 +275,51 @@
           </form>
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="savePayment()" [disabled]="paymentForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
+            <button type="button" matButton="filled" (click)="savePayment()"
+              [disabled]="paymentForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Comisión</span>
-              <span class="text-sm">{{ c.paymentData.commissionPercent }} %</span>
+          <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Comisión</span>
+              <span class="text-sm font-medium">{{ c.paymentData.commissionPercent }} %</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Nómina</span>
-              <span class="text-sm">{{ c.paymentData.nomina != null ? ('$' + c.paymentData.nomina) : '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Nómina</span>
+              <span class="text-sm font-medium">{{ c.paymentData.nomina != null ? ('$' + c.paymentData.nomina) : '-' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Subsidio de transporte</span>
-              <span class="text-sm">{{ c.paymentData.transportAllowance != null ? ('$' + c.paymentData.transportAllowance) : '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Subsidio de transporte</span>
+              <span class="text-sm font-medium">{{ c.paymentData.transportAllowance != null ? ('$' + c.paymentData.transportAllowance) : '-' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Banco</span>
-              <span class="text-sm">{{ c.paymentData.bank || '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Banco</span>
+              <span class="text-sm font-medium">{{ c.paymentData.bank || '-' }}</span>
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Referencia / CLABE</span>
-              <span class="text-sm">{{ c.paymentData.reference || '-' }}</span>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Referencia / CLABE</span>
+              <span class="text-sm font-medium font-mono">{{ c.paymentData.reference || '-' }}</span>
             </div>
           </div>
         }
       </mat-card-content>
     </mat-card>
 
-    <!-- Notas -->
-    <mat-card>
-      <div class="flex items-center justify-between px-4 pt-4 pb-2">
-        <p class="text-base font-semibold m-0">Notas</p>
+    <!-- ── Notas ──────────────────────────────────────────────────────── -->
+    <mat-card appearance="outlined">
+      <mat-card-header class="justify-between">
+        <mat-card-title class="flex items-center gap-2 text-base">
+          <mat-icon class="!text-[20px] !w-5 !h-5">notes</mat-icon>
+          Notas
+        </mat-card-title>
         @if (editingSection() !== 'notes') {
-          <button type="button" matIconButton (click)="startEdit('notes')"><mat-icon>edit</mat-icon></button>
+          <button type="button" matIconButton (click)="startEdit('notes')">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
-      </div>
+      </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'notes') {
           <form [formGroup]="notesForm" class="pt-2">
@@ -283,15 +330,18 @@
           </form>
           <div class="flex gap-2 justify-end mt-2">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
-            <button type="button" matButton="filled" (click)="saveNotes()" [disabled]="notesForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
+            <button type="button" matButton="filled" (click)="saveNotes()"
+              [disabled]="notesForm.invalid || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)">
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
         } @else {
-          <p class="text-sm py-2 whitespace-pre-wrap">{{ c.notes || 'Sin notas registradas.' }}</p>
+          <p class="text-sm py-3 whitespace-pre-wrap text-[color:var(--mat-sys-on-surface-variant)]">
+            {{ c.notes || 'Sin notas registradas.' }}
+          </p>
         }
       </mat-card-content>
     </mat-card>
-  }
 
-</section>
+  }
+</div>

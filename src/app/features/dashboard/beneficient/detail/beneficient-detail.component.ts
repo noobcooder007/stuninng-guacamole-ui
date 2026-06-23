@@ -170,8 +170,8 @@ export class BeneficientDetailComponent implements OnInit {
             case 'address':
                 this.addressForm.patchValue({
                     street: b.address.street,
-                    noExt: b.address.numeration.noExt,
-                    noInt: b.address.numeration.noInt ?? '',
+                    noExt: b.address.numeration?.noExt ?? '',
+                    noInt: b.address.numeration?.noInt ?? '',
                     neighborhood: b.address.neighborhood ?? '',
                     locality: b.address.locality ?? '',
                     city: b.address.city,
@@ -221,8 +221,10 @@ export class BeneficientDetailComponent implements OnInit {
         const v = this.addressForm.value;
         const dto: UpdateAddressDto = {
             street: v.street || undefined,
-            noExt: v.noExt || undefined,
-            noInt: v.noInt || undefined,
+            numeration: {
+                noExt: v.noExt || undefined,
+                noInt: v.noInt || undefined,
+            },
             neighborhood: v.neighborhood || undefined,
             locality: v.locality || undefined,
             city: v.city || undefined,

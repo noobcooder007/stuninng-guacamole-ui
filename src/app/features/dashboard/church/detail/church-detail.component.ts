@@ -118,8 +118,8 @@ export class ChurchDetailComponent implements OnInit {
             case 'address':
                 this.addressForm.patchValue({
                     street: c.address.street,
-                    noExt: c.address.numeration.noExt,
-                    noInt: c.address.numeration.noInt ?? '',
+                    noExt: c.address.numeration?.noExt ?? '',
+                    noInt: c.address.numeration?.noInt ?? '',
                     neighborhood: c.address.neighborhood ?? '',
                     locality: c.address.locality ?? '',
                     city: c.address.city,
@@ -167,8 +167,10 @@ export class ChurchDetailComponent implements OnInit {
         const v = this.addressForm.value;
         const dto: UpdateAddressDto = {
             street: v.street || undefined,
-            noExt: v.noExt || undefined,
-            noInt: v.noInt || undefined,
+            numeration: {
+                noExt: v.noExt || undefined,
+                noInt: v.noInt || undefined,
+            },
             neighborhood: v.neighborhood || undefined,
             locality: v.locality || undefined,
             city: v.city || undefined,
