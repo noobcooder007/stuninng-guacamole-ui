@@ -72,7 +72,7 @@ export class ChurchComponent implements OnInit, AfterViewInit {
                 case 'capilla': return item.ecclesialIdentity.capilla;
                 case 'priest': return `${item.priest.firstname} ${item.priest.firstLastname} ${item.priest.secondLastname}`;
                 case 'auxiliarPriest': return `${item.auxiliarPriest.firstname} ${item.auxiliarPriest.firstLastname} ${item.auxiliarPriest.secondLastname}`;
-                case 'address': return `${item.address.street} ${item.address.numeration.noExt} ${item.address.numeration.noInt ?? ''} ${item.address.neighborhood ?? ''} ${item.address.locality} ${item.address.city} ${item.address.state} ${item.address.zipCode}`;
+                case 'address': return `${item.address.street} ${item.address.numeration?.noExt ?? ''} ${item.address.numeration?.noInt ?? ''} ${item.address.neighborhood ?? ''} ${item.address.locality} ${item.address.city} ${item.address.state} ${item.address.zipCode}`;
                 case 'phoneNumber': return item.phoneNumber;
                 default: return (item as any)[property];
             }

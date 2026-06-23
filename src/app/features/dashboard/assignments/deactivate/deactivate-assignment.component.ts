@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DatePipe } from '@angular/common';
@@ -35,6 +36,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         MatIconModule,
         MatPaginatorModule,
         MatProgressBarModule,
+        MatSortModule,
         MatTableModule,
         DatePipe,
         FullnamePipe,
@@ -42,7 +44,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
     ],
     templateUrl: './deactivate-assignment.component.html',
 })
-export class DeactivateAssignmentComponent implements OnInit {
+export class DeactivateAssignmentComponent implements OnInit, AfterViewInit {
     protected readonly Permissions = Permissions;
     private readonly router = inject(Router);
     private readonly assignmentService = inject(AssignmentService);
@@ -59,9 +61,27 @@ export class DeactivateAssignmentComponent implements OnInit {
     public selection = new SelectionModel<Assignment>(true, []);
     public displayedColumns = ['select', 'beneficient-fullname', 'collector-fullname', 'updatedAt', 'actions'];
 
+    @ViewChild(MatSort) sort!: MatSort;
+
     public collectorCtrl = new FormControl('');
     public filteredCollectors = signal<CollectorListItem[]>([]);
     public selectedCollectorId: string | null = null;
+
+    ngAfterViewInit(): void {
+        this.dataSource.sort = this.sort;
+        this.dataSource.sortingDataAccessor = (item: Assignment, property: string): string => {
+            switch (property) {
+                case 'beneficient-fullname':
+                    return `${item.beneficient.firstLastname} ${item.beneficient.secondLastname ?? ''} ${item.beneficient.firstname}`.toLowerCase();
+                case 'collector-fullname':
+                    return `${item.collector.firstLastname} ${item.collector.secondLastname ?? ''} ${item.collector.firstname}`.toLowerCase();
+                case 'updatedAt':
+                    return item.updatedAt;
+                default:
+                    return (item as any)[property] ?? '';
+            }
+        };
+    }
 
     ngOnInit() {
         this.collectorService.getActiveList().subscribe(items => {

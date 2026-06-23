@@ -1,0 +1,140 @@
+<div class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6 gap-6">
+
+  <!-- Filtros -->
+  <section class="flex flex-col gap-4">
+    <span class="text-xs font-semibold uppercase tracking-widest text-[color:var(--mat-sys-on-surface-variant)]">
+      Consulta de recibos
+    </span>
+
+    <form [formGroup]="searchForm" class="flex flex-row gap-4 items-center flex-wrap">
+      <mat-form-field appearance="outline" class="w-52">
+        <mat-label>Folio</mat-label>
+        <mat-icon matPrefix class="mr-1">receipt_long</mat-icon>
+        <input matInput formControlName="folio" placeholder="ej. JUN2026-0001-R-0001" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-40">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="status">
+          @for (opt of statusOptions; track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-44">
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="receiptType">
+          @for (opt of receiptTypeOptions; track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-36">
+        <mat-label>Mes</mat-label>
+        <mat-select formControlName="month">
+          @for (month of months; track month.value) {
+            <mat-option [value]="month.value">{{ month.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-28">
+        <mat-label>Año</mat-label>
+        <mat-select formControlName="year">
+          @for (year of years; track year) {
+            <mat-option [value]="year.toString()">{{ year }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button type="button" matButton="tonal" (click)="onSearch()">Buscar</button>
+      <button type="button" matButton="tonal" (click)="onClearFilters()">Borrar filtros</button>
+    </form>
+  </section>
+
+  @if (isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <!-- Tabla -->
+  <table mat-table [dataSource]="dataSource" matSort class="w-full">
+
+    <ng-container matColumnDef="folio">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Folio</th>
+      <td mat-cell *matCellDef="let row">
+        <span class="font-mono text-sm">{{ row.folio }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Tipo</th>
+      <td mat-cell *matCellDef="let row">
+        <span [class]="row.type === 'SPECIAL'
+          ? 'text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-orange-100 text-orange-700'
+          : 'text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-blue-100 text-blue-700'">
+          {{ row.type === 'SPECIAL' ? 'Especial' : 'Recurrente' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+      <td mat-cell *matCellDef="let row">
+        <span [class]="'text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded ' + statusClass(row.status)">
+          {{ statusLabel(row.status) }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="period">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Período</th>
+      <td mat-cell *matCellDef="let row">
+        {{ periodLabel(row.periodMonth) }} {{ row.periodYear }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Monto</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.amount | currency: row.currency : 'symbol' : '1.2-2' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef><span class="sr-only">Ver detalle</span></th>
+      <td mat-cell *matCellDef="let row" class="text-right">
+        <button type="button" matIconButton (click)="openDetail(row)" title="Ver detalle">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns;"
+      class="cursor-pointer hover:bg-[color:var(--mat-sys-surface-variant)]"
+      (click)="openDetail(row)"
+    ></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns.length">
+        <app-empty-state
+          icon="receipt_long"
+          message="No hay recibos que coincidan con los filtros"
+          [isFiltered]="searchForm.dirty"
+        />
+      </td>
+    </tr>
+  </table>
+
+  <mat-paginator
+    [length]="pagination().itemCount"
+    [pageSize]="pagination().limit"
+    [pageIndex]="pagination().page - 1"
+    [pageSizeOptions]="[10, 20, 50]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  />
+</div>
