@@ -110,6 +110,13 @@ export const MENU_CONFIG: NavCategory[] = [
                 route: '/receipts/received',
                 permission: Permissions.VIEW_INVOICE,
             },
+            {
+                id: 'receipts-list',
+                label: 'Consulta de Recibos',
+                icon: 'manage_search',
+                route: '/receipts/list',
+                permission: Permissions.VIEW_INVOICE,
+            },
         ],
     },
     {

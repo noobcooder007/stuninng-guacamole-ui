@@ -32,6 +32,7 @@ export enum Permissions {
     VIEW_INVOICE = 'view:invoice',
     ADD_INVOICE = 'add:invoice',
     PRINT_INVOICE = 'print:invoice',
+    VOID_INVOICE = 'void:invoice',
 
     // Reportes
     VIEW_REPORT = 'view:report',

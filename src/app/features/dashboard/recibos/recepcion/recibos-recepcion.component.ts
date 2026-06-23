@@ -20,6 +20,7 @@ import { MarkAsPaidReceiptDto, Recibo, ReceiptType, RecibosService, ReciboFilter
 import { PaymentMethodDialogComponent } from './payment-method-dialog.component';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-state.component';
 
 
 @Component({
@@ -41,6 +42,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         MatDialogModule,
         CurrencyPipe,
         HasPermissionPipe,
+        EmptyStateComponent,
     ],
 })
 export class RecibosRecepcionComponent implements OnInit, AfterViewInit {

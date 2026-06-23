@@ -1,12 +1,10 @@
 import { AfterViewInit, Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import type { PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatIcon } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { Collector, PaginatedMetadata } from '@app/core/services/collector.service';
+import { Collector } from '@app/core/services/collector.service';
 import { Assignment, AssignmentService } from '@app/core/services/assignment.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { SearchCollectorComponent } from './search-collector/search-collector.component';
@@ -15,6 +13,9 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 import { TabService } from '@app/core/services/tab.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-state.component';
+import { PaginatedList } from '@app/shared/utils/paginated-list';
+import { ListShellComponent, ListTableDirective } from '@app/shared/components/list-shell/list-shell.component';
 
 type ViewMode = 'activas' | 'huerfanas';
 
@@ -23,42 +24,32 @@ type ViewMode = 'activas' | 'huerfanas';
     templateUrl: './assignments.component.html',
     imports: [
         MatTableModule,
-        MatPaginatorModule,
         MatSortModule,
         MatButtonModule,
         MatButtonToggleModule,
         MatDialogModule,
-        MatIcon,
-        MatProgressBarModule,
         DatePipe,
         FullnamePipe,
         HasPermissionPipe,
+        EmptyStateComponent,
+        ListShellComponent,
+        ListTableDirective,
     ],
 })
 export class AssignmentsComponent implements OnInit, AfterViewInit {
     protected readonly Permissions = Permissions;
-    public isLoading = signal(true);
+    private readonly list = new PaginatedList<Assignment>();
+    protected readonly isLoading = this.list.isLoading;
+    protected readonly pagination = this.list.pagination;
+    protected readonly dataSource = this.list.dataSource;
     public viewMode = signal<ViewMode>('activas');
     public selectedCollector = signal<Collector | null>(null);
-
-    private readonly initialPagination: PaginatedMetadata = {
-        hasNextPage: false,
-        hasPreviousPage: false,
-        limit: 5,
-        page: 1,
-        itemCount: 0,
-        pageCount: 0,
-    };
-
-    public pagination = signal<PaginatedMetadata>(this.initialPagination);
 
     public readonly displayedColumns = computed<string[]>(() =>
         this.viewMode() === 'activas'
             ? ['beneficient-fullname', 'collector-fullname', 'updatedAt']
             : ['beneficient-fullname', 'updatedAt']
     );
-
-    public dataSource = new MatTableDataSource<Assignment>();
 
     @ViewChild(MatSort) sort!: MatSort;
 
@@ -67,7 +58,7 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
     private readonly tabService = inject(TabService);
 
     ngOnInit() {
-        this.loadData(1, this.initialPagination.limit);
+        this.loadData(1, this.list.pagination().limit);
     }
 
     ngAfterViewInit(): void {
@@ -87,9 +78,9 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
     onViewModeChange(mode: ViewMode) {
         this.viewMode.set(mode);
         this.selectedCollector.set(null);
-        this.pagination.set(this.initialPagination);
+        this.list.resetPagination();
         this.dataSource.data = [];
-        this.loadData(1, this.initialPagination.limit);
+        this.loadData(1, 5);
     }
 
     clearFilter() {
@@ -98,7 +89,7 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
     }
 
     loadData(page: number, limit: number, collectorId?: string) {
-        this.isLoading.set(true);
+        this.list.startLoading();
         const source$ = this.viewMode() === 'huerfanas'
             ? this.assignmentsService.getOrphanedAssignments(page, limit)
             : this.assignmentsService.getAssignments(page, limit, collectorId ? { collectorId } : {});
@@ -106,22 +97,17 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
         source$.subscribe({
             next: ({ data }) => {
                 const items: Assignment[] = (data as any)?.items ?? [];
-                const meta = (data as any)?.meta;
-                this.pagination.set({
-                    ...this.initialPagination,
-                    ...(meta ?? {}),
-                    itemCount: meta?.itemCount ?? items.length,
-                });
-                this.dataSource.data = items;
+                const meta = (data as any)?.meta ?? { hasNextPage: false, hasPreviousPage: false, limit: 5, page: 1, itemCount: items.length, pageCount: 1 };
+                this.list.onSuccess(items, meta);
                 this.dataSource.sort = this.sort;
-                this.isLoading.set(false);
             },
-            error: () => this.isLoading.set(false),
+            error: () => this.list.onError(),
         });
     }
 
     onPageChange(event: PageEvent) {
-        this.loadData(event.pageIndex + 1, event.pageSize, this.selectedCollector()?.id);
+        const { page, limit } = this.list.paramsFromEvent(event);
+        this.loadData(page, limit, this.selectedCollector()?.id);
     }
 
     addAssignment() {

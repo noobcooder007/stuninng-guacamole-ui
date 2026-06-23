@@ -1,19 +1,20 @@
-import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import type { PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { Collector, CollectorFilters, CollectorService, PaginatedMetadata } from '@app/core/services/collector.service';
+import { Collector, CollectorFilters, CollectorService } from '@app/core/services/collector.service';
 import { TabService } from '@app/core/services/tab.service';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-state.component';
+import { PaginatedList } from '@app/shared/utils/paginated-list';
+import { ListShellComponent, ListTableDirective } from '@app/shared/components/list-shell/list-shell.component';
 
 @Component({
     selector: 'collector-component',
@@ -21,31 +22,24 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
     imports: [
         ReactiveFormsModule,
         MatTableModule,
-        MatPaginatorModule,
         MatSortModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MatIcon,
-        MatProgressBarModule,
         FullnamePipe,
         HasPermissionPipe,
+        EmptyStateComponent,
+        ListShellComponent,
+        ListTableDirective,
     ],
 })
 export class CollectorComponent implements OnInit, AfterViewInit {
     protected readonly Permissions = Permissions;
-    public isLoading = signal(true);
-    private initialPaginatedMetadata: PaginatedMetadata = {
-        hasNextPage: false,
-        hasPreviousPage: false,
-        limit: 5,
-        page: 1,
-        itemCount: 0,
-        pageCount: 0,
-    };
-    public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
+    private readonly list = new PaginatedList<Collector>();
+    protected readonly isLoading = this.list.isLoading;
+    protected readonly pagination = this.list.pagination;
+    protected readonly dataSource = this.list.dataSource;
     public displayedColumns: string[] = ['profile', 'fullname', 'nss', 'phoneNumber', 'telephoneNumber', 'commissionPercent'];
-    public dataSource = new MatTableDataSource<Collector>();
     public searchForm = new FormGroup({
         firstname: new FormControl(''),
         firstLastname: new FormControl(''),
@@ -81,28 +75,26 @@ export class CollectorComponent implements OnInit, AfterViewInit {
 
     private setupFilters() {
         this.searchForm.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe(() => {
-            this.pagination.set(this.initialPaginatedMetadata);
+            this.list.resetPagination();
             this.loadData();
         });
     }
 
     loadData(page: number = 1, limit: number = 5) {
-        this.isLoading.set(true);
+        this.list.startLoading();
         const filters = this.searchForm.value as CollectorFilters;
         this.collectorService.getCollectors(page, limit, filters).subscribe({
             next: ({ data: { items, meta } }) => {
-                this.pagination.set(meta);
-                this.isLoading.set(false);
-                this.dataSource.data = items;
+                this.list.onSuccess(items, meta);
                 this.dataSource.sort = this.sort;
             },
-            error: () => this.isLoading.set(false),
+            error: () => this.list.onError(),
         });
     }
 
     onPageChange(event: PageEvent) {
-        this.pagination.update((meta) => ({ ...meta, page: event.pageIndex + 1, limit: event.pageSize }));
-        this.loadData(event.pageIndex + 1, event.pageSize);
+        const { page, limit } = this.list.paramsFromEvent(event);
+        this.loadData(page, limit);
     }
 
     addCollector() {

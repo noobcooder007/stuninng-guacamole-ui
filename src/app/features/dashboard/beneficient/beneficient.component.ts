@@ -1,20 +1,21 @@
-import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import type { PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table'
+import { MatTableModule } from '@angular/material/table'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { BeneficientService, PaginatedMetadata, BeneficientFilters, Beneficient } from '@app/core/services/beneficient.service';
+import { BeneficientService, BeneficientFilters, Beneficient } from '@app/core/services/beneficient.service';
 import { GenderPipe } from '@app/shared/pipes/gender.pipe';
 import { StatusPipe } from '@app/shared/pipes/status.pipe';
 import { TabService } from '@app/core/services/tab.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-state.component';
+import { PaginatedList } from '@app/shared/utils/paginated-list';
+import { ListShellComponent, ListTableDirective } from '@app/shared/components/list-shell/list-shell.component';
 
 @Component({
     selector: 'beneficient-component',
@@ -22,33 +23,26 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
     imports: [
         ReactiveFormsModule,
         MatTableModule,
-        MatPaginatorModule,
         MatSortModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MatIcon,
-        MatProgressBarModule,
         GenderPipe,
         StatusPipe,
         HasPermissionPipe,
+        EmptyStateComponent,
+        ListShellComponent,
+        ListTableDirective,
     ],
 })
 
 export class BeneficientComponent implements OnInit, AfterViewInit {
     protected readonly Permissions = Permissions;
-    public isLoading = signal(true);
-    private initialPaginatedMetadata: PaginatedMetadata = {
-        hasNextPage: false,
-        hasPreviousPage: false,
-        limit: 5,
-        page: 1,
-        itemCount: 0,
-        pageCount: 0
-    };
-    public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
+    private readonly list = new PaginatedList<Beneficient>();
+    protected readonly isLoading = this.list.isLoading;
+    protected readonly pagination = this.list.pagination;
+    protected readonly dataSource = this.list.dataSource;
     public displayedColumns: string[] = ['title', 'firstname', 'firstLastname', 'secondLastname', 'beneficientNumber', 'genre', 'email', 'rfc', 'status'];
-    public dataSource = new MatTableDataSource<Beneficient>();
     public searchForm = new FormGroup({
         firstname: new FormControl(''),
         firstLastname: new FormControl(''),
@@ -83,28 +77,23 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
                 distinctUntilChanged()
             )
             .subscribe(() => {
-                this.pagination.set(this.initialPaginatedMetadata);
+                this.list.resetPagination();
                 this.loadData();
             });
     }
 
     loadData(page: number = 1, limit: number = 5) {
-        this.isLoading.set(true);
+        this.list.startLoading();
         const filters = this.searchForm.value as BeneficientFilters;
         this.beneficientService.getBeneficents(page, limit, filters).subscribe({
-            next: (response) => {
-                this.dataSource.data = response.data.items;
-                this.pagination.set(response.data.meta);
-                this.isLoading.set(false);
-            },
-            error: () => {
-                this.isLoading.set(false);
-            }
+            next: (response) => this.list.onSuccess(response.data.items, response.data.meta),
+            error: () => this.list.onError()
         });
     }
 
     onPageChange(event: PageEvent) {
-        this.loadData(event.pageIndex + 1, event.pageSize);
+        const { page, limit } = this.list.paramsFromEvent(event);
+        this.loadData(page, limit);
     }
 
     addBeneficient() {

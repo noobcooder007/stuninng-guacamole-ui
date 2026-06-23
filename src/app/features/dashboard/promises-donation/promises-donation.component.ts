@@ -1,18 +1,15 @@
-import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import type { PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatIcon } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { PaginatedMetadata } from '@app/core/services/collector.service';
 import { TabService } from '@app/core/services/tab.service';
 import { PromiseDonation, PromisesDonationFilters, PromisesDonationService } from '@app/core/services/promise-donation.service';
 import { CurrencyPipe, DatePipe } from '@angular/common';
@@ -20,6 +17,9 @@ import { RecurrencePipe } from '@app/shared/pipes/recurrence.pipe';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-state.component';
+import { PaginatedList } from '@app/shared/utils/paginated-list';
+import { ListShellComponent, ListTableDirective } from '@app/shared/components/list-shell/list-shell.component';
 
 @Component({
     selector: 'promises-donation-component',
@@ -27,7 +27,6 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
     imports: [
         ReactiveFormsModule,
         MatTableModule,
-        MatPaginatorModule,
         MatSortModule,
         MatFormFieldModule,
         MatInputModule,
@@ -35,29 +34,23 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         MatButtonToggleModule,
         MatSelectModule,
         MatDialogModule,
-        MatIcon,
-        MatProgressBarModule,
         CurrencyPipe,
         DatePipe,
         RecurrencePipe,
         FullnamePipe,
         HasPermissionPipe,
+        EmptyStateComponent,
+        ListShellComponent,
+        ListTableDirective,
     ],
 })
 export class PromisesDonationComponent implements OnInit, AfterViewInit {
     protected readonly Permissions = Permissions;
-    public isLoading = signal(true);
-    private initialPaginatedMetadata: PaginatedMetadata = {
-        hasNextPage: false,
-        hasPreviousPage: false,
-        limit: 5,
-        page: 1,
-        itemCount: 0,
-        pageCount: 0,
-    };
-    public pagination = signal<PaginatedMetadata>(this.initialPaginatedMetadata);
+    private readonly list = new PaginatedList<PromiseDonation>();
+    protected readonly isLoading = this.list.isLoading;
+    protected readonly pagination = this.list.pagination;
+    protected readonly dataSource = this.list.dataSource;
     public displayedColumns: string[] = ['fullname', 'beneficientNumber', 'currency', 'method', 'promiseAmount', 'startDate', 'lastDonation', 'nextDonation', 'recurrence'];
-    public dataSource = new MatTableDataSource<PromiseDonation>();
     public searchForm = new FormGroup({
         currency: new FormControl(''),
         method: new FormControl(''),
@@ -91,8 +84,8 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
                 case 'beneficientNumber': return item.beneficient?.beneficientNumber;
                 default: {
                     const value = item[property as keyof PromiseDonation];
-                    return (typeof value === 'string' || typeof value === 'number') 
-                        ? value 
+                    return (typeof value === 'string' || typeof value === 'number')
+                        ? value
                         : String(value);
                 }
             }
@@ -101,28 +94,26 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
 
     private setupFilters() {
         this.searchForm.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe(() => {
-            this.pagination.set(this.initialPaginatedMetadata);
+            this.list.resetPagination();
             this.loadData();
         });
     }
 
     loadData(page: number = 1, limit: number = 5) {
-        this.isLoading.set(true);
+        this.list.startLoading();
         const filters = this.searchForm.value as PromisesDonationFilters;
         this.promisesService.getPromisesDonationWithBeneficients(page, limit, filters).subscribe({
             next: ({ data: { items, meta } }) => {
-                this.pagination.set(meta);
-                this.isLoading.set(false);
-                this.dataSource.data = items;
+                this.list.onSuccess(items, meta);
                 this.dataSource.sort = this.sort;
             },
-            error: () => this.isLoading.set(false),
+            error: () => this.list.onError(),
         });
     }
 
     onPageChange(event: PageEvent) {
-        this.pagination.update((meta) => ({ ...meta, page: event.pageIndex + 1, limit: event.pageSize }));
-        this.loadData(event.pageIndex + 1, event.pageSize);
+        const { page, limit } = this.list.paramsFromEvent(event);
+        this.loadData(page, limit);
     }
 
     addPromiseDonation() {

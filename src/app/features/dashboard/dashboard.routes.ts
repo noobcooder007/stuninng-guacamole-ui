@@ -149,6 +149,20 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(m => m.RecibosRecepcionComponent),
             },
             {
+                path: 'receipts/list',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_INVOICE },
+                loadComponent: () => import('./recibos/visualizar/receipts-list.component')
+                    .then(m => m.ReceiptsListComponent),
+            },
+            {
+                path: 'receipts/list/:folio',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_INVOICE },
+                loadComponent: () => import('./recibos/detail/receipt-detail.component')
+                    .then(m => m.ReceiptDetailComponent),
+            },
+            {
                 path: 'reports/collector',
                 canActivate: [permissionGuard],
                 data: { permission: Permissions.VIEW_REPORT },
