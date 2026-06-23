@@ -3,7 +3,15 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { vi } from 'vitest';
-import { CollectorService, CreateCollectorDto } from '@app/core/services/collector.service';
+import {
+  CollectorService,
+  CreateCollectorDto,
+  UpdateCollectorPersonalDto,
+  UpdateCollectorAddressDto,
+  UpdateCollectorContactDto,
+  UpdateCollectorPaymentDto,
+  UpdateCollectorNotesDto,
+} from '@app/core/services/collector.service';
 import { environment } from 'environments/environment.development';
 
 const BASE = `${environment.apiBaseUrl}/collector`;
@@ -57,6 +65,23 @@ describe('CollectorService', () => {
         .flush('err', { status: 500, statusText: 'Server Error' });
       expect(snackBarSpy.open).toHaveBeenCalledWith(
         'Error al obtener colectores', 'Cerrar', { duration: 5000 }
+      );
+    });
+  });
+
+  describe('getCollector', () => {
+    it('should GET /collector/:id', () => {
+      service.getCollector('col-1').subscribe();
+      const req = httpMock.expectOne(`${BASE}/col-1`);
+      expect(req.request.method).toBe('GET');
+      req.flush({ statusCode: 200, data: {} });
+    });
+
+    it('should show snackbar on error', () => {
+      service.getCollector('bad').subscribe({ error: () => {} });
+      httpMock.expectOne(`${BASE}/bad`).flush('err', { status: 404, statusText: 'Not Found' });
+      expect(snackBarSpy.open).toHaveBeenCalledWith(
+        'Error al obtener datos del colector', 'Cerrar', { duration: 5000 }
       );
     });
   });
@@ -199,6 +224,56 @@ describe('CollectorService', () => {
       httpMock.expectOne(`${environment.apiBaseUrl}/collector`)
         .flush('err', { status: 400, statusText: 'Bad Request' });
       expect(snackBarSpy.open).toHaveBeenCalledWith('Error al crear colector', 'Cerrar', { duration: 5000 });
+    });
+  });
+
+  describe.each([
+    {
+      method: 'patchPersonal' as const,
+      section: 'personal',
+      dto: { firstname: 'Luis' } as UpdateCollectorPersonalDto,
+      errorMsg: 'Error al actualizar información personal',
+    },
+    {
+      method: 'patchAddress' as const,
+      section: 'address',
+      dto: { street: 'Calle Nueva' } as UpdateCollectorAddressDto,
+      errorMsg: 'Error al actualizar domicilio',
+    },
+    {
+      method: 'patchContact' as const,
+      section: 'contact',
+      dto: { phoneNumber: '5512345678' } as UpdateCollectorContactDto,
+      errorMsg: 'Error al actualizar contacto',
+    },
+    {
+      method: 'patchPayment' as const,
+      section: 'payment',
+      dto: { commissionPercent: 15 } as UpdateCollectorPaymentDto,
+      errorMsg: 'Error al actualizar datos de pago',
+    },
+    {
+      method: 'patchNotes' as const,
+      section: 'notes',
+      dto: { notes: 'Actualizado' } as UpdateCollectorNotesDto,
+      errorMsg: 'Error al actualizar notas',
+    },
+  ])('$method', ({ method, section, dto, errorMsg }) => {
+    const ID = 'col-1';
+    const URL = `${BASE}/${ID}/${section}`;
+
+    it(`should PATCH /collector/:id/${section} with the dto`, () => {
+      service[method](ID, dto as any).subscribe();
+      const req = httpMock.expectOne(URL);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toMatchObject(dto);
+      req.flush({});
+    });
+
+    it('should show snackbar on error', () => {
+      service[method](ID, dto as any).subscribe({ error: () => {} });
+      httpMock.expectOne(URL).flush('err', { status: 500, statusText: 'Server Error' });
+      expect(snackBarSpy.open).toHaveBeenCalledWith(errorMsg, 'Cerrar', { duration: 5000 });
     });
   });
 });

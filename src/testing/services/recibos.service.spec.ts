@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { vi } from 'vitest';
-import { RecibosService } from '@app/core/services/recibos.service';
+import { RecibosService, CreateSpecialReceiptDto } from '@app/core/services/recibos.service';
 import { environment } from 'environments/environment.development';
 
 const BASE = `${environment.apiBaseUrl}/receipts`;
@@ -97,6 +97,71 @@ describe('RecibosService', () => {
         .flush('err', { status: 500, statusText: 'Server Error' });
       expect(snackBarSpy.open).toHaveBeenCalledWith(
         'Error al marcar los recibos como pagados', 'Cerrar', { duration: 5000 }
+      );
+    });
+  });
+
+  describe('getRecibo', () => {
+    it('should GET /receipts/:folio', () => {
+      service.getRecibo('JUN2026-0001-R-0001').subscribe();
+      const req = httpMock.expectOne(`${BASE}/JUN2026-0001-R-0001`);
+      expect(req.request.method).toBe('GET');
+      req.flush({ statusCode: 200, data: {}, timestamp: '' });
+    });
+
+    it('should show snackbar on error', () => {
+      service.getRecibo('INVALID').subscribe({ error: () => {} });
+      httpMock.expectOne(`${BASE}/INVALID`)
+        .flush('err', { status: 404, statusText: 'Not Found' });
+      expect(snackBarSpy.open).toHaveBeenCalledWith(
+        'Error al obtener el recibo', 'Cerrar', { duration: 5000 }
+      );
+    });
+  });
+
+  describe('crearReciboEspecial', () => {
+    const dto: CreateSpecialReceiptDto = {
+      beneficientId: 'ben-1',
+      collectorId: 'col-1',
+      amount: 500,
+      currency: 'MXN',
+      periodMonth: 6,
+      periodYear: 2026,
+    };
+
+    it('should POST to /receipts/special with the dto', () => {
+      service.crearReciboEspecial(dto).subscribe();
+      const req = httpMock.expectOne(`${BASE}/special`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(dto);
+      req.flush({ statusCode: 201, data: {}, timestamp: '' });
+    });
+
+    it('should show snackbar on error', () => {
+      service.crearReciboEspecial(dto).subscribe({ error: () => {} });
+      httpMock.expectOne(`${BASE}/special`)
+        .flush('err', { status: 400, statusText: 'Bad Request' });
+      expect(snackBarSpy.open).toHaveBeenCalledWith(
+        'Error al crear el recibo especial', 'Cerrar', { duration: 5000 }
+      );
+    });
+  });
+
+  describe('cancelarRecibo', () => {
+    it('should PATCH /receipts/:folio/void with reason', () => {
+      service.cancelarRecibo('JUN2026-0001-R-0001', 'Duplicado').subscribe();
+      const req = httpMock.expectOne(`${BASE}/JUN2026-0001-R-0001/void`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual({ reason: 'Duplicado' });
+      req.flush(null);
+    });
+
+    it('should show snackbar on error', () => {
+      service.cancelarRecibo('JUN2026-0001-R-0001', 'Motivo').subscribe({ error: () => {} });
+      httpMock.expectOne(`${BASE}/JUN2026-0001-R-0001/void`)
+        .flush('err', { status: 500, statusText: 'Server Error' });
+      expect(snackBarSpy.open).toHaveBeenCalledWith(
+        'Error al cancelar el recibo', 'Cerrar', { duration: 5000 }
       );
     });
   });

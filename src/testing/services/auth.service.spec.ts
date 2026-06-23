@@ -13,11 +13,11 @@ const FAKE_JWT =
   '.eyJyaWdodHMiOlsiUEVSTV9BIiwiUEVSTV9CIl0sImdlbmRlciI6Ik1BTEUifQ' +
   '.fake-signature';
 
-function buildAuthResponse(expiresIn = Date.now() + 3600000): AuthResponse {
+function buildAuthResponse(expiresIn = Date.now() + 3600000, role = 'ADMIN'): AuthResponse {
   return {
     statusCode: 200,
     data: {
-      user: { username: 'jmtejeda', role: 'ADMIN' },
+      user: { username: 'jmtejeda', role },
       tokens: {
         accessToken: FAKE_JWT,
         expiresIn,
@@ -127,6 +127,33 @@ describe('AuthService', () => {
 
     it('should return true when permission is undefined', () => {
       expect(service.hasPermission(undefined)).toBe(true);
+    });
+
+    describe('superadministrator bypass', () => {
+      beforeEach(() => {
+        TestBed.resetTestingModule();
+        TestBed.configureTestingModule({
+          providers: [
+            AuthService,
+            provideHttpClient(),
+            provideHttpClientTesting(),
+            { provide: MatSnackBar, useValue: snackBarSpy },
+          ],
+        });
+        service = TestBed.inject(AuthService);
+        httpMock = TestBed.inject(HttpTestingController);
+        service.handleAuthSuccess(buildAuthResponse(Date.now() + 3600000, 'superadministrator'));
+      });
+
+      it('should return true for any permission', () => {
+        expect(service.hasPermission('PERM_C')).toBe(true);
+        expect(service.hasPermission('void:invoice')).toBe(true);
+        expect(service.hasPermission('delete:everything')).toBe(true);
+      });
+
+      it('should return true when permission is undefined', () => {
+        expect(service.hasPermission(undefined)).toBe(true);
+      });
     });
   });
 

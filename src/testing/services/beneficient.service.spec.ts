@@ -3,7 +3,16 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { vi } from 'vitest';
-import { BeneficientService, CreateBeneficientDto } from '@app/core/services/beneficient.service';
+import {
+  BeneficientService,
+  CreateBeneficientDto,
+  UpdatePersonalDto,
+  UpdateAddressDto,
+  UpdateContactDto,
+  UpdateChurchDto,
+  UpdateTaxDto,
+  UpdatePrivacyDto,
+} from '@app/core/services/beneficient.service';
 import { environment } from 'environments/environment.development';
 
 const BASE = `${environment.apiBaseUrl}/beneficient`;
@@ -145,6 +154,62 @@ describe('BeneficientService', () => {
       service.delete(5).subscribe({ error: () => {} });
       httpMock.expectOne(`${environment.apiBaseUrl}/beneficents/5`).flush('err', { status: 500, statusText: 'Server Error' });
       expect(snackBarSpy.open).toHaveBeenCalledWith('Error al eliminar bienhechore', 'Cerrar', { duration: 5000 });
+    });
+  });
+
+  describe.each([
+    {
+      method: 'patchPersonal' as const,
+      section: 'personal',
+      dto: { firstname: 'Juan' } as UpdatePersonalDto,
+      errorMsg: 'Error al actualizar información personal',
+    },
+    {
+      method: 'patchAddress' as const,
+      section: 'address',
+      dto: { street: 'Av. Reforma' } as UpdateAddressDto,
+      errorMsg: 'Error al actualizar domicilio',
+    },
+    {
+      method: 'patchContact' as const,
+      section: 'contact',
+      dto: { email: 'a@b.com' } as UpdateContactDto,
+      errorMsg: 'Error al actualizar contacto',
+    },
+    {
+      method: 'patchChurch' as const,
+      section: 'church',
+      dto: { churchId: 'church-1' } as UpdateChurchDto,
+      errorMsg: 'Error al actualizar iglesia',
+    },
+    {
+      method: 'patchTax' as const,
+      section: 'tax',
+      dto: { rfc: 'XAXX010101000' } as UpdateTaxDto,
+      errorMsg: 'Error al actualizar datos fiscales',
+    },
+    {
+      method: 'patchPrivacy' as const,
+      section: 'privacy',
+      dto: { keepPrivate: true } as UpdatePrivacyDto,
+      errorMsg: 'Error al actualizar privacidad',
+    },
+  ])('$method', ({ method, section, dto, errorMsg }) => {
+    const ID = '42';
+    const URL = `${BASE}/${ID}/${section}`;
+
+    it(`should PATCH /beneficient/:id/${section} with the dto`, () => {
+      service[method](ID, dto as any).subscribe();
+      const req = httpMock.expectOne(URL);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toMatchObject(dto);
+      req.flush({});
+    });
+
+    it('should show snackbar on error', () => {
+      service[method](ID, dto as any).subscribe({ error: () => {} });
+      httpMock.expectOne(URL).flush('err', { status: 500, statusText: 'Server Error' });
+      expect(snackBarSpy.open).toHaveBeenCalledWith(errorMsg, 'Cerrar', { duration: 5000 });
     });
   });
 });

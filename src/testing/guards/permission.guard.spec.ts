@@ -57,4 +57,15 @@ describe('permissionGuard', () => {
     );
     expect(result).toBe(true);
   });
+
+  it('should allow access for any permission when AuthService returns true (superadministrator bypass)', () => {
+    // AuthService.hasPermission returns true for superadministrator regardless of the permission.
+    // The guard must respect that decision and not block the route.
+    setup(true);
+    const result = TestBed.runInInjectionContext(
+      () => permissionGuard(makeRoute('void:invoice'), mockState)
+    );
+    expect(result).toBe(true);
+    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
+  });
 });
