@@ -12,7 +12,7 @@
         Detalle de colector
       </span>
       <div class="flex items-start justify-between gap-4 flex-wrap">
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 flex-1">
           <img class="rounded-full size-14 object-cover shrink-0" [src]="c.profilePictureUrl" alt="foto de perfil" />
           <div class="flex flex-col gap-2">
             <h1 class="text-2xl font-bold leading-none">
@@ -30,6 +30,14 @@
             </div>
           </div>
         </div>
+        <button type="button" matButton="tonal" [disabled]="isGeneratingEfficiency()" (click)="generarEficiencia()">
+          @if (isGeneratingEfficiency()) {
+            <mat-spinner diameter="18" />
+          } @else {
+            <mat-icon>picture_as_pdf</mat-icon>
+          }
+          Eficiencia
+        </button>
       </div>
     </div>
 

@@ -39,6 +39,16 @@
       </mat-card-content>
 
       <mat-card-actions align="end">
+        <button type="button" matButton="tonal" [disabled]="isGeneratingReport()" (click)="generarReportePeriodo()">
+          @if (isGeneratingReport()) { <mat-spinner diameter="18" /> } @else { <mat-icon>picture_as_pdf</mat-icon> }
+          Reporte periodo
+        </button>
+        @if (period.status === PeriodStatusEnum.OPEN) {
+          <button type="button" matButton="tonal" [disabled]="isGeneratingSettlement()" (click)="generarCartasLiquidacion()">
+            @if (isGeneratingSettlement()) { <mat-spinner diameter="18" /> } @else { <mat-icon>picture_as_pdf</mat-icon> }
+            Cartas liquidación
+          </button>
+        }
         <button type="button" matButton="filled" [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)" (click)="togglePeriod()">
           @if (isTogglingPeriod()) {
             <mat-spinner diameter="20" />

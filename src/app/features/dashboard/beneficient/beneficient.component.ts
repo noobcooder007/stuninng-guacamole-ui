@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import type { PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table'
@@ -27,6 +29,8 @@ import { ListShellComponent, ListTableDirective } from '@app/shared/components/l
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
         GenderPipe,
         StatusPipe,
         HasPermissionPipe,
@@ -55,6 +59,7 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
     private readonly tabService = inject(TabService);
     private readonly beneficientService = inject(BeneficientService);
     @ViewChild(MatSort) sort!: MatSort;
+    isGeneratingRegistro = signal(false);
 
     ngOnInit() {
         this.setupFilters();
@@ -111,6 +116,18 @@ export class BeneficientComponent implements OnInit, AfterViewInit {
             label: `${row.firstname} ${row.firstLastname}`,
             link: `/beneficents/${row.id}`,
             permission: 'view:beneficient'
+        });
+    }
+
+    generarRegistro(): void {
+        this.isGeneratingRegistro.set(true);
+        this.beneficientService.registroPdf().subscribe({
+            next: (blob) => {
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                this.isGeneratingRegistro.set(false);
+            },
+            error: () => this.isGeneratingRegistro.set(false),
         });
     }
 

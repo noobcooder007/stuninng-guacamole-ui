@@ -47,6 +47,8 @@ export class ProcessesComponent implements OnInit {
     public periodStatus = signal<PeriodStatus | null>(null);
     public isTogglingPeriod = signal(false);
     public isLoadingPeriod = signal(true);
+    public isGeneratingReport = signal(false);
+    public isGeneratingSettlement = signal(false);
     public currentYear = new Date().getFullYear();
     public years: number[] = [];
 
@@ -196,6 +198,32 @@ export class ProcessesComponent implements OnInit {
         dialogRef.afterClosed().subscribe((confirmed: boolean) => {
             if (!confirmed) return;
             this._startReceiptsGenerationProcess(year);
+        });
+    }
+
+    generarReportePeriodo(): void {
+        this.isGeneratingReport.set(true);
+        this.processesService.collectionPeriodReportPdf().subscribe({
+            next: (blob) => {
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                this.isGeneratingReport.set(false);
+            },
+            error: () => this.isGeneratingReport.set(false),
+        });
+    }
+
+    generarCartasLiquidacion(): void {
+        const periodId = this.periodStatus()?.id;
+        if (!periodId) return;
+        this.isGeneratingSettlement.set(true);
+        this.processesService.settlementLettersPdf(periodId).subscribe({
+            next: (blob) => {
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                this.isGeneratingSettlement.set(false);
+            },
+            error: () => this.isGeneratingSettlement.set(false),
         });
     }
 
