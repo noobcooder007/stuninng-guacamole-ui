@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '@app/core/services/auth.service';
 
 @Component({
@@ -49,6 +50,7 @@ export class LoginComponent implements OnInit {
   private readonly _authService = inject(AuthService);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
+  private readonly _snackbar = inject(MatSnackBar);
   public hide = signal(true)
   public loginForm = inject(FormBuilder).group({
     username: ['', [Validators.required]],
@@ -88,12 +90,9 @@ export class LoginComponent implements OnInit {
         .login({ username, password })
         .subscribe((isAuthenticated) => {
           if (isAuthenticated) {
-            if (this._returnUrl) {
-              this._router.navigateByUrl(this._returnUrl);
-              return;
-            }
-            this._router.navigateByUrl('/');
-            return;
+            this._router.navigateByUrl(this._returnUrl ?? '/');
+          } else {
+            this._snackbar.open('Credenciales inválidas', 'Cerrar', { duration: 5000 });
           }
         });
     }

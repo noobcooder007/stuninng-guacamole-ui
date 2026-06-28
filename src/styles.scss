@@ -28,34 +28,101 @@ $dark-theme: mat.define-theme(
   )
 );
 
-// 1. Aplicación al selector :root para que las variables CSS existan globalmente
+// Componentes usados en la aplicación (excluye: badge, bottom-sheet, grid-list,
+// menu, radio, slide-toggle, slider, stepper, timepicker, tree)
 :root {
-  @include mat.all-component-themes($light-theme);
-  @include mat.system-level-colors($light-theme); // <--- ESTO GENERA LAS VARIABLES --mat-sys
-  @include mat.color-variants-backwards-compatibility($light-theme);
+  // mat.system-level-colors no emite esta variable en AM21, pero varios componentes
+  // (icon-button, list-item, expansion-panel) la usan como fallback de opacidad del
+  // state layer. Sin ella opacity:unset → 1 → el hover aparece sólido (negro/blanco).
+  --mat-sys-hover-state-layer-opacity: 0.08;
+  @include mat.core-theme($light-theme);
+  @include mat.autocomplete-theme($light-theme);
+  @include mat.button-theme($light-theme);
+  @include mat.button-toggle-theme($light-theme);
+  @include mat.card-theme($light-theme);
+  @include mat.checkbox-theme($light-theme);
+  @include mat.chips-theme($light-theme);
+  @include mat.datepicker-theme($light-theme);
+  @include mat.dialog-theme($light-theme);
+  @include mat.divider-theme($light-theme);
+  @include mat.expansion-theme($light-theme);
+  @include mat.form-field-theme($light-theme);
+  @include mat.icon-theme($light-theme);
+  @include mat.input-theme($light-theme);
+  @include mat.list-theme($light-theme);
+  @include mat.paginator-theme($light-theme);
+  @include mat.progress-bar-theme($light-theme);
+  @include mat.progress-spinner-theme($light-theme);
+  @include mat.pseudo-checkbox-theme($light-theme);
+  @include mat.select-theme($light-theme);
+  @include mat.sidenav-theme($light-theme);
+  @include mat.snack-bar-theme($light-theme);
+  @include mat.sort-theme($light-theme);
+  @include mat.table-theme($light-theme);
+  @include mat.tabs-theme($light-theme);
+  @include mat.toolbar-theme($light-theme);
+  @include mat.tooltip-theme($light-theme);
+  @include mat.system-level-colors($light-theme);
 }
 
-// 2. Modo Oscuro
 @media (prefers-color-scheme: dark) {
   :root {
-    @include mat.all-component-colors($dark-theme);
-    @include mat.system-level-colors($dark-theme); // <--- ACTUALIZA LAS VARIABLES A DARK
-    @include mat.color-variants-backwards-compatibility($dark-theme);
-    color-scheme: dark;
+    @include mat.core-color($dark-theme);
+    @include mat.autocomplete-color($dark-theme);
+    @include mat.button-color($dark-theme);
+    @include mat.button-toggle-color($dark-theme);
+    @include mat.card-color($dark-theme);
+    @include mat.checkbox-color($dark-theme);
+    @include mat.chips-color($dark-theme);
+    @include mat.datepicker-color($dark-theme);
+    @include mat.dialog-color($dark-theme);
+    @include mat.divider-color($dark-theme);
+    @include mat.expansion-color($dark-theme);
+    @include mat.form-field-color($dark-theme);
+    @include mat.icon-color($dark-theme);
+    @include mat.input-color($dark-theme);
+    @include mat.list-color($dark-theme);
+    @include mat.paginator-color($dark-theme);
+    @include mat.progress-bar-color($dark-theme);
+    @include mat.progress-spinner-color($dark-theme);
+    @include mat.pseudo-checkbox-color($dark-theme);
+    @include mat.select-color($dark-theme);
+    @include mat.sidenav-color($dark-theme);
+    @include mat.snack-bar-color($dark-theme);
+    @include mat.sort-color($dark-theme);
+    @include mat.table-color($dark-theme);
+    @include mat.tabs-color($dark-theme);
+    @include mat.toolbar-color($dark-theme);
+    @include mat.tooltip-color($dark-theme);
+    @include mat.system-level-colors($dark-theme);
+      color-scheme: dark;
   }
 }
 
-// 3. Fondo dinámico para que no tengas que usar púrpura
 body {
   margin: 0;
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
 }
 
-// El drawer de Angular Material tiene overflow:auto por defecto, lo que genera
-// un segundo scrollbar junto al de mat-nav-list. Lo suprimimos aquí.
 .mat-drawer {
   overflow: hidden !important;
 }
 
-// Color base #005cbb
+// M3 backwards-compat for color="warn" on buttons (replaces the full
+// mat.color-variants-backwards-compatibility() mixin which adds ~110kB)
+.mat-warn {
+  &.mat-mdc-flat-button,
+  &.mat-mdc-raised-button {
+    --mdc-filled-button-container-color: var(--mat-sys-error);
+    --mdc-filled-button-label-text-color: var(--mat-sys-on-error);
+  }
+  &.mat-mdc-outlined-button {
+    --mdc-outlined-button-label-text-color: var(--mat-sys-error);
+    --mdc-outlined-button-outline-color: var(--mat-sys-error);
+  }
+  &.mat-mdc-icon-button {
+    --mat-icon-button-icon-color: var(--mat-sys-error);
+    --mat-icon-button-state-layer-color: var(--mat-sys-error);
+  }
+}

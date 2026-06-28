@@ -1,6 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from 'environments/environment.development';
 import { LoginUsernamePasswordRequestDto }
@@ -40,8 +39,7 @@ export interface AuthenticatedUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private readonly http = inject(HttpClient)
-    private readonly _snackbar = inject(MatSnackBar);
+    private readonly http = inject(HttpClient);
 
     private _isLoading = signal(false);
     private _authStatus = signal<AuthStatus>('not-authenticated');
@@ -70,13 +68,9 @@ export class AuthService {
             { withCredentials: true },
         )
             .pipe(
-                map((response) => {
-                    this._snackbar.open('Sesión iniciada correctamente', 'Cerrar', { duration: 5000 });
-                    return this.handleAuthSuccess(response as AuthResponse);
-                }),
+                map((response) => this.handleAuthSuccess(response as AuthResponse)),
                 catchError((_) => {
                     this._isLoading.set(false);
-                    this._snackbar.open('Oops credenciales invalidas', 'Cerrar', { duration: 5000 });
                     return of(false);
                 })
             );
@@ -110,7 +104,6 @@ export class AuthService {
             { withCredentials: true },
         ).pipe(
             map(() => {
-                this._snackbar.open('Sesion cerrada con exito', 'Cerrar', { duration: 5000 });
                 this._authToken.set(null);
                 this._authStatus.set('not-authenticated');
                 localStorage.removeItem('refreshExpiresIn');
