@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { TabService } from '@app/core/services/tab.service';
 import { PromiseDonation, PromisesDonationFilters, PromisesDonationService } from '@app/core/services/promise-donation.service';
@@ -33,7 +32,6 @@ import { ListShellComponent, ListTableDirective } from '@app/shared/components/l
         MatButtonModule,
         MatButtonToggleModule,
         MatSelectModule,
-        MatDialogModule,
         CurrencyPipe,
         DatePipe,
         RecurrencePipe,
@@ -116,12 +114,21 @@ export class PromisesDonationComponent implements OnInit, AfterViewInit {
         this.loadData(page, limit);
     }
 
+    openDetail(promise: PromiseDonation) {
+        this.tabService.openTab({
+            id: `promise-detail-${promise.id}`,
+            label: `${promise.beneficient.firstname} ${promise.beneficient.firstLastname}`,
+            link: `/promises-donation/${promise.id}`,
+            permission: Permissions.VIEW_PROMISE,
+        });
+    }
+
     addPromiseDonation() {
         this.tabService.openTab({
             id: 'create-promise-donation',
             label: 'Añadir promesa de donación',
             link: '/promises-donation/create',
-            permission: 'add:promise-donation'
+            permission: Permissions.ADD_PROMISE,
         });
     }
 }

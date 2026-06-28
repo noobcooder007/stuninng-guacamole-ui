@@ -135,6 +135,13 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then((m) => m.CreatePromiseDonationComponent)
             },
             {
+                path: 'promises-donation/:id',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_PROMISE },
+                loadComponent: () => import('./promises-donation/detail/promise-donation-detail.component')
+                    .then((m) => m.PromiseDonationDetailComponent)
+            },
+            {
                 path: 'receipts',
                 canActivate: [permissionGuard],
                 data: { permission: Permissions.PRINT_INVOICE },
@@ -182,6 +189,13 @@ export const DASHBOARD_ROUTES: Routes = [
                 data: { permission: Permissions.VIEW_PROCESS },
                 loadComponent: () => import('./processes/processes.component')
                     .then(m => m.ProcessesComponent),
+            },
+            {
+                path: 'settlements',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_INVOICE },
+                loadComponent: () => import('./settlements/settlements.component')
+                    .then(m => m.SettlementsComponent),
             },
             {
                 path: 'roles',

@@ -28,7 +28,7 @@ export class AddInstructionComponent implements OnInit {
     protected readonly Permissions = Permissions;
     public instructionForm = new FormGroup({
         day: new FormControl(null, [Validators.required]),
-        hour: new FormControl(null, [Validators.required]),
+        hours: new FormControl(null, [Validators.required]),
         note: new FormControl(null),
     });
 

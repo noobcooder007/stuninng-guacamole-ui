@@ -14,6 +14,7 @@ import { Beneficient, BeneficientFilters, BeneficientService } from '@app/core/s
 import { startWith, debounceTime, distinctUntilChanged, switchMap, map, catchError, of, delay } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchBeneficientComponent } from '../../beneficient/search-beneficient/search-beneficient.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CreatePromiseDonationDto, PromisesDonationService } from '@app/core/services/promise-donation.service';
 import { AddInstructionComponent } from '../add-instruction/add-instruction.component';
 import { HourPipe } from '@app/shared/pipes/hour.pipe';
@@ -56,6 +57,7 @@ export class CreatePromiseDonationComponent implements OnInit {
     public isLoading = signal(false);
     private readonly beneficientService = inject(BeneficientService);
     private readonly promiseDonationService = inject(PromisesDonationService);
+    private readonly snackbar = inject(MatSnackBar);
     
     createPromiseDonationForm = new FormGroup({
         beneficientId: new FormControl<Beneficient | string | null>(null, [Validators.required]),
@@ -126,6 +128,7 @@ export class CreatePromiseDonationComponent implements OnInit {
         this.promiseDonationService.create(dto).subscribe({
             next: () => {
                 this.isLoading.set(false);
+                this.snackbar.open('Promesa de donación creada correctamente', 'Cerrar', { duration: 4000 });
                 this.reset();
             },
             error: () => this.isLoading.set(false),
@@ -168,7 +171,7 @@ export class CreatePromiseDonationComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 const alreadyExists = this.instructions.weeklySchedule.findIndex((v) => {
-                    return v.day === result.day && v.hour === result.hour;
+                    return v.day === result.day && v.hours === result.hours;
                 });
                 if (alreadyExists !== -1) return;
                 this.instructions.weeklySchedule.push(result);
@@ -179,7 +182,7 @@ export class CreatePromiseDonationComponent implements OnInit {
 
     editInstruction(value: WeeklySchedule): void {
         const index = this.instructions.weeklySchedule.findIndex((v) => {
-            return v.day === value.day && v.hour === value.hour;
+            return v.day === value.day && v.hours === value.hours;
         });
         const dialogRef = this.dialog.open(AddInstructionComponent, {
             minWidth: '70vw',
