@@ -13,6 +13,7 @@ import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DatePipe } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, forkJoin, switchMap } from 'rxjs';
 import { Assignment, AssignmentService, PaginatedMetadata } from '@app/core/services/assignment.service';
@@ -50,6 +51,7 @@ export class DeactivateAssignmentComponent implements OnInit, AfterViewInit {
     private readonly assignmentService = inject(AssignmentService);
     private readonly collectorService = inject(CollectorService);
     private readonly dialog = inject(MatDialog);
+    private readonly snackbar = inject(MatSnackBar);
     private readonly initialPagination: PaginatedMetadata = {
         hasNextPage: false, hasPreviousPage: false,
         limit: 10, page: 1, itemCount: 0, pageCount: 0,
@@ -152,6 +154,7 @@ export class DeactivateAssignmentComponent implements OnInit, AfterViewInit {
             if (!confirmed) return;
             this.assignmentService.deactivate(assignment.id).subscribe({
                 next: () => {
+                    this.snackbar.open('Asignación desactivada correctamente', 'Cerrar', { duration: 4000 });
                     this.loadData(this.pagination().page, this.pagination().limit);
                 },
             });
@@ -170,6 +173,7 @@ export class DeactivateAssignmentComponent implements OnInit, AfterViewInit {
             if (!confirmed) return;
             forkJoin(selected.map(a => this.assignmentService.deactivate(a.id))).subscribe({
                 next: () => {
+                    this.snackbar.open(`${selected.length} asignaciones desactivadas correctamente`, 'Cerrar', { duration: 4000 });
                     this.loadData(this.pagination().page, this.pagination().limit);
                 },
             });

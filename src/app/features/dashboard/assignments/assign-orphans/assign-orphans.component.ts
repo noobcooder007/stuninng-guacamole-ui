@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DatePipe } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { Assignment, AssignmentService, PaginatedMetadata } from '@app/core/services/assignment.service';
@@ -48,6 +49,7 @@ export class AssignOrphansComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly assignmentService = inject(AssignmentService);
     private readonly collectorService = inject(CollectorService);
+    private readonly snackbar = inject(MatSnackBar);
 
     private readonly initialPagination: PaginatedMetadata = {
         hasNextPage: false, hasPreviousPage: false,
@@ -135,6 +137,7 @@ export class AssignOrphansComponent implements OnInit {
         }).subscribe({
             next: () => {
                 this.isSaving.set(false);
+                this.snackbar.open('Asignaciones realizadas correctamente', 'Cerrar', { duration: 4000 });
                 this.loadData(this.pagination().page, this.pagination().limit);
             },
             error: () => this.isSaving.set(false),

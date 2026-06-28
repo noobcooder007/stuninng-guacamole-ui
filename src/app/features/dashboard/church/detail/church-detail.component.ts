@@ -18,6 +18,7 @@ import {
     UpdatePhoneDto,
 } from '@app/core/services/church.service';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
@@ -50,6 +51,7 @@ export class ChurchDetailComponent implements OnInit {
     protected readonly Permissions = Permissions;
     private readonly churchService = inject(ChurchService);
     private readonly route = inject(ActivatedRoute);
+    private readonly snackbar = inject(MatSnackBar);
     church = signal<Church | null>(null);
     isLoading = signal(true);
     editingSection = signal<string | null>(null);
@@ -211,7 +213,7 @@ export class ChurchDetailComponent implements OnInit {
     private persist(section: string, request: Observable<any>) {
         this.isSaving.set(true);
         request.subscribe({
-            next: () => { this.isSaving.set(false); this.editingSection.set(null); this.loadData(); },
+            next: () => { this.isSaving.set(false); this.snackbar.open('Cambios guardados correctamente', 'Cerrar', { duration: 4000 }); this.editingSection.set(null); this.loadData(); },
             error: () => this.isSaving.set(false),
         });
     }

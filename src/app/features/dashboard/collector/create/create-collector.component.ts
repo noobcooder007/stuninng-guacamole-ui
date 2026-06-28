@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { debounceTime, merge } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CollectorService, CreateCollectorDto } from '@app/core/services/collector.service';
 import { addressExclusiveFieldsValidator } from '@app/shared/validators/exclusive-fields-validators.validator';
 import { passwordMatchValidator } from '@app/shared/validators/password-match-validator.validator';
@@ -32,6 +33,7 @@ export class CreateCollectorComponent implements OnInit {
     public uploadingImage = signal(false);
     public isLoading = signal(false);
     private readonly collectorService = inject(CollectorService);
+    private readonly snackbar = inject(MatSnackBar);
     private readonly cd = inject(ChangeDetectorRef);
 
     createCollectorForm = new FormGroup({
@@ -121,6 +123,7 @@ export class CreateCollectorComponent implements OnInit {
         this.collectorService.create(dto).subscribe({
             next: () => {
                 this.isLoading.set(false);
+                this.snackbar.open('Colector creado correctamente', 'Cerrar', { duration: 4000 });
                 this.reset();
             },
             error: () => this.isLoading.set(false),

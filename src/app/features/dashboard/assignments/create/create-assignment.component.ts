@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, filter, forkJoin, map, switchMap } from 'rxjs';
 import { BeneficientService } from '@app/core/services/beneficient.service';
@@ -44,6 +45,7 @@ export class CreateAssignmentComponent implements OnInit {
     private readonly beneficientService = inject(BeneficientService);
     private readonly collectorService = inject(CollectorService);
     private readonly assignmentService = inject(AssignmentService);
+    private readonly snackbar = inject(MatSnackBar);
 
     public isSaving = signal(false);
     public isLoadingBeneficents = signal(true);
@@ -186,7 +188,7 @@ export class CreateAssignmentComponent implements OnInit {
                 this.assignmentService.create({ collectorId, beneficientsIds } as CreateAssignmentDto)
             )
         ).subscribe({
-            next: () => { this.isSaving.set(false); this.addedDonors = []; },
+            next: () => { this.isSaving.set(false); this.snackbar.open('Asignaciones creadas correctamente', 'Cerrar', { duration: 4000 }); this.addedDonors = []; },
             error: () => this.isSaving.set(false),
         });
     }

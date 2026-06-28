@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Permission, RoleService } from '@app/core/services/role.service';
 import { TabService } from '@app/core/services/tab.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
@@ -45,6 +46,7 @@ export class PermissionsComponent implements OnInit, AfterViewInit {
 
     private readonly roleService = inject(RoleService);
     private readonly tabService = inject(TabService);
+    private readonly snackbar = inject(MatSnackBar);
 
     ngOnInit() {
         this.searchControl.valueChanges
@@ -86,7 +88,9 @@ export class PermissionsComponent implements OnInit, AfterViewInit {
     }
 
     deletePermission(permission: Permission) {
-        this.roleService.deletePermission(permission.id).subscribe(() => this.loadData());
+        this.roleService.deletePermission(permission.id).subscribe({
+            next: () => { this.snackbar.open('Permiso eliminado correctamente', 'Cerrar', { duration: 4000 }); this.loadData(); },
+        });
     }
 
 }

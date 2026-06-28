@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from "@angular/material/button";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Address, ChurchService, CreateChurchDto, EcclesialIdentity, Priest } from '@app/core/services/church.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
@@ -26,6 +27,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
 export class CreateChurchComponent {
     protected readonly Permissions = Permissions;
     private readonly churchService = inject(ChurchService);
+    private readonly snackbar = inject(MatSnackBar);
     public isLoading = signal(false);
 
     createChurchForm = new FormGroup({
@@ -74,6 +76,8 @@ export class CreateChurchComponent {
         this.churchService.create(createChurchDto).subscribe({
             next: () => {
                 this.isLoading.set(false);
+                this.snackbar.open('Iglesia creada correctamente', 'Cerrar', { duration: 4000 });
+                this.reset();
             },
             error: () => {
                 this.isLoading.set(false);

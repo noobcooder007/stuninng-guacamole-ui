@@ -26,6 +26,7 @@ import {
 } from '@app/core/services/beneficient.service';
 import { Church, ChurchService } from '@app/core/services/church.service';
 import { GenderPipe } from '@app/shared/pipes/gender.pipe';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
@@ -64,10 +65,12 @@ export class BeneficientDetailComponent implements OnInit {
     private readonly beneficientService = inject(BeneficientService);
     private readonly churchService = inject(ChurchService);
     private readonly route = inject(ActivatedRoute);
+    private readonly snackbar = inject(MatSnackBar);
     beneficient = signal<BeneficientDetail | null>(null);
     isLoading = signal(true);
     editingSection = signal<string | null>(null);
     isSaving = signal(false);
+    isGeneratingReport = signal(false);
     churchList: Church[] = [];
 
     personalForm = new FormGroup({
@@ -142,6 +145,20 @@ export class BeneficientDetailComponent implements OnInit {
         this.beneficientService.getBeneficent(id).subscribe({
             next: (r) => { this.beneficient.set(r.data); this.isLoading.set(false); },
             error: () => this.isLoading.set(false),
+        });
+    }
+
+    generarReporte(): void {
+        const id = this.beneficient()?.id;
+        if (!id) return;
+        this.isGeneratingReport.set(true);
+        this.beneficientService.reportePdf(id).subscribe({
+            next: (blob) => {
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                this.isGeneratingReport.set(false);
+            },
+            error: () => this.isGeneratingReport.set(false),
         });
     }
 
@@ -267,7 +284,7 @@ export class BeneficientDetailComponent implements OnInit {
     private persist(section: string, request: Observable<any>) {
         this.isSaving.set(true);
         request.subscribe({
-            next: () => { this.isSaving.set(false); this.editingSection.set(null); this.loadData(); },
+            next: () => { this.isSaving.set(false); this.snackbar.open('Cambios guardados correctamente', 'Cerrar', { duration: 4000 }); this.editingSection.set(null); this.loadData(); },
             error: () => this.isSaving.set(false),
         });
     }

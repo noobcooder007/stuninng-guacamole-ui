@@ -18,6 +18,7 @@ import {
     UpdateCollectorPaymentDto,
     UpdateCollectorNotesDto,
 } from '@app/core/services/collector.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
@@ -49,10 +50,12 @@ export class ColectorDetailComponent implements OnInit {
     protected readonly Permissions = Permissions;
     private readonly collectorService = inject(CollectorService);
     private readonly route = inject(ActivatedRoute);
+    private readonly snackbar = inject(MatSnackBar);
     collector = signal<Collector | null>(null);
     isLoading = signal(true);
     editingSection = signal<string | null>(null);
     isSaving = signal(false);
+    isGeneratingEfficiency = signal(false);
 
     personalForm = new FormGroup({
         firstname: new FormControl('', [Validators.required]),
@@ -89,6 +92,20 @@ export class ColectorDetailComponent implements OnInit {
     });
 
     ngOnInit() { this.loadData(); }
+
+    generarEficiencia(): void {
+        const id = this.collector()?.id;
+        if (!id) return;
+        this.isGeneratingEfficiency.set(true);
+        this.collectorService.efficiencyPdf(id).subscribe({
+            next: (blob) => {
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                this.isGeneratingEfficiency.set(false);
+            },
+            error: () => this.isGeneratingEfficiency.set(false),
+        });
+    }
 
     loadData() {
         const id = this.route.snapshot.paramMap.get('id')!;
@@ -207,7 +224,7 @@ export class ColectorDetailComponent implements OnInit {
     private persist(section: string, request: Observable<any>) {
         this.isSaving.set(true);
         request.subscribe({
-            next: () => { this.isSaving.set(false); this.editingSection.set(null); this.loadData(); },
+            next: () => { this.isSaving.set(false); this.snackbar.open('Cambios guardados correctamente', 'Cerrar', { duration: 4000 }); this.editingSection.set(null); this.loadData(); },
             error: () => this.isSaving.set(false),
         });
     }

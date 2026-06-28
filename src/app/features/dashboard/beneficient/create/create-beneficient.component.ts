@@ -8,6 +8,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { BeneficientService, CreateBeneficientDto } from '@app/core/services/beneficient.service';
 import { Church, ChurchService } from '@app/core/services/church.service';
 import { addressExclusiveFieldsValidator } from '@app/shared/validators/exclusive-fields-validators.validator';
@@ -41,6 +42,7 @@ export class CreateBeneficientComponent implements OnInit {
     public isLoading = signal(false);
     private readonly beneficientService = inject(BeneficientService);
     private readonly churchService = inject(ChurchService);
+    private readonly snackbar = inject(MatSnackBar);
 
     createBeneficientForm = new FormGroup({
         title: new FormControl(null, [Validators.required]),
@@ -117,6 +119,7 @@ export class CreateBeneficientComponent implements OnInit {
         this.beneficientService.create(dto).subscribe({
             next: () => {
                 this.isLoading.set(false);
+                this.snackbar.open('Bienhechor creado correctamente', 'Cerrar', { duration: 4000 });
                 this.reset();
             },
             error: () => this.isLoading.set(false),
