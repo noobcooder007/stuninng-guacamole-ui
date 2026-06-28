@@ -9,6 +9,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '@app/core/services/auth.service';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
 import { Tab, TabService } from '@app/core/services/tab.service';
@@ -77,10 +78,10 @@ export const MENU_CONFIG: NavCategory[] = [
                 permission: Permissions.VIEW_PROMISE,
             },
             {
-                id: 'processes',
-                label: 'Procesos',
-                icon: 'play_circle',
-                route: '/processes',
+                id: 'periods',
+                label: 'Períodos',
+                icon: 'calendar_month',
+                route: '/periods',
                 permission: Permissions.VIEW_PROCESS,
             },
         ],
@@ -189,6 +190,8 @@ export class DashboardLayoutComponent implements OnDestroy {
     private readonly _mobileQuery: MediaQueryList;
     private readonly _mobileQueryListener: () => void;
 
+    private readonly snackbar = inject(MatSnackBar);
+
     constructor(
         public readonly tabService: TabService,
         public readonly router: Router,
@@ -226,6 +229,7 @@ export class DashboardLayoutComponent implements OnDestroy {
         }).afterClosed().subscribe((confirmed) => {
             if (!confirmed) return;
             this.authService.logout().subscribe(() => {
+                this.snackbar.open('Sesión cerrada con éxito', 'Cerrar', { duration: 4000 });
                 this.router.navigateByUrl('/auth/login');
             });
         });

@@ -3,12 +3,20 @@ import { authGuard } from '@app/core/guards/auth.guard';
 import { permissionGuard } from '@app/core/guards/permission.guard';
 import { DashboardLayoutComponent } from '@app/features/dashboard/dashboard-layout.component';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { SpanishPaginatorIntl } from '@app/core/services/paginator-intl.service';
 
 export const DASHBOARD_ROUTES: Routes = [
     {
         path: '',
         component: DashboardLayoutComponent,
         canActivate: [authGuard],
+        providers: [
+            provideNativeDateAdapter(),
+            { provide: MAT_DATE_LOCALE, useValue: 'es-MX' },
+            { provide: MatPaginatorIntl, useClass: SpanishPaginatorIntl },
+        ],
         children: [
             {
                 path: '',
@@ -184,11 +192,11 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(m => m.ReportsComponent),
             },
             {
-                path: 'processes',
+                path: 'periods',
                 canActivate: [permissionGuard],
                 data: { permission: Permissions.VIEW_PROCESS },
-                loadComponent: () => import('./processes/processes.component')
-                    .then(m => m.ProcessesComponent),
+                loadComponent: () => import('./periods/periods.component')
+                    .then(m => m.PeriodsComponent),
             },
             {
                 path: 'settlements',

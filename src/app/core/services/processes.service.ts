@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'environments/environment.development';
 import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 
 export interface ProcessRequest {
     month: string;
@@ -49,22 +50,23 @@ export class ProcessesService {
     }
 
     startReceiptsGenerationProcess(request: ProcessRequest): Observable<PeriodStatusResponse> {
-        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/processes/generate-receipts`, request);
+        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/receipts/generate/recurring`, request);
     }
 
-    collectionPeriodReportPdf(): Observable<Blob> {
-        return this.http.get(`${this.apiUrl}/collection-period/report/pdf`, { responseType: 'blob' }).pipe(
+    collectionPeriodReportPdf(month: number, year: number): Observable<Blob> {
+        const params = new HttpParams().set('month', month).set('year', year);
+        return this.http.get(`${this.apiUrl}/periods/report/pdf`, { params, responseType: 'blob' }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al generar el reporte del periodo', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar el reporte del periodo'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
     }
 
     settlementLettersPdf(periodId: string): Observable<Blob> {
-        return this.http.get(`${this.apiUrl}/collection-period/${periodId}/settlement-letters/pdf`, { responseType: 'blob' }).pipe(
+        return this.http.get(`${this.apiUrl}/periods/${periodId}/settlement-letters/pdf`, { responseType: 'blob' }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al generar las cartas de liquidación', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar las cartas de liquidación'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

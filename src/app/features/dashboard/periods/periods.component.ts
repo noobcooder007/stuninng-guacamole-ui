@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,14 +14,14 @@ import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialo
 import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 
 @Component({
-    selector: 'app-processes',
+    selector: 'app-periods',
     standalone: true,
-    templateUrl: './processes.component.html',
-    styleUrl: './processes.component.scss',
+    templateUrl: './periods.component.html',
+    styleUrl: './periods.component.scss',
     imports: [
-        MatTabsModule,
         MatFormFieldModule,
         MatSelectModule,
         MatButtonModule,
@@ -35,14 +34,13 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         HasPermissionPipe,
     ],
 })
-export class ProcessesComponent implements OnInit {
+export class PeriodsComponent implements OnInit {
     protected readonly Permissions = Permissions;
     private readonly processesService = inject(ProcessesService);
     private readonly dialog = inject(MatDialog);
     private readonly snackbar = inject(MatSnackBar);
 
     public readonly PeriodStatusEnum = PeriodStatusEnum;
-    public activeTab = signal(0);
     public isProcessing = signal(false);
     public periodStatus = signal<PeriodStatus | null>(null);
     public isTogglingPeriod = signal(false);
@@ -67,12 +65,7 @@ export class ProcessesComponent implements OnInit {
         { value: '12', label: 'Diciembre' },
     ];
 
-    public commissionForm = new FormGroup({
-        month: new FormControl('', Validators.required),
-        year: new FormControl<number | string>('', Validators.required),
-    });
-
-    public receiptsForm = new FormGroup({
+    public periodReportsForm = new FormGroup({
         month: new FormControl('', Validators.required),
         year: new FormControl<number | string>('', Validators.required),
     });
@@ -91,8 +84,7 @@ export class ProcessesComponent implements OnInit {
 
     private setCurrentMonth(): void {
         const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
-        this.commissionForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
-        this.receiptsForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
+        this.periodReportsForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
     }
 
     loadPeriodStatus(): void {
@@ -101,12 +93,15 @@ export class ProcessesComponent implements OnInit {
             next: (res) => {
                 this.periodStatus.set(res.data);
                 this.isLoadingPeriod.set(false);
+                const month = res.data.month.toString().padStart(2, '0');
+                const year = res.data.year.toString();
+                this.periodReportsForm.patchValue({ month, year });
             },
             error: (err) => {
                 this.periodStatus.set(null);
                 this.isLoadingPeriod.set(false);
                 if (err?.status !== 404) {
-                    this.snackbar.open('Error al obtener el estado del periodo', 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(err, 'Error al obtener el estado del periodo'), 'Cerrar', { duration: 5000 });
                 }
             },
         });
@@ -141,69 +136,49 @@ export class ProcessesComponent implements OnInit {
                     this.loadPeriodStatus();
                     this.isTogglingPeriod.set(false);
                 },
-                error: () => {
-                    this.snackbar.open('Error al cambiar el estado del periodo', 'Cerrar', { duration: 5000 });
+                error: (err) => {
+                    this.snackbar.open(apiErrorMessage(err, 'Error al cambiar el estado del periodo'), 'Cerrar', { duration: 5000 });
                     this.isTogglingPeriod.set(false);
                 },
             });
         });
     }
 
-    startCommissionProcess(): void {
-        if (this.commissionForm.invalid) return;
-        const month = this.months.find(m => m.value === this.commissionForm.get('month')?.value)?.label ?? '';
-        const year = this.commissionForm.get('year')?.value?.toString() ?? '';
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data: {
-                title: 'Iniciar proceso de comisión',
-                message: `¿Iniciar el proceso de comisión para ${month} ${year}? Esta acción no se puede deshacer.`,
-                confirmLabel: 'Iniciar',
-            },
-        });
-        dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-            if (!confirmed) return;
-            this._startCommissionProcess(month, year);
-        });
-    }
-
-    private _startCommissionProcess(month: string, year: string): void {
-        this.isProcessing.set(true);
-        const request = {
-            month: this.commissionForm.get('month')?.value ?? '',
-            year,
-        };
-        this.processesService.startCommissionProcess(request).subscribe({
-            next: () => {
-                this.snackbar.open('Proceso de comisión iniciado correctamente', 'Cerrar', { duration: 5000 });
-                this.isProcessing.set(false);
-            },
-            error: () => {
-                this.snackbar.open('Error al iniciar el proceso de comisión', 'Cerrar', { duration: 5000 });
-                this.isProcessing.set(false);
-            },
-        });
-    }
-
-    startReceiptsGenerationProcess(): void {
-        if (this.receiptsForm.invalid) return;
-        const month = this.months.find(m => m.value === this.receiptsForm.get('month')?.value)?.label ?? '';
-        const year = this.receiptsForm.get('year')?.value?.toString() ?? '';
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    generarRecibos(): void {
+        const period = this.periodStatus();
+        if (!period) return;
+        const monthLabel = this.months[period.month - 1]?.label ?? '';
+        this.dialog.open(ConfirmDialogComponent, {
             data: {
                 title: 'Generar recibos',
-                message: `¿Generar recibos para ${month} ${year}? Esta acción no se puede deshacer.`,
+                message: `¿Generar recibos para ${monthLabel} ${period.year}? Esta acción no se puede deshacer.`,
                 confirmLabel: 'Generar',
             },
-        });
-        dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+        }).afterClosed().subscribe((confirmed: boolean) => {
             if (!confirmed) return;
-            this._startReceiptsGenerationProcess(year);
+            this.isProcessing.set(true);
+            this.processesService.startReceiptsGenerationProcess({
+                month: period.month.toString().padStart(2, '0'),
+                year: period.year.toString(),
+            }).subscribe({
+                next: () => {
+                    this.snackbar.open('Recibos generados correctamente', 'Cerrar', { duration: 5000 });
+                    this.isProcessing.set(false);
+                },
+                error: (err) => {
+                    this.snackbar.open(apiErrorMessage(err, 'Error al generar los recibos'), 'Cerrar', { duration: 7000 });
+                    this.isProcessing.set(false);
+                },
+            });
         });
     }
 
     generarReportePeriodo(): void {
+        if (this.periodReportsForm.invalid) return;
+        const month = parseInt(this.periodReportsForm.value.month!, 10);
+        const year = parseInt(this.periodReportsForm.value.year!.toString(), 10);
         this.isGeneratingReport.set(true);
-        this.processesService.collectionPeriodReportPdf().subscribe({
+        this.processesService.collectionPeriodReportPdf(month, year).subscribe({
             next: (blob) => {
                 const url = URL.createObjectURL(blob);
                 window.open(url, '_blank');
@@ -227,18 +202,4 @@ export class ProcessesComponent implements OnInit {
         });
     }
 
-    private _startReceiptsGenerationProcess(year: string): void {
-        this.isProcessing.set(true);
-        const request = { month: this.receiptsForm.get('month')?.value ?? '', year };
-        this.processesService.startReceiptsGenerationProcess(request).subscribe({
-            next: () => {
-                this.snackbar.open('Generación de recibos iniciada correctamente', 'Cerrar', { duration: 5000 });
-                this.isProcessing.set(false);
-            },
-            error: () => {
-                this.snackbar.open('Error al generar los recibos', 'Cerrar', { duration: 5000 });
-                this.isProcessing.set(false);
-            },
-        });
-    }
 }
