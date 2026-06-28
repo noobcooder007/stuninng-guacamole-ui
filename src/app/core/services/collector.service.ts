@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 
 export interface Address {
     street: string;
@@ -149,7 +150,7 @@ export class CollectorService {
 
         return this.http.get<PaginatedResponse>(`${this.apiUrl}/collector`, { params }).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al obtener colectores'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -158,7 +159,7 @@ export class CollectorService {
     getCollector(id: string): Observable<{ statusCode: number; data: Collector }> {
         return this.http.get<{ statusCode: number; data: Collector }>(`${this.apiUrl}/collector/${id}`).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al obtener datos del colector', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al obtener datos del colector'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -167,7 +168,7 @@ export class CollectorService {
     efficiencyPdf(id: string): Observable<Blob> {
         return this.http.get(`${this.apiUrl}/receipts/collectors/${id}/efficiency/pdf`, { responseType: 'blob' }).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al generar el reporte de eficiencia', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al generar el reporte de eficiencia'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -179,7 +180,7 @@ export class CollectorService {
         return this.http.get<{ data: CollectorListItem[] }>(`${this.apiUrl}/collector/active-list`, { params }).pipe(
             map(r => r?.data ?? []),
             catchError((error) => {
-                this._snackbar.open('Error al buscar colectores', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al buscar colectores'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -210,7 +211,7 @@ export class CollectorService {
         formData.append('password', collector.password);
         return this.http.post(`${environment.apiBaseUrl}/collector`, formData).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al crear colector', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al crear colector'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -219,7 +220,7 @@ export class CollectorService {
     patchPersonal(id: string, dto: UpdateCollectorPersonalDto): Observable<any> {
         return this.http.patch(`${this.apiUrl}/collector/${id}/personal`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al actualizar información personal', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al actualizar información personal'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -228,7 +229,7 @@ export class CollectorService {
     patchAddress(id: string, dto: UpdateCollectorAddressDto): Observable<any> {
         return this.http.patch(`${this.apiUrl}/collector/${id}/address`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al actualizar domicilio', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al actualizar domicilio'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -237,7 +238,7 @@ export class CollectorService {
     patchContact(id: string, dto: UpdateCollectorContactDto): Observable<any> {
         return this.http.patch(`${this.apiUrl}/collector/${id}/contact`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al actualizar contacto', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al actualizar contacto'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -246,7 +247,7 @@ export class CollectorService {
     patchPayment(id: string, dto: UpdateCollectorPaymentDto): Observable<any> {
         return this.http.patch(`${this.apiUrl}/collector/${id}/payment`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al actualizar datos de pago', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al actualizar datos de pago'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -255,7 +256,7 @@ export class CollectorService {
     patchNotes(id: string, dto: UpdateCollectorNotesDto): Observable<any> {
         return this.http.patch(`${this.apiUrl}/collector/${id}/notes`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al actualizar notas', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al actualizar notas'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

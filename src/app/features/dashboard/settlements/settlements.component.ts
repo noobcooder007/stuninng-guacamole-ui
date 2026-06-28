@@ -14,6 +14,7 @@ import { ProcessesService, PeriodStatus } from '@app/core/services/processes.ser
 import { Settlement, SettlementsService, RegisterPaymentDto, BulkPaymentDto } from '@app/core/services/settlements.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 import { RegisterPaymentDialogComponent, RegisterPaymentDialogData } from './register-payment-dialog.component';
 import { BulkPaymentDialogComponent, BulkPaymentDialogData } from './bulk-payment-dialog.component';
 import { PaymentHistoryDialogComponent } from './payment-history-dialog.component';
@@ -81,9 +82,9 @@ export class SettlementsComponent implements OnInit {
                 this.period.set(data);
                 this.loadSettlements(data.id);
             },
-            error: () => {
+            error: (err) => {
                 this.isLoading.set(false);
-                this.snackbar.open('No hay periodo activo', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(err, 'No hay periodo activo'), 'Cerrar', { duration: 5000 });
             },
         });
     }

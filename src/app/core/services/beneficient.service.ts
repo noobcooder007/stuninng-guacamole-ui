@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 
 export interface Address {
     street: string;
@@ -155,7 +156,7 @@ export class BeneficientService {
     reportePdf(id: string | number): Observable<Blob> {
         return this.http.get(`${environment.apiBaseUrl}/beneficient/${id}/report/pdf`, { responseType: 'blob' }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al generar el reporte del bienhechor', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar el reporte del bienhechor'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -164,7 +165,7 @@ export class BeneficientService {
     registroPdf(): Observable<Blob> {
         return this.http.get(`${environment.apiBaseUrl}/beneficient/registry/pdf`, { responseType: 'blob' }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al generar el registro de bienhechores', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar el registro de bienhechores'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -176,7 +177,7 @@ export class BeneficientService {
         return this.http.get<{ data: Beneficient[] }>(`${environment.apiBaseUrl}/beneficient/active-list`, { params }).pipe(
             map(r => r?.data ?? []),
             catchError((error) => {
-                this.snackbar.open('Error al buscar bienhechores', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al buscar bienhechores'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -201,7 +202,7 @@ export class BeneficientService {
             .get<PaginatedResponse>(`${environment.apiBaseUrl}/beneficient`, { params })
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al obtener bienhechores', 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al obtener bienhechores'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -212,7 +213,7 @@ export class BeneficientService {
             .get<PaginatedResponse>(`${environment.apiBaseUrl}/beneficient/unassigned`)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al obtener bienhechores sin asignar', 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al obtener bienhechores sin asignar'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -223,7 +224,7 @@ export class BeneficientService {
             .get<{ statusCode: number; data: BeneficientDetail }>(`${environment.apiBaseUrl}/beneficient/${id}`)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al obtener datos del bienhechore', 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al obtener datos del bienhechore'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -234,7 +235,7 @@ export class BeneficientService {
             .post(`${environment.apiBaseUrl}/beneficient`, beneficent)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al crear bienhechore', 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al crear bienhechore'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -246,7 +247,7 @@ export class BeneficientService {
             .put(`${environment.apiBaseUrl}/beneficents/${id}`, updateData)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al actualizar bienhechore', 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al actualizar bienhechore'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -257,7 +258,7 @@ export class BeneficientService {
             .delete(`${environment.apiBaseUrl}/beneficents/${id}`)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open('Error al eliminar bienhechore', 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al eliminar bienhechore'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -267,7 +268,7 @@ export class BeneficientService {
         return this.http
             .patch(`${environment.apiBaseUrl}/beneficient/${id}/personal`, dto)
             .pipe(catchError((error) => {
-                this.snackbar.open('Error al actualizar información personal', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al actualizar información personal'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             }));
     }
@@ -276,7 +277,7 @@ export class BeneficientService {
         return this.http
             .patch(`${environment.apiBaseUrl}/beneficient/${id}/address`, dto)
             .pipe(catchError((error) => {
-                this.snackbar.open('Error al actualizar domicilio', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al actualizar domicilio'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             }));
     }
@@ -285,7 +286,7 @@ export class BeneficientService {
         return this.http
             .patch(`${environment.apiBaseUrl}/beneficient/${id}/contact`, dto)
             .pipe(catchError((error) => {
-                this.snackbar.open('Error al actualizar contacto', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al actualizar contacto'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             }));
     }
@@ -294,7 +295,7 @@ export class BeneficientService {
         return this.http
             .patch(`${environment.apiBaseUrl}/beneficient/${id}/church`, dto)
             .pipe(catchError((error) => {
-                this.snackbar.open('Error al actualizar iglesia', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al actualizar iglesia'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             }));
     }
@@ -303,7 +304,7 @@ export class BeneficientService {
         return this.http
             .patch(`${environment.apiBaseUrl}/beneficient/${id}/tax`, dto)
             .pipe(catchError((error) => {
-                this.snackbar.open('Error al actualizar datos fiscales', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al actualizar datos fiscales'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             }));
     }
@@ -312,7 +313,7 @@ export class BeneficientService {
         return this.http
             .patch(`${environment.apiBaseUrl}/beneficient/${id}/privacy`, dto)
             .pipe(catchError((error) => {
-                this.snackbar.open('Error al actualizar privacidad', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al actualizar privacidad'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             }));
     }

@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
 import { PaginatedMetadata } from './collector.service';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 
 export type ReceiptType = 'RECURRING' | 'SPECIAL';
 
@@ -113,7 +114,7 @@ export class RecibosService {
 
         return this.http.get<RecibosPaginatedResponse>(`${environment.apiBaseUrl}/receipts`, { params }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al obtener los recibos', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al obtener los recibos'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -130,7 +131,7 @@ export class RecibosService {
     marcarComoPagados(dto: MarkAsPaidDto): Observable<void> {
         return this.http.post<void>(`${environment.apiBaseUrl}/receipts/mark-as-paid`, dto).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al marcar los recibos como pagados', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al marcar los recibos como pagados'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -142,7 +143,7 @@ export class RecibosService {
             responseType: 'blob',
         }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al generar los recibos', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar los recibos'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -154,7 +155,7 @@ export class RecibosService {
             responseType: 'blob',
         }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al generar la carta de recibos actual', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar la carta de recibos actual'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -166,7 +167,7 @@ export class RecibosService {
             responseType: 'blob',
         }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al generar la carta de recibos anterior', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar la carta de recibos anterior'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -175,7 +176,7 @@ export class RecibosService {
     getRecibo(folio: string): Observable<ReciboResponse> {
         return this.http.get<ReciboResponse>(`${environment.apiBaseUrl}/receipts/${folio}`).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al obtener el recibo', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al obtener el recibo'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -184,7 +185,7 @@ export class RecibosService {
     crearReciboEspecial(dto: CreateSpecialReceiptDto): Observable<Blob> {
         return this.http.post(`${environment.apiBaseUrl}/receipts/generate/special`, dto, { responseType: 'blob' }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al crear el recibo especial', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al crear el recibo especial'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -193,7 +194,7 @@ export class RecibosService {
     cancelarRecibo(folio: string, reason: string): Observable<void> {
         return this.http.put<void>(`${environment.apiBaseUrl}/receipts/${folio}/cancel`, { reason }).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al cancelar el recibo', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al cancelar el recibo'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 
 export type SettlementStatus = 'PENDING' | 'PARTIALLY_PAID' | 'PAID';
 export type PaymentMethod = 'CASH' | 'TRANSFER';
@@ -62,7 +63,7 @@ export class SettlementsService {
     getSettlements(periodId: string): Observable<Settlement[]> {
         return this.http.get<Settlement[]>(`${this.apiUrl}/periods/${periodId}/settlements`).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al obtener las liquidaciones', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al obtener las liquidaciones'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -71,7 +72,7 @@ export class SettlementsService {
     registerPayment(settlementId: string, dto: RegisterPaymentDto): Observable<void> {
         return this.http.post<void>(`${this.apiUrl}/periods/settlements/${settlementId}/payments`, dto).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al registrar el pago', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al registrar el pago'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -80,7 +81,7 @@ export class SettlementsService {
     bulkPayment(periodId: string, dto: BulkPaymentDto): Observable<void> {
         return this.http.post<void>(`${this.apiUrl}/periods/${periodId}/payments/bulk`, dto).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al registrar el pago masivo', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al registrar el pago masivo'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -89,7 +90,7 @@ export class SettlementsService {
     getPaymentHistory(settlementId: string): Observable<SettlementPayment[]> {
         return this.http.get<SettlementPayment[]>(`${this.apiUrl}/periods/settlements/${settlementId}/payments`).pipe(
             catchError((error) => {
-                this.snackbar.open('Error al obtener el historial de pagos', 'Cerrar', { duration: 5000 });
+                this.snackbar.open(apiErrorMessage(error, 'Error al obtener el historial de pagos'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

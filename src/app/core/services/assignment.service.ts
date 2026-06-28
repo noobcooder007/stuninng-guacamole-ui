@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'environments/environment.development';
 import { catchError, map, Observable, throwError } from 'rxjs';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 
 export interface AssignmentPerson {
     id: string;
@@ -70,7 +71,7 @@ export class AssignmentService {
 
         return this.http.get<PaginatedResponse>(`${environment.apiBaseUrl}/assignment/actives`, { params }).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al obtener asignaciones activas', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al obtener asignaciones activas'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -80,7 +81,7 @@ export class AssignmentService {
         const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
         return this.http.get<PaginatedResponse>(`${environment.apiBaseUrl}/assignment/orphans`, { params }).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al obtener asignaciones huérfanas', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al obtener asignaciones huérfanas'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -89,7 +90,7 @@ export class AssignmentService {
     create(dto: CreateAssignmentDto): Observable<any> {
         return this.http.post(`${environment.apiBaseUrl}/assignment`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al crear asignaciones', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al crear asignaciones'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -98,7 +99,7 @@ export class AssignmentService {
     deactivate(id: string): Observable<any> {
         return this.http.delete(`${environment.apiBaseUrl}/assignment/${id}`).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al desactivar asignación', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al desactivar asignación'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -109,7 +110,7 @@ export class AssignmentService {
         return this.http.get<{ data: Assignment[] }>(`${environment.apiBaseUrl}/assignment/active-list`, { params }).pipe(
             map(r => r?.data ?? []),
             catchError((error) => {
-                this._snackbar.open('Error al obtener asignaciones del colector', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al obtener asignaciones del colector'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -118,7 +119,7 @@ export class AssignmentService {
     reassign(dto: ReasignAssignmentDto): Observable<any> {
         return this.http.post(`${environment.apiBaseUrl}/assignment/reassign`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al reasignar asignaciones', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al reasignar asignaciones'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

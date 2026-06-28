@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'environments/environment.development';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Beneficient } from './beneficient.service';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 
 export interface PromiseDonation {
     id: string;
@@ -73,17 +74,6 @@ export interface PromisesDonationFilters {
     isActive?: boolean;
 }
 
-interface WeeklySchedule {
-    day: string;
-    hour: string;
-    note: string;
-}
-
-interface Instructions {
-    weeklySchedule: WeeklySchedule[];
-    generalObservations: string;
-}
-
 export type RecurrenceCode = 'MONTHLY' | 'BIMONTHLY' | 'QUARTERLY' | 'QUADRIMONTHLY' | 'SEMIANNUAL' | 'ANNUAL';
 
 export interface UpdateAmountDto {
@@ -101,12 +91,12 @@ export interface UpdateInstructionsDto {
 
 export interface CreatePromiseDonationDto {
     beneficientId: string;
-    amount: number;
+    promiseAmount: number;
     currency: 'MXN' | 'USD';
     method: string;
     startDate: string;
-    recurrence: number;
-    instructions?: Instructions;
+    recurrence: RecurrenceCode;
+    instructions?: CollectorInstructions;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -124,7 +114,7 @@ export class PromisesDonationService {
 
         return this.http.get<PaginatedResponse>(`${environment.apiBaseUrl}/promises`, { params }).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al obtener colectores'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -140,7 +130,7 @@ export class PromisesDonationService {
 
         return this.http.get<PaginatedResponse>(`${environment.apiBaseUrl}/promises/with-beneficients`, { params }).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al obtener colectores', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al obtener colectores'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -149,7 +139,7 @@ export class PromisesDonationService {
     create(promise: CreatePromiseDonationDto) {
         return this.http.post(`${environment.apiBaseUrl}/promises`, promise).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al crear promesa de donación', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al crear promesa de donación'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -158,7 +148,7 @@ export class PromisesDonationService {
     getById(id: string): Observable<{ statusCode: number; data: PromiseDonationDetail }> {
         return this.http.get<{ statusCode: number; data: PromiseDonationDetail }>(`${environment.apiBaseUrl}/promises/${id}`).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al obtener la promesa de donación', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al obtener la promesa de donación'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -167,7 +157,7 @@ export class PromisesDonationService {
     deactivate(id: string, reason: string): Observable<void> {
         return this.http.patch<void>(`${environment.apiBaseUrl}/promises/${id}/deactivate`, { reason }).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al desactivar la promesa de donación', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al desactivar la promesa de donación'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -176,7 +166,7 @@ export class PromisesDonationService {
     patchAmount(id: string, dto: UpdateAmountDto): Observable<void> {
         return this.http.patch<void>(`${environment.apiBaseUrl}/promises/${id}/amount`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al actualizar el monto', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al actualizar el monto'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -185,7 +175,7 @@ export class PromisesDonationService {
     patchRecurrence(id: string, dto: UpdateRecurrenceDto): Observable<void> {
         return this.http.patch<void>(`${environment.apiBaseUrl}/promises/${id}/recurrence`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al actualizar la recurrencia', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al actualizar la recurrencia'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -194,7 +184,7 @@ export class PromisesDonationService {
     patchInstructions(id: string, dto: UpdateInstructionsDto): Observable<void> {
         return this.http.patch<void>(`${environment.apiBaseUrl}/promises/${id}/instructions`, dto).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al actualizar las instrucciones', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al actualizar las instrucciones'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
@@ -203,7 +193,7 @@ export class PromisesDonationService {
     reactivate(id: string): Observable<void> {
         return this.http.patch<void>(`${environment.apiBaseUrl}/promises/${id}/reactivate`, {}).pipe(
             catchError((error) => {
-                this._snackbar.open('Error al reactivar la promesa de donación', 'Cerrar', { duration: 5000 });
+                this._snackbar.open(apiErrorMessage(error, 'Error al reactivar la promesa de donación'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
