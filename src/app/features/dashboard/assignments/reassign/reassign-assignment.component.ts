@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
 import { Assignment, AssignmentService } from '@app/core/services/assignment.service';
@@ -35,6 +36,7 @@ export class ReassignAssignmentComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly assignmentService = inject(AssignmentService);
     private readonly collectorService = inject(CollectorService);
+    private readonly snackbar = inject(MatSnackBar);
 
     public isSaving = signal(false);
     public isLoadingAssignments = signal(false);
@@ -82,8 +84,8 @@ export class ReassignAssignmentComponent implements OnInit {
         this.isLoadingAssignments.set(true);
         this.availableAssignments = [];
         this.selectedAssignments = [];
-        this.assignmentService.getAssignments(1, 200, { collectorId: collector.id }).subscribe({
-            next: ({ data: { items } }) => {
+        this.assignmentService.getActiveListByCollector(collector.id).subscribe({
+            next: (items) => {
                 this.originAssignments = items;
                 this.availableAssignments = [...items];
                 this.isLoadingAssignments.set(false);
@@ -126,6 +128,7 @@ export class ReassignAssignmentComponent implements OnInit {
         }).subscribe({
             next: () => {
                 this.isSaving.set(false);
+                this.snackbar.open('Reasignación realizada correctamente', 'Cerrar', { duration: 4000 });
                 this.originCtrl.reset();
                 this.destCtrl.reset();
                 this.reasonCtrl.reset();

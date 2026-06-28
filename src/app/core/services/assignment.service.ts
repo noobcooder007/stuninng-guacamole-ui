@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'environments/environment.development';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 export interface AssignmentPerson {
     id: string;
@@ -99,6 +99,17 @@ export class AssignmentService {
         return this.http.delete(`${environment.apiBaseUrl}/assignment/${id}`).pipe(
             catchError((error) => {
                 this._snackbar.open('Error al desactivar asignación', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    getActiveListByCollector(collectorId: string): Observable<Assignment[]> {
+        const params = new HttpParams().set('collectorId', collectorId);
+        return this.http.get<{ data: Assignment[] }>(`${environment.apiBaseUrl}/assignment/active-list`, { params }).pipe(
+            map(r => r?.data ?? []),
+            catchError((error) => {
+                this._snackbar.open('Error al obtener asignaciones del colector', 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );
