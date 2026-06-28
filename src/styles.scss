@@ -35,6 +35,8 @@ $dark-theme: mat.define-theme(
   // (icon-button, list-item, expansion-panel) la usan como fallback de opacidad del
   // state layer. Sin ella opacity:unset → 1 → el hover aparece sólido (negro/blanco).
   --mat-sys-hover-state-layer-opacity: 0.08;
+  --mat-sys-focus-state-layer-opacity: 0.12;
+  --mat-sys-pressed-state-layer-opacity: 0.12;
   @include mat.core-theme($light-theme);
   @include mat.autocomplete-theme($light-theme);
   @include mat.button-theme($light-theme);
