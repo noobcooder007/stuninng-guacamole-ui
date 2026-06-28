@@ -72,7 +72,7 @@
 
     <div class="flex justify-end gap-3">
       <button type="button" mat-button (click)="cancel()">Cancelar</button>
-      <button type="button" mat-flat-button color="primary" [disabled]="!canSave || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)" (click)="save()">
+      <button type="button" mat-flat-button [disabled]="!canSave || isSaving() || !(Permissions.EDIT_COLLECTOR | hasPermission)" (click)="save()">
         @if (isSaving()) {
           <mat-spinner diameter="20" />
         } @else {

@@ -20,7 +20,7 @@
       }
 
       @if (canAssign) {
-        <button type="button" mat-flat-button color="primary" class="ml-auto" [disabled]="isSaving() || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="assign()">
+        <button type="button" mat-flat-button class="ml-auto" [disabled]="isSaving() || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="assign()">
           @if (isSaving()) {
             <mat-spinner diameter="20" />
           } @else {

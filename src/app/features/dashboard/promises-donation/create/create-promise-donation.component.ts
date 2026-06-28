@@ -15,22 +15,11 @@ import { startWith, debounceTime, distinctUntilChanged, switchMap, map, catchErr
 import { MatDialog } from '@angular/material/dialog';
 import { SearchBeneficientComponent } from '../../beneficient/search-beneficient/search-beneficient.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CreatePromiseDonationDto, PromisesDonationService } from '@app/core/services/promise-donation.service';
+import { CollectorInstructions, CreatePromiseDonationDto, PromisesDonationService, WeeklyScheduleItem } from '@app/core/services/promise-donation.service';
 import { AddInstructionComponent } from '../add-instruction/add-instruction.component';
 import { HourPipe } from '@app/shared/pipes/hour.pipe';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
-
-interface WeeklySchedule {
-    day: string;
-    hour: string;
-    note: string;
-}
-
-interface Instructions {
-    weeklySchedule: WeeklySchedule[];
-    generalObservations: string;
-}
 
 @Component({
     selector: 'create-promise-donation',
@@ -68,12 +57,12 @@ export class CreatePromiseDonationComponent implements OnInit {
         recurrence: new FormControl(null, [Validators.required]),
         startDate: new FormControl(null, [Validators.required]),
     });
-    public instructions: Instructions = {
+    public instructions: CollectorInstructions = {
         weeklySchedule: [],
         generalObservations: '',
     };
-    public dataSource = new MatTableDataSource<WeeklySchedule>();
-    public displayedColumns: string[] = ['day', 'hour', 'note', 'actions'];
+    public dataSource = new MatTableDataSource<WeeklyScheduleItem>();
+    public displayedColumns: string[] = ['day', 'hours', 'note', 'actions'];
     private readonly dialog = inject(MatDialog);
     beneficientList = signal<Beneficient[]>([]);
 
@@ -180,7 +169,7 @@ export class CreatePromiseDonationComponent implements OnInit {
         });
     }
 
-    editInstruction(value: WeeklySchedule): void {
+    editInstruction(value: WeeklyScheduleItem): void {
         const index = this.instructions.weeklySchedule.findIndex((v) => {
             return v.day === value.day && v.hours === value.hours;
         });

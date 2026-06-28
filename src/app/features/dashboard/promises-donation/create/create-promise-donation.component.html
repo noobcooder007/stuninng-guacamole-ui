@@ -24,7 +24,7 @@
           }
         </mat-autocomplete>
       </mat-form-field>
-      <button type="button" matButton="text" (click)="openAdvancedSearch()">Busqueda avanzada</button>
+      <button type="button" mat-button (click)="openAdvancedSearch()">Busqueda avanzada</button>
       <mat-form-field appearance="outline">
         <mat-label>Moneda</mat-label>
         <mat-select formControlName="currency">
@@ -78,9 +78,9 @@
           <td mat-cell *matCellDef="let row">{{ row.day }}</td>
           ></ng-container
         >
-        <ng-container matColumnDef="hour">
+        <ng-container matColumnDef="hours">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Hora</th>
-          <td mat-cell *matCellDef="let row">{{ row.hour | hour }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.hours | hour }}</td>
         </ng-container>
         <ng-container matColumnDef="note">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Nota</th>
@@ -97,13 +97,13 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-      <button type="button" matButton="outlined" [disabled]="!canAddInstruction() || !(Permissions.ADD_PROMISE | hasPermission)" (click)="addInstruction()">Añadir instrucción</button>
+      <button type="button" mat-stroked-button [disabled]="!canAddInstruction() || !(Permissions.ADD_PROMISE | hasPermission)" (click)="addInstruction()">Añadir instrucción</button>
     </div>
     <div class="flex flex-col gap-4 w-full">
       <button
         class="w-full"
         type="button"
-        matButton="filled"
+        mat-flat-button
         (click)="createPromiseDonation()"
         [disabled]="createPromiseDonationForm.invalid || isLoading() || !(Permissions.ADD_PROMISE | hasPermission)"
       >
