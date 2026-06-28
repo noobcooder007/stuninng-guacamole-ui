@@ -31,6 +31,7 @@ export enum Permissions {
     // Recibos
     VIEW_INVOICE = 'view:invoice',
     ADD_INVOICE = 'add:invoice',
+    EDIT_INVOICE = 'edit:invoice',
     PRINT_INVOICE = 'print:invoice',
     VOID_INVOICE = 'void:invoice',
 

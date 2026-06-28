@@ -152,6 +152,24 @@ export class BeneficientService {
     private readonly http = inject(HttpClient);
     private readonly snackbar = inject(MatSnackBar);
 
+    reportePdf(id: string | number): Observable<Blob> {
+        return this.http.get(`${environment.apiBaseUrl}/beneficient/${id}/report/pdf`, { responseType: 'blob' }).pipe(
+            catchError((error) => {
+                this.snackbar.open('Error al generar el reporte del bienhechor', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    registroPdf(): Observable<Blob> {
+        return this.http.get(`${environment.apiBaseUrl}/beneficient/registry/pdf`, { responseType: 'blob' }).pipe(
+            catchError((error) => {
+                this.snackbar.open('Error al generar el registro de bienhechores', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
     getActiveList(search?: string): Observable<Beneficient[]> {
         let params = new HttpParams();
         if (search?.trim()) params = params.set('search', search.trim());

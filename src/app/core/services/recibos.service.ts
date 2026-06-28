@@ -137,7 +137,7 @@ export class RecibosService {
     }
 
     imprimirRecibos(filters: ImpresionReciboFilters): Observable<Blob> {
-        return this.http.get(`${environment.apiBaseUrl}/receipts/print`, {
+        return this.http.get(`${environment.apiBaseUrl}/receipts/pdf`, {
             params: this.buildPrintParams(filters),
             responseType: 'blob',
         }).pipe(
@@ -149,7 +149,7 @@ export class RecibosService {
     }
 
     imprimirCartaActual(filters: ImpresionReciboFilters): Observable<Blob> {
-        return this.http.get(`${environment.apiBaseUrl}/receipts/print/delivery-letter`, {
+        return this.http.get(`${environment.apiBaseUrl}/receipts/delivery-letter/pdf`, {
             params: this.buildPrintParams(filters),
             responseType: 'blob',
         }).pipe(

@@ -164,6 +164,15 @@ export class CollectorService {
         );
     }
 
+    efficiencyPdf(id: string): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/receipts/collectors/${id}/efficiency/pdf`, { responseType: 'blob' }).pipe(
+            catchError((error) => {
+                this._snackbar.open('Error al generar el reporte de eficiencia', 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
     getActiveList(search?: string): Observable<CollectorListItem[]> {
         let params = new HttpParams();
         if (search?.trim()) params = params.set('search', search.trim());
