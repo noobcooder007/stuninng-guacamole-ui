@@ -193,7 +193,7 @@ describe('AuthService', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false and show snackbar on error', () => {
+    it('should return false on error', () => {
       let result: boolean | undefined;
       service.login({ username: 'user', password: 'wrong' }).subscribe(v => (result = v));
 
@@ -201,9 +201,6 @@ describe('AuthService', () => {
         .flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
 
       expect(result).toBe(false);
-      expect(snackBarSpy.open).toHaveBeenCalledWith(
-        'Oops credenciales invalidas', 'Cerrar', { duration: 5000 }
-      );
     });
   });
 

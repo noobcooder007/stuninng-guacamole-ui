@@ -82,11 +82,11 @@ describe('PromisesDonationService', () => {
   describe('create', () => {
     const dto: CreatePromiseDonationDto = {
       beneficientId: 'b-1',
-      amount: 500,
+      promiseAmount: 500,
       currency: 'MXN',
       method: 'CASH',
       startDate: '2026-01-01',
-      recurrence: 1,
+      recurrence: 'MONTHLY',
     };
 
     it('should POST to /promises with the dto', () => {

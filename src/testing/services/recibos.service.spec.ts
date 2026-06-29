@@ -14,6 +14,7 @@ describe('RecibosService', () => {
   const snackBarSpy = { open: vi.fn() };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         RecibosService,
@@ -125,22 +126,20 @@ describe('RecibosService', () => {
       collectorId: 'col-1',
       amount: 500,
       currency: 'MXN',
-      periodMonth: 6,
-      periodYear: 2026,
     };
 
-    it('should POST to /receipts/special with the dto', () => {
+    it('should POST to /receipts/generate/special with the dto', () => {
       service.crearReciboEspecial(dto).subscribe();
-      const req = httpMock.expectOne(`${BASE}/special`);
+      const req = httpMock.expectOne(`${BASE}/generate/special`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(dto);
-      req.flush({ statusCode: 201, data: {}, timestamp: '' });
+      req.flush(new Blob());
     });
 
     it('should show snackbar on error', () => {
       service.crearReciboEspecial(dto).subscribe({ error: () => {} });
-      httpMock.expectOne(`${BASE}/special`)
-        .flush('err', { status: 400, statusText: 'Bad Request' });
+      httpMock.expectOne(`${BASE}/generate/special`)
+        .error(new ProgressEvent('error'), { status: 400, statusText: 'Bad Request' });
       expect(snackBarSpy.open).toHaveBeenCalledWith(
         'Error al crear el recibo especial', 'Cerrar', { duration: 5000 }
       );
@@ -150,15 +149,15 @@ describe('RecibosService', () => {
   describe('cancelarRecibo', () => {
     it('should PATCH /receipts/:folio/void with reason', () => {
       service.cancelarRecibo('JUN2026-0001-R-0001', 'Duplicado').subscribe();
-      const req = httpMock.expectOne(`${BASE}/JUN2026-0001-R-0001/void`);
-      expect(req.request.method).toBe('PATCH');
+      const req = httpMock.expectOne(`${BASE}/JUN2026-0001-R-0001/cancel`);
+      expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual({ reason: 'Duplicado' });
       req.flush(null);
     });
 
     it('should show snackbar on error', () => {
       service.cancelarRecibo('JUN2026-0001-R-0001', 'Motivo').subscribe({ error: () => {} });
-      httpMock.expectOne(`${BASE}/JUN2026-0001-R-0001/void`)
+      httpMock.expectOne(`${BASE}/JUN2026-0001-R-0001/cancel`)
         .flush('err', { status: 500, statusText: 'Server Error' });
       expect(snackBarSpy.open).toHaveBeenCalledWith(
         'Error al cancelar el recibo', 'Cerrar', { duration: 5000 }

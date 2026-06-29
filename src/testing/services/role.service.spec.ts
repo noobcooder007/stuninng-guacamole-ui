@@ -15,6 +15,7 @@ describe('RoleService', () => {
   const snackBarSpy = { open: vi.fn() };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         RoleService,

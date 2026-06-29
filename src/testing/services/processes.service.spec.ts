@@ -79,7 +79,7 @@ describe('ProcessesService', () => {
     it('should POST to /processes/generate-receipts with the request body', () => {
       const body = { month: '6', year: '2026' };
       service.startReceiptsGenerationProcess(body).subscribe();
-      const req = httpMock.expectOne(`${BASE}/processes/generate-receipts`);
+      const req = httpMock.expectOne(`${BASE}/receipts/generate/recurring`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(body);
       req.flush({ statusCode: 200, data: {}, timestamp: '' });

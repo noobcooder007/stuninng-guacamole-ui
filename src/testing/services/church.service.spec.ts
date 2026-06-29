@@ -21,6 +21,7 @@ describe('ChurchService', () => {
   const snackBarSpy = { open: vi.fn() };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         ChurchService,
