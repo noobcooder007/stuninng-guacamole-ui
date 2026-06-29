@@ -82,7 +82,7 @@ export class ReceiptsListComponent implements OnInit, AfterViewInit {
     readonly statusOptions = [
         { value: 'PENDING', label: 'Pendiente' },
         { value: 'PAID', label: 'Pagado' },
-        { value: 'CANCELLED', label: 'Cancelado' },
+        { value: 'VOID', label: 'Cancelado' },
         { value: 'REPRINT', label: 'Reimpresión' },
     ];
 
@@ -167,7 +167,7 @@ export class ReceiptsListComponent implements OnInit, AfterViewInit {
     statusClass(status: string): string {
         switch (status) {
             case 'PAID': return 'bg-green-100 text-green-700';
-            case 'CANCELLED': return 'bg-red-100 text-red-700';
+            case 'VOID': return 'bg-red-100 text-red-700';
             case 'REPRINT': return 'bg-yellow-100 text-yellow-700';
             default: return 'bg-blue-100 text-blue-700';
         }
