@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReportsService } from '@app/core/services/reports.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
@@ -37,6 +38,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
 export class ReportsBeneficiaryComponent implements OnInit {
   protected readonly Permissions = Permissions;
   private reportsService = inject(ReportsService);
+  private snackBar = inject(MatSnackBar);
 
   public activeTab: number = 0;
   public isLoading = false;
@@ -66,7 +68,6 @@ export class ReportsBeneficiaryComponent implements OnInit {
     { value: 'todas', label: 'Todas' },
   ];
 
-  // Forms
   public beneficiaryStatusForm = new FormGroup({
     startDate: new FormControl<Date | null>(null),
     endDate: new FormControl<Date | null>(null),
@@ -105,97 +106,60 @@ export class ReportsBeneficiaryComponent implements OnInit {
     }
   }
 
+  private downloadFile(blob: Blob, filename: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  private handleError(): void {
+    this.isLoading = false;
+    this.snackBar.open('Error al generar el reporte', 'Cerrar', { duration: 4000 });
+  }
+
   downloadBeneficiaryMovementsReport(): void {
     this.isLoading = true;
     this.reportsService.beneficiaryMovementsReport({}).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Movimientos_Bienhechores.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Movimientos_Bienhechores.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
   downloadBeneficiaryConcentratedReport(): void {
     this.isLoading = true;
     this.reportsService.beneficiaryConcentratedReport({}).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Concentrado_Donativos_Bienhechores.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Concentrado_Donativos_Bienhechores.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
   downloadBeneficiaryStatusReport(): void {
     if (this.beneficiaryStatusForm.invalid) return;
     this.isLoading = true;
-    const filters = this.beneficiaryStatusForm.value as any;
-    this.reportsService.beneficiaryStatusReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Bienhechores_Status.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.beneficiaryStatusReport(this.beneficiaryStatusForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Bienhechores_Status.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
   downloadBeneficiaryExcelReport(): void {
     if (this.beneficiaryExcelForm.invalid) return;
     this.isLoading = true;
-    const filters = this.beneficiaryExcelForm.value as any;
-    this.reportsService.beneficiaryExcelReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadExcel(blob, 'Reporte_Bienhechores.xlsx');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.beneficiaryExcelReport(this.beneficiaryExcelForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Bienhechores.xlsx'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
   downloadBeneficiaryReport(): void {
     if (this.beneficiaryGeneralForm.invalid) return;
     this.isLoading = true;
-    const filters = this.beneficiaryGeneralForm.value as any;
-    this.reportsService.beneficiaryReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Bienhechores.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.beneficiaryReport(this.beneficiaryGeneralForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Bienhechores.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
-  }
-
-  private downloadPdf(blob: Blob, filename: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    window.URL.revokeObjectURL(url);
-  }
-
-  private downloadExcel(blob: Blob, filename: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    window.URL.revokeObjectURL(url);
   }
 }

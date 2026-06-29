@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReportsService } from '@app/core/services/reports.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
@@ -37,6 +38,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
 export class ReportsCollectorComponent implements OnInit {
   protected readonly Permissions = Permissions;
   private reportsService = inject(ReportsService);
+  private snackBar = inject(MatSnackBar);
 
   public activeTab: number = 0;
   public isLoading = false;
@@ -58,7 +60,6 @@ export class ReportsCollectorComponent implements OnInit {
     { value: '12', label: 'Diciembre' },
   ];
 
-  // Forms
   public depositsForm = new FormGroup({
     startDate: new FormControl<Date | null>(null),
     endDate: new FormControl<Date | null>(null),
@@ -83,69 +84,44 @@ export class ReportsCollectorComponent implements OnInit {
     }
   }
 
+  private downloadFile(blob: Blob, filename: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  private handleError(): void {
+    this.isLoading = false;
+    this.snackBar.open('Error al generar el reporte', 'Cerrar', { duration: 4000 });
+  }
+
   downloadDepositsReport(): void {
     if (this.depositsForm.invalid) return;
     this.isLoading = true;
-    const filters = this.depositsForm.value as any;
-    this.reportsService.collectorDepositsReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Depositos_Colector.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.collectorDepositsReport(this.depositsForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Depositos_Colector.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
   downloadLiquidationReportPdf(): void {
     if (this.liquidationForm.invalid) return;
     this.isLoading = true;
-    const filters = this.liquidationForm.value as any;
-    this.reportsService.collectorLiquidationReportPdf(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Liquidacion_Colector.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.collectorLiquidationReportPdf(this.liquidationForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Liquidacion_Colector.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
   downloadLiquidationReportExcel(): void {
     if (this.liquidationForm.invalid) return;
     this.isLoading = true;
-    const filters = this.liquidationForm.value as any;
-    this.reportsService.collectorLiquidationReportExcel(filters).subscribe({
-      next: (blob) => {
-        this.downloadExcel(blob, 'Reporte_Liquidacion_Colector.xlsx');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.collectorLiquidationReportExcel(this.liquidationForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Liquidacion_Colector.xlsx'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
-  }
-
-  private downloadPdf(blob: Blob, filename: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    window.URL.revokeObjectURL(url);
-  }
-
-  private downloadExcel(blob: Blob, filename: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    window.URL.revokeObjectURL(url);
   }
 }

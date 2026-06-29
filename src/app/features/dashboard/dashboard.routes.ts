@@ -178,13 +178,6 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(m => m.ReceiptDetailComponent),
             },
             {
-                path: 'reports/collector',
-                canActivate: [permissionGuard],
-                data: { permission: Permissions.VIEW_REPORT },
-                loadComponent: () => import('./collector/reportes/colector-reportes.component')
-                    .then(m => m.ColectorReportesComponent),
-            },
-            {
                 path: 'reports',
                 canActivate: [permissionGuard],
                 data: { permission: Permissions.VIEW_REPORT },

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReportsService } from '@app/core/services/reports.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
@@ -20,7 +21,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
   templateUrl: './reports-general.component.html',
   styleUrl: './reports-general.component.scss',
   imports: [
-    MatTabsModule,
+    MatListModule,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
@@ -37,9 +38,21 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
 export class ReportsGeneralComponent implements OnInit {
   protected readonly Permissions = Permissions;
   private reportsService = inject(ReportsService);
+  private snackBar = inject(MatSnackBar);
 
-  public activeTab: number = 0;
+  public selectedReport = 'quantity-difference';
   public isLoading = false;
+
+  public reports = [
+    { id: 'quantity-difference',        label: 'Diferencia Cantidades' },
+    { id: 'monthly-report',             label: 'Informe Mensual' },
+    { id: 'efficiency',                 label: 'Eficiencia' },
+    { id: 'concentrated-efficiency',    label: 'Eficiencia Concentrada' },
+    { id: 'decreased-donations',        label: 'Disminución Donativos' },
+    { id: 'increased-donations',        label: 'Aumento Donativos' },
+    { id: 'donations',                  label: 'Donativos' },
+    { id: 'issued-receipts',            label: 'Recibos Emitidos' },
+  ];
 
   public months = [
     { value: '01', label: 'Enero' },
@@ -57,15 +70,15 @@ export class ReportsGeneralComponent implements OnInit {
   ];
 
   public frequencies = [
-    { value: 'todas', label: 'Todas' },
+    { value: 'todas',               label: 'Todas' },
     { value: 'todas-sin-especiales', label: 'Todas sin especiales' },
-    { value: 'especiales', label: 'Especiales' },
-    { value: 'mensual', label: 'Mensual' },
-    { value: 'bimestral', label: 'Bimestral' },
-    { value: 'trimestral', label: 'Trimestral' },
-    { value: 'cuatrimestral', label: 'Cuatrimestral' },
-    { value: 'semestral', label: 'Semestral' },
-    { value: 'anual', label: 'Anual' },
+    { value: 'especiales',          label: 'Especiales' },
+    { value: 'mensual',             label: 'Mensual' },
+    { value: 'bimestral',           label: 'Bimestral' },
+    { value: 'trimestral',          label: 'Trimestral' },
+    { value: 'cuatrimestral',       label: 'Cuatrimestral' },
+    { value: 'semestral',           label: 'Semestral' },
+    { value: 'anual',               label: 'Anual' },
   ];
 
   public efficiencyTypes = [
@@ -79,7 +92,6 @@ export class ReportsGeneralComponent implements OnInit {
   public currentYear = new Date().getFullYear();
   public years: number[] = [];
 
-  // Forms para cada reporte
   public quantityDifferenceForm = new FormGroup({
     month: new FormControl(''),
     year: new FormControl(''),
@@ -139,173 +151,98 @@ export class ReportsGeneralComponent implements OnInit {
     this.issuedReceiptsForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
   }
 
-  // Reporte: Diferencia de Cantidades
+  private downloadFile(blob: Blob, filename: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  private handleError(): void {
+    this.isLoading = false;
+    this.snackBar.open('Error al generar el reporte', 'Cerrar', { duration: 4000 });
+  }
+
   generateQuantityDifferenceReport(): void {
     if (this.quantityDifferenceForm.invalid) return;
     this.isLoading = true;
-    const filters = this.quantityDifferenceForm.value as any;
-    this.reportsService.quantityDifferenceReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Diferencia_Cantidades.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.quantityDifferenceReport(this.quantityDifferenceForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Diferencia_Cantidades.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
-  // Reporte: Informe Mensual
   generateMonthlyReportPdf(): void {
     if (this.monthlyReportForm.invalid) return;
     this.isLoading = true;
-    const filters = this.monthlyReportForm.value as any;
-    this.reportsService.monthlyReportPdf(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Informe_Mensual.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.monthlyReportPdf(this.monthlyReportForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Informe_Mensual.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
   generateMonthlyReportExcel(): void {
     if (this.monthlyReportForm.invalid) return;
     this.isLoading = true;
-    const filters = this.monthlyReportForm.value as any;
-    this.reportsService.monthlyReportExcel(filters).subscribe({
-      next: (blob) => {
-        this.downloadExcel(blob, 'Reporte_Informe_Mensual.xlsx');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.monthlyReportExcel(this.monthlyReportForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Informe_Mensual.xlsx'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
-  // Reporte: Eficiencia
   generateEfficiencyReport(): void {
     if (this.efficiencyForm.invalid) return;
     this.isLoading = true;
-    const filters = this.efficiencyForm.value as any;
-    this.reportsService.efficiencyReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Eficiencia.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.efficiencyReport(this.efficiencyForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Eficiencia.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
-  // Reporte: Eficiencia Concentrada
   generateConcentratedEfficiencyReport(): void {
     if (this.concentratedEfficiencyForm.invalid) return;
     this.isLoading = true;
-    const filters = this.concentratedEfficiencyForm.value as any;
-    this.reportsService.concentratedEfficiencyReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Eficiencia_Concentrada.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.concentratedEfficiencyReport(this.concentratedEfficiencyForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Eficiencia_Concentrada.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
-  // Reporte: Disminución de Donativos
   generateDecreasedDonationReport(): void {
     if (this.dateRangeForm.invalid) return;
     this.isLoading = true;
-    const filters = this.dateRangeForm.value as any;
-    this.reportsService.decreasedDonationReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Disminucion_Donativos.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.decreasedDonationReport(this.dateRangeForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Disminucion_Donativos.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
-  // Reporte: Aumento de Donativos
   generateIncreasedDonationReport(): void {
     if (this.dateRangeForm.invalid) return;
     this.isLoading = true;
-    const filters = this.dateRangeForm.value as any;
-    this.reportsService.increasedDonationReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Aumento_Donativos.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.increasedDonationReport(this.dateRangeForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Aumento_Donativos.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
-  // Reporte: Donativos
   generateDonationReport(): void {
     if (this.dateRangeForm.invalid) return;
     this.isLoading = true;
-    const filters = this.dateRangeForm.value as any;
-    this.reportsService.donationReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Donativos.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.donationReport(this.dateRangeForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Donativos.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
   }
 
-  // Reporte: Recibos Emitidos
   generateIssuedReceiptsReport(): void {
     if (this.issuedReceiptsForm.invalid) return;
     this.isLoading = true;
-    const filters = this.issuedReceiptsForm.value as any;
-    this.reportsService.issuedReceiptsReport(filters).subscribe({
-      next: (blob) => {
-        this.downloadPdf(blob, 'Reporte_Recibos_Emitidos.pdf');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error generando reporte:', error);
-        this.isLoading = false;
-      },
+    this.reportsService.issuedReceiptsReport(this.issuedReceiptsForm.value).subscribe({
+      next: (blob) => { this.downloadFile(blob, 'Reporte_Recibos_Emitidos.pdf'); this.isLoading = false; },
+      error: () => this.handleError(),
     });
-  }
-
-  private downloadPdf(blob: Blob, filename: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    window.URL.revokeObjectURL(url);
-  }
-
-  private downloadExcel(blob: Blob, filename: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    window.URL.revokeObjectURL(url);
   }
 }

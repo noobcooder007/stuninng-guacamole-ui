@@ -131,13 +131,6 @@ export const MENU_CONFIG: NavCategory[] = [
                 route: '/reports',
                 permission: Permissions.VIEW_REPORT,
             },
-            {
-                id: 'reports-collector',
-                label: 'Reportes Colectores',
-                icon: 'people',
-                route: '/reports/collector',
-                permission: Permissions.VIEW_REPORT,
-            },
         ],
     },
     {

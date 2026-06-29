@@ -1,458 +1,424 @@
-<div class="reports-general-container p-6">
-  <mat-tab-group [(selectedIndex)]="activeTab">
-    <!-- Reporte 1: Diferencia de Cantidades -->
-    <mat-tab label="Diferencia Cantidades">
-      <ng-template mat-tab-label>
-        <span>Diferencia Cantidades</span>
-      </ng-template>
-      <div class="tab-content">
-        <mat-card class="report-card">
-          <mat-card-header>
-            <mat-card-title>Reporte Diferencia de Cantidades</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <form [formGroup]="quantityDifferenceForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Mes</mat-label>
-                  <mat-select formControlName="month">
-                    @for (month of months; track month.value) {
-                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
+<div class="reports-general-layout">
+  <!-- Menú lateral -->
+  <mat-nav-list class="reports-menu">
+    @for (report of reports; track report.id) {
+      <a mat-list-item
+         [activated]="selectedReport === report.id"
+         (click)="selectedReport = report.id">
+        {{ report.label }}
+      </a>
+    }
+  </mat-nav-list>
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Año</mat-label>
-                  <mat-select formControlName="year">
-                    @for (year of years; track year) {
-                      <mat-option [value]="year.toString()">{{ year }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
+  <!-- Contenido del reporte seleccionado -->
+  <div class="report-content">
 
-                <button matButton="filled" type="button" (click)="generateQuantityDifferenceReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                  @if (isLoading) {
-                    <mat-spinner diameter="20" />
-                  } @else {
-                    <span class="flex items-center gap-1">
-                      <mat-icon>picture_as_pdf</mat-icon>
-                      Crear PDF
-                    </span>
+    @if (selectedReport === 'quantity-difference') {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Reporte Diferencia de Cantidades</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="quantityDifferenceForm" class="form-container">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Mes</mat-label>
+                <mat-select formControlName="month">
+                  @for (month of months; track month.value) {
+                    <mat-option [value]="month.value">{{ month.label }}</mat-option>
                   }
-                </button>
-              </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </mat-tab>
+                </mat-select>
+              </mat-form-field>
 
-    <!-- Reporte 2: Informe Mensual -->
-    <mat-tab label="Informe Mensual">
-      <ng-template mat-tab-label>
-        <span>Informe Mensual</span>
-      </ng-template>
-      <div class="tab-content">
-        <mat-card class="report-card">
-          <mat-card-header>
-            <mat-card-title>Reporte Informe Mensual</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <form [formGroup]="monthlyReportForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Mes</mat-label>
-                  <mat-select formControlName="month">
-                    @for (month of months; track month.value) {
-                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Año</mat-label>
-                  <mat-select formControlName="year">
-                    @for (year of years; track year) {
-                      <mat-option [value]="year.toString()">{{ year }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-
-                <button matButton="filled" type="button" (click)="generateMonthlyReportPdf()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                  @if (isLoading) {
-                    <mat-spinner diameter="20" />
-                  } @else {
-                    <span class="flex items-center gap-1">
-                      <mat-icon>picture_as_pdf</mat-icon>
-                      Crear PDF
-                    </span>
+              <mat-form-field appearance="outline">
+                <mat-label>Año</mat-label>
+                <mat-select formControlName="year">
+                  @for (year of years; track year) {
+                    <mat-option [value]="year.toString()">{{ year }}</mat-option>
                   }
-                </button>
+                </mat-select>
+              </mat-form-field>
 
-                <button matButton="tonal" type="button" (click)="generateMonthlyReportExcel()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                  @if (isLoading) {
-                    <mat-spinner diameter="20" />
-                  } @else {
-                    <span class="flex items-center gap-1">
-                      <mat-icon>table_chart</mat-icon>
-                      Crear Excel
-                    </span>
+              <button matButton="filled" type="button" (click)="generateQuantityDifferenceReport()"
+                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading) { <mat-spinner diameter="20" /> }
+                @else {
+                  <span class="flex items-center gap-1">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (selectedReport === 'monthly-report') {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Reporte Informe Mensual</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="monthlyReportForm" class="form-container">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Mes</mat-label>
+                <mat-select formControlName="month">
+                  @for (month of months; track month.value) {
+                    <mat-option [value]="month.value">{{ month.label }}</mat-option>
                   }
-                </button>
-              </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </mat-tab>
+                </mat-select>
+              </mat-form-field>
 
-    <!-- Reporte 3: Eficiencia -->
-    <mat-tab label="Eficiencia">
-      <ng-template mat-tab-label>
-        <span>Eficiencia</span>
-      </ng-template>
-      <div class="tab-content">
-        <mat-card class="report-card">
-          <mat-card-header>
-            <mat-card-title>Reporte Eficiencia</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <form [formGroup]="efficiencyForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Mes</mat-label>
-                  <mat-select formControlName="month">
-                    @for (month of months; track month.value) {
-                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Año</mat-label>
-                  <mat-select formControlName="year">
-                    @for (year of years; track year) {
-                      <mat-option [value]="year.toString()">{{ year }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-              </div>
-
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Donativo Inicial</mat-label>
-                  <input matInput formControlName="initialDonation" type="number" />
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Donativo Final</mat-label>
-                  <input matInput formControlName="finalDonation" type="number" />
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Num. Colector</mat-label>
-                  <input matInput formControlName="collectorNum" type="text" />
-                </mat-form-field>
-              </div>
-
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Frecuencia</mat-label>
-                  <mat-select formControlName="frequency">
-                    @for (freq of frequencies; track freq.value) {
-                      <mat-option [value]="freq.value">{{ freq.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-
-                <button matButton="filled" type="button" (click)="generateEfficiencyReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                  @if (isLoading) {
-                    <mat-spinner diameter="20" />
-                  } @else {
-                    <span class="flex items-center gap-1">
-                      <mat-icon>picture_as_pdf</mat-icon>
-                      Crear PDF
-                    </span>
+              <mat-form-field appearance="outline">
+                <mat-label>Año</mat-label>
+                <mat-select formControlName="year">
+                  @for (year of years; track year) {
+                    <mat-option [value]="year.toString()">{{ year }}</mat-option>
                   }
-                </button>
-              </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </mat-tab>
+                </mat-select>
+              </mat-form-field>
 
-    <!-- Reporte 4: Eficiencia Concentrada -->
-    <mat-tab label="Eficiencia Concentrada">
-      <ng-template mat-tab-label>
-        <span>Eficiencia Concentrada</span>
-      </ng-template>
-      <div class="tab-content">
-        <mat-card class="report-card">
-          <mat-card-header>
-            <mat-card-title>Reporte Eficiencia Concentrada</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <form [formGroup]="concentratedEfficiencyForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Fecha Inicial</mat-label>
-                  <input matInput [matDatepicker]="pickerStart" formControlName="startDate" />
-                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerStart></mat-datepicker>
-                </mat-form-field>
+              <button matButton="filled" type="button" (click)="generateMonthlyReportPdf()"
+                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading) { <mat-spinner diameter="20" /> }
+                @else {
+                  <span class="flex items-center gap-1">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  </span>
+                }
+              </button>
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Fecha Final</mat-label>
-                  <input matInput [matDatepicker]="pickerEnd" formControlName="endDate" />
-                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerEnd></mat-datepicker>
-                </mat-form-field>
-              </div>
+              <button matButton="tonal" type="button" (click)="generateMonthlyReportExcel()"
+                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading) { <mat-spinner diameter="20" /> }
+                @else {
+                  <span class="flex items-center gap-1">
+                    <mat-icon>table_chart</mat-icon>
+                    Crear Excel
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
 
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Porcentaje Inicial</mat-label>
-                  <input matInput formControlName="initialPercentage" type="number" />
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Porcentaje Final</mat-label>
-                  <input matInput formControlName="finalPercentage" type="number" />
-                </mat-form-field>
-              </div>
-
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Tipo Eficiencia</mat-label>
-                  <mat-select formControlName="efficiencyType">
-                    @for (type of efficiencyTypes; track type.value) {
-                      <mat-option [value]="type.value">{{ type.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Num. Colector</mat-label>
-                  <input matInput formControlName="collectorNum" type="text" />
-                </mat-form-field>
-
-                <button matButton="filled" type="button" (click)="generateConcentratedEfficiencyReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                  @if (isLoading) {
-                    <mat-spinner diameter="20" />
-                  } @else {
-                    <span class="flex items-center gap-1">
-                      <mat-icon>picture_as_pdf</mat-icon>
-                      Crear PDF
-                    </span>
+    @if (selectedReport === 'efficiency') {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Reporte Eficiencia</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="efficiencyForm" class="form-container">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Mes</mat-label>
+                <mat-select formControlName="month">
+                  @for (month of months; track month.value) {
+                    <mat-option [value]="month.value">{{ month.label }}</mat-option>
                   }
-                </button>
-              </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </mat-tab>
+                </mat-select>
+              </mat-form-field>
 
-    <!-- Reporte 5: Disminución Donativos -->
-    <mat-tab label="Disminución Donativos">
-      <ng-template mat-tab-label>
-        <span>Disminución Donativos</span>
-      </ng-template>
-      <div class="tab-content">
-        <mat-card class="report-card">
-          <mat-card-header>
-            <mat-card-title>Reporte Disminución de Donativos</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <form [formGroup]="dateRangeForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Fecha Inicial</mat-label>
-                  <input matInput [matDatepicker]="pickerStart2" formControlName="startDate" />
-                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart2"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerStart2></mat-datepicker>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Fecha Final</mat-label>
-                  <input matInput [matDatepicker]="pickerEnd2" formControlName="endDate" />
-                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd2"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerEnd2></mat-datepicker>
-                </mat-form-field>
-
-                <button matButton="filled" type="button" (click)="generateDecreasedDonationReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                  @if (isLoading) {
-                    <mat-spinner diameter="20" />
-                  } @else {
-                    <span class="flex items-center gap-1">
-                      <mat-icon>picture_as_pdf</mat-icon>
-                      Crear PDF
-                    </span>
+              <mat-form-field appearance="outline">
+                <mat-label>Año</mat-label>
+                <mat-select formControlName="year">
+                  @for (year of years; track year) {
+                    <mat-option [value]="year.toString()">{{ year }}</mat-option>
                   }
-                </button>
-              </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </mat-tab>
+                </mat-select>
+              </mat-form-field>
+            </div>
 
-    <!-- Reporte 6: Aumento Donativos -->
-    <mat-tab label="Aumento Donativos">
-      <ng-template mat-tab-label>
-        <span>Aumento Donativos</span>
-      </ng-template>
-      <div class="tab-content">
-        <mat-card class="report-card">
-          <mat-card-header>
-            <mat-card-title>Reporte Aumento de Donativos</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <form [formGroup]="dateRangeForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Fecha Inicial</mat-label>
-                  <input matInput [matDatepicker]="pickerStart3" formControlName="startDate" />
-                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart3"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerStart3></mat-datepicker>
-                </mat-form-field>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Donativo Inicial</mat-label>
+                <input matInput formControlName="initialDonation" type="number" />
+              </mat-form-field>
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Fecha Final</mat-label>
-                  <input matInput [matDatepicker]="pickerEnd3" formControlName="endDate" />
-                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd3"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerEnd3></mat-datepicker>
-                </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Donativo Final</mat-label>
+                <input matInput formControlName="finalDonation" type="number" />
+              </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateIncreasedDonationReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                  @if (isLoading) {
-                    <mat-spinner diameter="20" />
-                  } @else {
-                    <span class="flex items-center gap-1">
-                      <mat-icon>picture_as_pdf</mat-icon>
-                      Crear PDF
-                    </span>
+              <mat-form-field appearance="outline">
+                <mat-label>Num. Colector</mat-label>
+                <input matInput formControlName="collectorNum" type="text" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Frecuencia</mat-label>
+                <mat-select formControlName="frequency">
+                  @for (freq of frequencies; track freq.value) {
+                    <mat-option [value]="freq.value">{{ freq.label }}</mat-option>
                   }
-                </button>
-              </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </mat-tab>
+                </mat-select>
+              </mat-form-field>
 
-    <!-- Reporte 7: Donativos -->
-    <mat-tab label="Donativos">
-      <ng-template mat-tab-label>
-        <span>Donativos</span>
-      </ng-template>
-      <div class="tab-content">
-        <mat-card class="report-card">
-          <mat-card-header>
-            <mat-card-title>Reporte Donativos</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <form [formGroup]="dateRangeForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Fecha Inicial</mat-label>
-                  <input matInput [matDatepicker]="pickerStart4" formControlName="startDate" />
-                  <mat-datepicker-toggle matIconSuffix [for]="pickerStart4"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerStart4></mat-datepicker>
-                </mat-form-field>
+              <button matButton="filled" type="button" (click)="generateEfficiencyReport()"
+                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading) { <mat-spinner diameter="20" /> }
+                @else {
+                  <span class="flex items-center gap-1">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Fecha Final</mat-label>
-                  <input matInput [matDatepicker]="pickerEnd4" formControlName="endDate" />
-                  <mat-datepicker-toggle matIconSuffix [for]="pickerEnd4"></mat-datepicker-toggle>
-                  <mat-datepicker #pickerEnd4></mat-datepicker>
-                </mat-form-field>
+    @if (selectedReport === 'concentrated-efficiency') {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Reporte Eficiencia Concentrada</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="concentratedEfficiencyForm" class="form-container">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha Inicial</mat-label>
+                <input matInput [matDatepicker]="pickerCEStart" formControlName="startDate" />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerCEStart"></mat-datepicker-toggle>
+                <mat-datepicker #pickerCEStart></mat-datepicker>
+              </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateDonationReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                  @if (isLoading) {
-                    <mat-spinner diameter="20" />
-                  } @else {
-                    <span class="flex items-center gap-1">
-                      <mat-icon>picture_as_pdf</mat-icon>
-                      Crear PDF
-                    </span>
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha Final</mat-label>
+                <input matInput [matDatepicker]="pickerCEEnd" formControlName="endDate" />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerCEEnd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerCEEnd></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Porcentaje Inicial</mat-label>
+                <input matInput formControlName="initialPercentage" type="number" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Porcentaje Final</mat-label>
+                <input matInput formControlName="finalPercentage" type="number" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Tipo Eficiencia</mat-label>
+                <mat-select formControlName="efficiencyType">
+                  @for (type of efficiencyTypes; track type.value) {
+                    <mat-option [value]="type.value">{{ type.label }}</mat-option>
                   }
-                </button>
-              </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </mat-tab>
+                </mat-select>
+              </mat-form-field>
 
-    <!-- Reporte 8: Recibos Emitidos -->
-    <mat-tab label="Recibos Emitidos">
-      <ng-template mat-tab-label>
-        <span>Recibos Emitidos</span>
-      </ng-template>
-      <div class="tab-content">
-        <mat-card class="report-card">
-          <mat-card-header>
-            <mat-card-title>Reporte de Recibos Emitidos</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <form [formGroup]="issuedReceiptsForm" class="form-container">
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Mes</mat-label>
-                  <mat-select formControlName="month">
-                    @for (month of months; track month.value) {
-                      <mat-option [value]="month.value">{{ month.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Num. Colector</mat-label>
+                <input matInput formControlName="collectorNum" type="text" />
+              </mat-form-field>
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Año</mat-label>
-                  <mat-select formControlName="year">
-                    @for (year of years; track year) {
-                      <mat-option [value]="year.toString()">{{ year }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-              </div>
+              <button matButton="filled" type="button" (click)="generateConcentratedEfficiencyReport()"
+                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading) { <mat-spinner diameter="20" /> }
+                @else {
+                  <span class="flex items-center gap-1">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
 
-              <div class="form-row">
-                <mat-form-field appearance="outline">
-                  <mat-label>Frecuencia</mat-label>
-                  <mat-select formControlName="frequency">
-                    @for (freq of frequencies; track freq.value) {
-                      <mat-option [value]="freq.value">{{ freq.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
+    @if (selectedReport === 'decreased-donations') {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Reporte Disminución de Donativos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="dateRangeForm" class="form-container">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha Inicial</mat-label>
+                <input matInput [matDatepicker]="pickerDDStart" formControlName="startDate" />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerDDStart"></mat-datepicker-toggle>
+                <mat-datepicker #pickerDDStart></mat-datepicker>
+              </mat-form-field>
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Tipo de Recibo</mat-label>
-                  <mat-select formControlName="receiptType">
-                    @for (type of receiptTypes; track type.value) {
-                      <mat-option [value]="type.value">{{ type.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha Final</mat-label>
+                <input matInput [matDatepicker]="pickerDDEnd" formControlName="endDate" />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerDDEnd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerDDEnd></mat-datepicker>
+              </mat-form-field>
 
-                <button matButton="filled" type="button" (click)="generateIssuedReceiptsReport()" [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                  @if (isLoading) {
-                    <mat-spinner diameter="20" />
-                  } @else {
-                    <span class="flex items-center gap-1">
-                      <mat-icon>picture_as_pdf</mat-icon>
-                      Crear PDF
-                    </span>
+              <button matButton="filled" type="button" (click)="generateDecreasedDonationReport()"
+                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading) { <mat-spinner diameter="20" /> }
+                @else {
+                  <span class="flex items-center gap-1">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (selectedReport === 'increased-donations') {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Reporte Aumento de Donativos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="dateRangeForm" class="form-container">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha Inicial</mat-label>
+                <input matInput [matDatepicker]="pickerIDStart" formControlName="startDate" />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerIDStart"></mat-datepicker-toggle>
+                <mat-datepicker #pickerIDStart></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha Final</mat-label>
+                <input matInput [matDatepicker]="pickerIDEnd" formControlName="endDate" />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerIDEnd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerIDEnd></mat-datepicker>
+              </mat-form-field>
+
+              <button matButton="filled" type="button" (click)="generateIncreasedDonationReport()"
+                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading) { <mat-spinner diameter="20" /> }
+                @else {
+                  <span class="flex items-center gap-1">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (selectedReport === 'donations') {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Reporte Donativos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="dateRangeForm" class="form-container">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha Inicial</mat-label>
+                <input matInput [matDatepicker]="pickerDStart" formControlName="startDate" />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerDStart"></mat-datepicker-toggle>
+                <mat-datepicker #pickerDStart></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha Final</mat-label>
+                <input matInput [matDatepicker]="pickerDEnd" formControlName="endDate" />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerDEnd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerDEnd></mat-datepicker>
+              </mat-form-field>
+
+              <button matButton="filled" type="button" (click)="generateDonationReport()"
+                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading) { <mat-spinner diameter="20" /> }
+                @else {
+                  <span class="flex items-center gap-1">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (selectedReport === 'issued-receipts') {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Reporte de Recibos Emitidos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="issuedReceiptsForm" class="form-container">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Mes</mat-label>
+                <mat-select formControlName="month">
+                  @for (month of months; track month.value) {
+                    <mat-option [value]="month.value">{{ month.label }}</mat-option>
                   }
-                </button>
-              </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Año</mat-label>
+                <mat-select formControlName="year">
+                  @for (year of years; track year) {
+                    <mat-option [value]="year.toString()">{{ year }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Frecuencia</mat-label>
+                <mat-select formControlName="frequency">
+                  @for (freq of frequencies; track freq.value) {
+                    <mat-option [value]="freq.value">{{ freq.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Tipo de Recibo</mat-label>
+                <mat-select formControlName="receiptType">
+                  @for (type of receiptTypes; track type.value) {
+                    <mat-option [value]="type.value">{{ type.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <button matButton="filled" type="button" (click)="generateIssuedReceiptsReport()"
+                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading) { <mat-spinner diameter="20" /> }
+                @else {
+                  <span class="flex items-center gap-1">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    Crear PDF
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
+
+  </div>
 </div>

@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 export interface ReportFilter {
   month?: string | null;
   year?: string | null;
-  startDate?: string | null;
-  endDate?: string | null;
+  startDate?: Date | string | null;
+  endDate?: Date | string | null;
   [key: string]: any;
 }
 
