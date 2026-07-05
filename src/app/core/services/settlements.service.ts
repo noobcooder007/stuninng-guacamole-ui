@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'environments/environment.development';
 import { apiErrorMessage } from '@app/shared/utils/api-error';
 
@@ -61,7 +61,8 @@ export class SettlementsService {
     private readonly apiUrl = environment.apiBaseUrl;
 
     getSettlements(periodId: string): Observable<Settlement[]> {
-        return this.http.get<Settlement[]>(`${this.apiUrl}/periods/${periodId}/settlements`).pipe(
+        return this.http.get<{ data: Settlement[] }>(`${this.apiUrl}/periods/${periodId}/settlements`).pipe(
+            map(r => r?.data ?? []),
             catchError((error) => {
                 this.snackbar.open(apiErrorMessage(error, 'Error al obtener las liquidaciones'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
@@ -88,7 +89,8 @@ export class SettlementsService {
     }
 
     getPaymentHistory(settlementId: string): Observable<SettlementPayment[]> {
-        return this.http.get<SettlementPayment[]>(`${this.apiUrl}/periods/settlements/${settlementId}/payments`).pipe(
+        return this.http.get<{ data: SettlementPayment[] }>(`${this.apiUrl}/periods/settlements/${settlementId}/payments`).pipe(
+            map(r => r?.data ?? []),
             catchError((error) => {
                 this.snackbar.open(apiErrorMessage(error, 'Error al obtener el historial de pagos'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);

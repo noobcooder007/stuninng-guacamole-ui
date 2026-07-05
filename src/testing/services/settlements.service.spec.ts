@@ -37,11 +37,13 @@ describe('SettlementsService', () => {
   });
 
   describe('getSettlements', () => {
-    it('should GET /periods/:id/settlements', () => {
-      service.getSettlements('period-1').subscribe();
+    it('should GET /periods/:id/settlements and unwrap data', () => {
+      let result: unknown;
+      service.getSettlements('period-1').subscribe(r => (result = r));
       const req = httpMock.expectOne(`${BASE}/periods/period-1/settlements`);
       expect(req.request.method).toBe('GET');
-      req.flush([]);
+      req.flush({ data: [] });
+      expect(result).toEqual([]);
     });
 
     it('should show snackbar and rethrow on error', () => {
@@ -118,11 +120,13 @@ describe('SettlementsService', () => {
   });
 
   describe('getPaymentHistory', () => {
-    it('should GET /periods/settlements/:id/payments', () => {
-      service.getPaymentHistory('settlement-1').subscribe();
+    it('should GET /periods/settlements/:id/payments and unwrap data', () => {
+      let result: unknown;
+      service.getPaymentHistory('settlement-1').subscribe(r => (result = r));
       const req = httpMock.expectOne(`${BASE}/periods/settlements/settlement-1/payments`);
       expect(req.request.method).toBe('GET');
-      req.flush([]);
+      req.flush({ data: [] });
+      expect(result).toEqual([]);
     });
 
     it('should show snackbar and rethrow on error', () => {
