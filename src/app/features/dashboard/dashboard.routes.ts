@@ -233,6 +233,20 @@ export const DASHBOARD_ROUTES: Routes = [
                 loadComponent: () => import('./permissions/create/create-permission.component')
                     .then(m => m.CreatePermissionComponent),
             },
+            {
+                path: 'users',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.VIEW_USER },
+                loadComponent: () => import('./users/users.component')
+                    .then(m => m.UsersComponent),
+            },
+            {
+                path: 'users/:id/edit',
+                canActivate: [permissionGuard],
+                data: { permission: Permissions.EDIT_USER },
+                loadComponent: () => import('./users/edit/user-edit.component')
+                    .then(m => m.UserEditComponent),
+            },
         ]
     }
 ];

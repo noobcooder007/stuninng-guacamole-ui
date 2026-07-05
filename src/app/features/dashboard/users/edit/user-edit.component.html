@@ -1,0 +1,169 @@
+<div class="flex flex-col h-full w-full overflow-y-auto no-scrollbar p-6 gap-6 max-w-2xl mx-auto">
+
+  <!-- Hero -->
+  <div class="flex flex-col gap-3">
+    <span class="text-xs font-semibold uppercase tracking-widest text-[color:var(--mat-sys-on-surface-variant)]">
+      Detalle de usuario
+    </span>
+    <div class="flex items-center gap-3 flex-wrap">
+      <h1 class="text-2xl font-bold leading-none">{{ currentUsername }}</h1>
+      <span class="text-[11px] font-semibold uppercase px-2 py-0.5 rounded"
+        [class]="isActive() ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+        {{ isActive() ? 'Activo' : 'Inactivo' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Nombre de usuario -->
+  <mat-card appearance="outlined">
+    <mat-card-header class="justify-between">
+      <mat-card-title class="flex items-center gap-2 text-base">
+        <mat-icon class="!text-[20px] !w-5 !h-5">manage_accounts</mat-icon>
+        Nombre de usuario
+      </mat-card-title>
+      @if (editingUsername()) {
+        <button type="button" matIconButton (click)="cancelEditUsername()">
+          <mat-icon>close</mat-icon>
+        </button>
+      } @else {
+        <button type="button" matIconButton
+          [disabled]="!(Permissions.EDIT_USER | hasPermission)"
+          (click)="startEditUsername()">
+          <mat-icon>edit</mat-icon>
+        </button>
+      }
+    </mat-card-header>
+    <mat-card-content>
+      @if (editingUsername()) {
+        <form [formGroup]="usernameForm" aria-label="Editar nombre de usuario" class="pt-2" (ngSubmit)="submitUsername()">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Nuevo nombre de usuario</mat-label>
+            <input matInput formControlName="username" aria-label="Nuevo nombre de usuario" autocomplete="off" />
+            @if (usernameForm.controls.username.hasError('required')) {
+              <mat-error>Campo obligatorio</mat-error>
+            }
+            @if (usernameForm.controls.username.hasError('minlength')) {
+              <mat-error>Mínimo 4 caracteres</mat-error>
+            }
+            @if (usernameForm.controls.username.hasError('maxlength')) {
+              <mat-error>Máximo 50 caracteres</mat-error>
+            }
+            @if (usernameForm.controls.username.hasError('pattern')) {
+              <mat-error>Solo letras y números, sin espacios</mat-error>
+            }
+          </mat-form-field>
+          <div class="flex gap-2 justify-end mt-2">
+            <button type="button" matButton (click)="cancelEditUsername()">Cancelar</button>
+            <button type="submit" matButton="filled" [disabled]="usernameForm.invalid || isSavingUsername()">
+              @if (isSavingUsername()) {
+                <mat-progress-spinner diameter="18" mode="indeterminate" />
+              } @else {
+                Guardar
+              }
+            </button>
+          </div>
+        </form>
+      } @else {
+        <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+          <div class="flex justify-between items-center py-3">
+            <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Username</span>
+            <span class="text-sm font-medium font-mono">{{ currentUsername }}</span>
+          </div>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Contraseña -->
+  <mat-card appearance="outlined">
+    <mat-card-header class="justify-between">
+      <mat-card-title class="flex items-center gap-2 text-base">
+        <mat-icon class="!text-[20px] !w-5 !h-5">key</mat-icon>
+        Contraseña
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="passwordForm" aria-label="Cambiar contraseña" class="pt-2" (ngSubmit)="submitPassword()">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Nueva contraseña</mat-label>
+          <input
+            matInput
+            formControlName="newPassword"
+            aria-label="Nueva contraseña"
+            [type]="showPassword() ? 'text' : 'password'"
+            autocomplete="new-password"
+          />
+          <button matIconSuffix type="button" (click)="togglePasswordVisibility()">
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (passwordForm.controls.newPassword.hasError('required')) {
+            <mat-error>Campo obligatorio</mat-error>
+          }
+          @if (passwordForm.controls.newPassword.hasError('minlength')) {
+            <mat-error>Mínimo 6 caracteres</mat-error>
+          }
+          @if (passwordForm.controls.newPassword.hasError('maxlength')) {
+            <mat-error>Máximo 50 caracteres</mat-error>
+          }
+        </mat-form-field>
+        <div class="flex gap-2 justify-end mt-2">
+          <button type="submit" matButton="filled"
+            [disabled]="passwordForm.invalid || isSavingPassword() || !(Permissions.EDIT_USER | hasPermission)">
+            @if (isSavingPassword()) {
+              <mat-progress-spinner diameter="18" mode="indeterminate" />
+            } @else {
+              Cambiar contraseña
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Estado -->
+  <mat-card appearance="outlined">
+    <mat-card-header class="justify-between">
+      <mat-card-title class="flex items-center gap-2 text-base">
+        <mat-icon class="!text-[20px] !w-5 !h-5">toggle_on</mat-icon>
+        Estado de la cuenta
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="divide-y divide-[color:var(--mat-sys-outline-variant)]">
+        <div class="flex justify-between items-center py-3">
+          <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">Estado actual</span>
+          <span class="text-[11px] font-semibold uppercase px-2 py-0.5 rounded"
+            [class]="isActive() ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+            {{ isActive() ? 'Activo' : 'Inactivo' }}
+          </span>
+        </div>
+      </div>
+      <div class="flex gap-2 justify-end mt-4">
+        @if (isActive()) {
+          <button type="button" matButton="outlined"
+            [disabled]="isTogglingStatus() || !(Permissions.EDIT_USER | hasPermission)"
+            (click)="toggleStatus()">
+            @if (isTogglingStatus()) {
+              <mat-progress-spinner diameter="18" mode="indeterminate" />
+            } @else {
+              <mat-icon>person_off</mat-icon>
+            }
+            Desactivar usuario
+          </button>
+        } @else {
+          <button type="button" matButton="filled"
+            [disabled]="isTogglingStatus() || !(Permissions.EDIT_USER | hasPermission)"
+            (click)="toggleStatus()">
+            @if (isTogglingStatus()) {
+              <mat-progress-spinner diameter="18" mode="indeterminate" />
+            } @else {
+              <mat-icon>how_to_reg</mat-icon>
+            }
+            Activar usuario
+          </button>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+</div>

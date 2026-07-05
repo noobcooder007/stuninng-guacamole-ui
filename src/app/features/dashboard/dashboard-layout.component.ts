@@ -84,6 +84,13 @@ export const MENU_CONFIG: NavCategory[] = [
                 route: '/periods',
                 permission: Permissions.VIEW_PROCESS,
             },
+            {
+                id: 'settlements',
+                label: 'Liquidaciones',
+                icon: 'account_balance_wallet',
+                route: '/settlements',
+                permission: Permissions.VIEW_SETTLEMENT,
+            },
         ],
     },
     {
@@ -137,6 +144,13 @@ export const MENU_CONFIG: NavCategory[] = [
         name: 'Administración',
         icon: 'admin_panel_settings',
         items: [
+            {
+                id: 'users',
+                label: 'Usuarios',
+                icon: 'group',
+                route: '/users',
+                permission: Permissions.VIEW_USER,
+            },
             {
                 id: 'roles',
                 label: 'Roles',

@@ -42,6 +42,10 @@ export enum Permissions {
     VIEW_PROCESS = 'view:process',
     RUN_PROCESS = 'run:process',
 
+    // Liquidaciones
+    VIEW_SETTLEMENT = 'view:settlement',
+    EDIT_SETTLEMENT = 'edit:settlement',
+
     // Roles
     VIEW_ROLE = 'view:role',
     ADD_ROLE = 'add:role',
@@ -53,4 +57,8 @@ export enum Permissions {
     VIEW_PERMISSION = 'view:permission',
     ADD_PERMISSION = 'add:permission',
     DELETE_PERMISSION = 'delete:permission',
+
+    // Usuarios
+    VIEW_USER = 'view:user',
+    EDIT_USER = 'edit:user',
 }
