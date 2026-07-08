@@ -244,6 +244,19 @@ export class DashboardLayoutComponent implements OnDestroy {
         });
     }
 
+    public closeAllTabs(): void {
+        this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                title: 'Cerrar todas las pestañas',
+                message: '¿Estás seguro de que deseas cerrar todas las pestañas abiertas?',
+                confirmLabel: 'Cerrar todas',
+            },
+        }).afterClosed().subscribe((confirmed) => {
+            if (!confirmed) return;
+            this.tabService.closeAllTabs();
+        });
+    }
+
     public selectItem(item: NavItem) {
         this.tabService.openTab({
             id: item.id,
