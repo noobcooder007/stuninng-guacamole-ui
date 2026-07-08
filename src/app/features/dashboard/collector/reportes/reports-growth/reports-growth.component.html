@@ -1,0 +1,106 @@
+<div class="flex flex-col gap-6 p-6">
+
+  <form [formGroup]="filterForm" class="flex flex-wrap items-end gap-4">
+    <mat-form-field appearance="outline">
+      <mat-label>Mes</mat-label>
+      <mat-select formControlName="month">
+        @for (month of months; track month.value) {
+          <mat-option [value]="month.value">{{ month.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Año</mat-label>
+      <mat-select formControlName="year">
+        @for (year of years; track year) {
+          <mat-option [value]="year">{{ year }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button matButton="filled" type="button" (click)="consultar()"
+            [disabled]="isLoading() || filterForm.invalid || !(Permissions.VIEW_INVOICE | hasPermission)">
+      @if (isLoading()) { <mat-spinner diameter="20" /> }
+      @else {
+        <span class="flex items-center gap-1">
+          <mat-icon>search</mat-icon>
+          Consultar
+        </span>
+      }
+    </button>
+  </form>
+
+  @if (report(); as r) {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ monthLabel(r.currentPeriod.month) }} {{ r.currentPeriod.year }}</mat-card-title>
+          <mat-card-subtitle>Periodo actual</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="flex flex-col gap-3 pt-2">
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Recibos cobrados</span>
+            <span class="text-xl font-semibold tabular-nums">{{ r.currentPeriod.totalReceipts | currency:'MXN':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Promesas nuevas</span>
+            <span class="text-xl font-semibold tabular-nums">{{ r.currentPeriod.newPromiseAmount | currency:'MXN':'symbol':'1.2-2' }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ monthLabel(r.previousPeriod.month) }} {{ r.previousPeriod.year }}</mat-card-title>
+          <mat-card-subtitle>Periodo anterior</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="flex flex-col gap-3 pt-2">
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Recibos cobrados</span>
+            <span class="text-xl font-semibold tabular-nums">{{ r.previousPeriod.totalReceipts | currency:'MXN':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Promesas nuevas</span>
+            <span class="text-xl font-semibold tabular-nums">{{ r.previousPeriod.newPromiseAmount | currency:'MXN':'symbol':'1.2-2' }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Variación de recibos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="flex items-center gap-2 pt-2">
+          <mat-icon [class]="r.receiptsVariation.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+            {{ r.receiptsVariation.amount >= 0 ? 'trending_up' : 'trending_down' }}
+          </mat-icon>
+          <span class="text-lg font-semibold tabular-nums"
+                [class]="r.receiptsVariation.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+            {{ r.receiptsVariation.amount | currency:'MXN':'symbol':'1.2-2' }}
+            ({{ r.receiptsVariation.percentage | number:'1.2-2' }}%)
+          </span>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Variación de promesas nuevas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="flex items-center gap-2 pt-2">
+          <mat-icon [class]="r.promiseAmountVariation.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+            {{ r.promiseAmountVariation.amount >= 0 ? 'trending_up' : 'trending_down' }}
+          </mat-icon>
+          <span class="text-lg font-semibold tabular-nums"
+                [class]="r.promiseAmountVariation.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+            {{ r.promiseAmountVariation.amount | currency:'MXN':'symbol':'1.2-2' }}
+            ({{ r.promiseAmountVariation.percentage | number:'1.2-2' }}%)
+          </span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+</div>

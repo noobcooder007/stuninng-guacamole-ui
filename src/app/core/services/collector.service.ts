@@ -134,6 +134,55 @@ export interface UpdateCollectorNotesDto {
     notes: string;
 }
 
+export interface CollectorEfficiencyRow {
+    collectorId: string;
+    collectorNumber: number;
+    collectorName: string;
+    assignedAmount: number;
+    assignedCount: number;
+    collectedAmount: number;
+    collectedCount: number;
+    pendingAmount: number;
+    pendingCount: number;
+    collectionRate: number;
+}
+
+export interface CollectorEfficiencyTotals {
+    assignedAmount: number;
+    assignedCount: number;
+    collectedAmount: number;
+    collectedCount: number;
+    pendingAmount: number;
+    pendingCount: number;
+    collectionRate: number;
+}
+
+export interface CollectorEfficiencyByPeriod {
+    periodId: string;
+    month: number;
+    year: number;
+    periodStatus: string;
+    collectors: CollectorEfficiencyRow[];
+    totals: CollectorEfficiencyTotals;
+}
+
+export interface CollectorEfficiencyByYear {
+    year: number;
+    collectors: CollectorEfficiencyRow[];
+    totals: CollectorEfficiencyTotals;
+}
+
+export interface CollectorEfficiencyHistorical {
+    collectors: CollectorEfficiencyRow[];
+    totals: CollectorEfficiencyTotals;
+}
+
+export interface CollectorsEfficiencyReport {
+    byPeriod: CollectorEfficiencyByPeriod[];
+    byYear: CollectorEfficiencyByYear[];
+    historical: CollectorEfficiencyHistorical;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CollectorService {
     private readonly http = inject(HttpClient);
@@ -257,6 +306,16 @@ export class CollectorService {
         return this.http.patch(`${this.apiUrl}/collector/${id}/notes`, dto).pipe(
             catchError((error) => {
                 this._snackbar.open(apiErrorMessage(error, 'Error al actualizar notas'), 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    getEfficiencyReport(): Observable<CollectorsEfficiencyReport> {
+        return this.http.get<{ data: CollectorsEfficiencyReport }>(`${this.apiUrl}/receipts/collectors/efficiency`).pipe(
+            map(r => r.data),
+            catchError((error) => {
+                this._snackbar.open(apiErrorMessage(error, 'Error al obtener el reporte de eficiencia'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

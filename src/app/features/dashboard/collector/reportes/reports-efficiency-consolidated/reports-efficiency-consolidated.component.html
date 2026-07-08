@@ -1,0 +1,144 @@
+<div class="flex flex-col gap-4 p-6">
+
+  @if (isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <div class="flex items-center justify-between">
+    <h2 class="text-lg font-semibold">Eficiencia de colectores</h2>
+    <button matButton="tonal" type="button" (click)="cargar()"
+            [disabled]="isLoading() || !(Permissions.VIEW_INVOICE | hasPermission)">
+      <span class="flex items-center gap-1">
+        <mat-icon>refresh</mat-icon>
+        Actualizar
+      </span>
+    </button>
+  </div>
+
+  <!-- Tabla reutilizable -->
+  <ng-template #efficiencyTable let-collectors="collectors" let-totals="totals">
+    @if (!collectors?.length) {
+      <div class="flex flex-col items-center gap-3 py-16 text-[color:var(--mat-sys-on-surface-variant)]">
+        <mat-icon class="!text-[48px] !w-12 !h-12 opacity-40">bar_chart</mat-icon>
+        <span class="text-sm font-medium">Sin datos de eficiencia</span>
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table mat-table [dataSource]="collectors" class="w-full min-w-[800px]">
+
+          <ng-container matColumnDef="collectorNumber">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let row">{{ row.collectorNumber }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="collectorName">
+            <th mat-header-cell *matHeaderCellDef>Colector</th>
+            <td mat-cell *matCellDef="let row" class="font-medium">{{ row.collectorName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="assignedAmount">
+            <th mat-header-cell *matHeaderCellDef class="text-right">Asignado</th>
+            <td mat-cell *matCellDef="let row" class="text-right tabular-nums">
+              {{ row.assignedAmount | currency:'MXN':'symbol':'1.2-2' }}
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">({{ row.assignedCount }})</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="collectedAmount">
+            <th mat-header-cell *matHeaderCellDef class="text-right">Cobrado</th>
+            <td mat-cell *matCellDef="let row" class="text-right tabular-nums">
+              {{ row.collectedAmount | currency:'MXN':'symbol':'1.2-2' }}
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">({{ row.collectedCount }})</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="pendingAmount">
+            <th mat-header-cell *matHeaderCellDef class="text-right">Pendiente</th>
+            <td mat-cell *matCellDef="let row" class="text-right tabular-nums">
+              {{ row.pendingAmount | currency:'MXN':'symbol':'1.2-2' }}
+              <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">({{ row.pendingCount }})</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="collectionRate">
+            <th mat-header-cell *matHeaderCellDef class="text-right">Eficiencia</th>
+            <td mat-cell *matCellDef="let row" class="text-right tabular-nums font-semibold">
+              {{ row.collectionRate | number:'1.2-2' }}%
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      @if (totals) {
+        <div class="flex flex-wrap gap-6 pt-3 border-t border-[color:var(--mat-sys-outline-variant)]">
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Total asignado</span>
+            <span class="text-base font-semibold tabular-nums">{{ totals.assignedAmount | currency:'MXN':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Total cobrado</span>
+            <span class="text-base font-semibold tabular-nums">{{ totals.collectedAmount | currency:'MXN':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Total pendiente</span>
+            <span class="text-base font-semibold tabular-nums">{{ totals.pendingAmount | currency:'MXN':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Eficiencia global</span>
+            <span class="text-base font-semibold tabular-nums">{{ totals.collectionRate | number:'1.2-2' }}%</span>
+          </div>
+        </div>
+      }
+    }
+  </ng-template>
+
+  <mat-tab-group>
+    <mat-tab label="Por Periodo">
+      <div class="flex flex-col gap-4 pt-4">
+        @if (report()?.byPeriod?.length) {
+          <mat-form-field appearance="outline" class="max-w-xs">
+            <mat-label>Periodo</mat-label>
+            <mat-select [value]="selectedPeriod()?.periodId" (valueChange)="selectedPeriodId.set($event)">
+              @for (p of report()!.byPeriod; track p.periodId) {
+                <mat-option [value]="p.periodId">{{ periodLabel(p) }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+        <ng-container [ngTemplateOutlet]="efficiencyTable"
+                      [ngTemplateOutletContext]="{ collectors: selectedPeriod()?.collectors, totals: selectedPeriod()?.totals }">
+        </ng-container>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Por Año">
+      <div class="flex flex-col gap-4 pt-4">
+        @if (report()?.byYear?.length) {
+          <mat-form-field appearance="outline" class="max-w-xs">
+            <mat-label>Año</mat-label>
+            <mat-select [value]="selectedYearReport()?.year" (valueChange)="selectedYear.set($event)">
+              @for (y of report()!.byYear; track y.year) {
+                <mat-option [value]="y.year">{{ y.year }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+        <ng-container [ngTemplateOutlet]="efficiencyTable"
+                      [ngTemplateOutletContext]="{ collectors: selectedYearReport()?.collectors, totals: selectedYearReport()?.totals }">
+        </ng-container>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Histórico">
+      <div class="pt-4">
+        <ng-container [ngTemplateOutlet]="efficiencyTable"
+                      [ngTemplateOutletContext]="{ collectors: report()?.historical?.collectors, totals: report()?.historical?.totals }">
+        </ng-container>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+</div>

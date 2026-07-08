@@ -85,4 +85,32 @@ describe('ProcessesService', () => {
       req.flush({ statusCode: 200, data: {}, timestamp: '' });
     });
   });
+
+  describe('getGrowthReport', () => {
+    it('should GET /periods/growth-report with month and year params and return the data', () => {
+      const data = {
+        currentPeriod: { month: 7, year: 2026, totalReceipts: 15400, newPromiseAmount: 3200 },
+        previousPeriod: { month: 6, year: 2026, totalReceipts: 12000, newPromiseAmount: 2500 },
+        receiptsVariation: { amount: 3400, percentage: 28.33 },
+        promiseAmountVariation: { amount: 700, percentage: 28.0 },
+      };
+      let result: any;
+      service.getGrowthReport(7, 2026).subscribe(r => (result = r));
+
+      const req = httpMock.expectOne(r =>
+        r.url === `${BASE}/periods/growth-report` &&
+        r.params.get('month') === '7' &&
+        r.params.get('year') === '2026'
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush({ data });
+      expect(result).toEqual(data);
+    });
+
+    it('should show snackbar on error', () => {
+      service.getGrowthReport(7, 2026).subscribe({ error: () => {} });
+      httpMock.expectOne(r => r.url === `${BASE}/periods/growth-report`)
+        .flush('err', { status: 500, statusText: 'Server Error' });
+    });
+  });
 });

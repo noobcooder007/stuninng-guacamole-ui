@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'environments/environment.development';
 import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
@@ -9,6 +9,25 @@ import { apiErrorMessage } from '@app/shared/utils/api-error';
 export interface ProcessRequest {
     month: string;
     year?: string;
+}
+
+export interface GrowthReportPeriod {
+    month: number;
+    year: number;
+    totalReceipts: number;
+    newPromiseAmount: number;
+}
+
+export interface GrowthReportVariation {
+    amount: number;
+    percentage: number;
+}
+
+export interface GrowthReport {
+    currentPeriod: GrowthReportPeriod;
+    previousPeriod: GrowthReportPeriod;
+    receiptsVariation: GrowthReportVariation;
+    promiseAmountVariation: GrowthReportVariation;
 }
 
 export interface PeriodStatusResponse {
@@ -67,6 +86,17 @@ export class ProcessesService {
         return this.http.get(`${this.apiUrl}/periods/${periodId}/settlement-letters/pdf`, { responseType: 'blob' }).pipe(
             catchError((error) => {
                 this.snackbar.open(apiErrorMessage(error, 'Error al generar las cartas de liquidación'), 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
+    getGrowthReport(month: number, year: number): Observable<GrowthReport> {
+        const params = new HttpParams().set('month', month).set('year', year);
+        return this.http.get<{ data: GrowthReport }>(`${this.apiUrl}/periods/growth-report`, { params }).pipe(
+            map(r => r.data),
+            catchError((error) => {
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar el reporte de crecimiento'), 'Cerrar', { duration: 5000 });
                 return throwError(() => error);
             })
         );

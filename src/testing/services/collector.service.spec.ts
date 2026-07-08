@@ -276,4 +276,26 @@ describe('CollectorService', () => {
       expect(snackBarSpy.open).toHaveBeenCalledWith(errorMsg, 'Cerrar', { duration: 5000 });
     });
   });
+
+  describe('getEfficiencyReport', () => {
+    it('should GET /receipts/collectors/efficiency and return the data', () => {
+      const data = { byPeriod: [], byYear: [], historical: { collectors: [], totals: {} } };
+      let result: any;
+      service.getEfficiencyReport().subscribe(r => (result = r));
+
+      const req = httpMock.expectOne(`${environment.apiBaseUrl}/receipts/collectors/efficiency`);
+      expect(req.request.method).toBe('GET');
+      req.flush({ data });
+      expect(result).toEqual(data);
+    });
+
+    it('should show snackbar on error', () => {
+      service.getEfficiencyReport().subscribe({ error: () => {} });
+      httpMock.expectOne(`${environment.apiBaseUrl}/receipts/collectors/efficiency`)
+        .flush('err', { status: 500, statusText: 'Server Error' });
+      expect(snackBarSpy.open).toHaveBeenCalledWith(
+        'Error al obtener el reporte de eficiencia', 'Cerrar', { duration: 5000 }
+      );
+    });
+  });
 });
