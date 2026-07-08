@@ -65,7 +65,7 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"
-          class="cursor-pointer hover:bg-slate-50"
+          class="cursor-pointer hover:bg-[color:var(--mat-sys-surface-container-low)]"
           (click)="selection.toggle(row)">
       </tr>
       <tr *matNoDataRow>
