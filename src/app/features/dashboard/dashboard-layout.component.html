@@ -63,31 +63,45 @@
       </div>
     </mat-sidenav>
     <mat-sidenav-content>
-      <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="w-full overflow-x-auto no-scrollbar">
-        @for (tab of tabService.tabs; track tab.link) {
-        <a
-          class="min-w-40 max-w-72 shrink-0 h-12 !inline-flex align-middle items-center justify-center animate-fade-in-down"
-          mat-tab-link
-          [routerLink]="tab.link"
-          routerLinkActive=""
-          [routerLinkActiveOptions]="{ exact: true }"
-          [active]="router.url === tab.link"
+      <div class="w-full flex items-center">
+        <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="flex-1 min-w-0 overflow-x-auto no-scrollbar">
+          @for (tab of tabService.tabs; track tab.link) {
+          <a
+            class="min-w-40 max-w-72 shrink-0 h-12 !inline-flex align-middle items-center justify-center animate-fade-in-down"
+            mat-tab-link
+            [routerLink]="tab.link"
+            routerLinkActive=""
+            [routerLinkActiveOptions]="{ exact: true }"
+            [active]="router.url === tab.link"
+          >
+            <div class="flex items-center justify-between w-full h-full pl-4 pr-2 gap-2">
+              <span class="truncate text-sm font-medium tracking-wide">
+                {{ tab.label }}
+              </span>
+              <button type="button" class="w-7 h-7 flex items-center justify-center rounded-full">
+                <mat-icon
+                  class="!inline-flex align-middle items-center justify-center active:scale-90"
+                  (click)="closeTab($index, $event, tab)"
+                  >close</mat-icon
+                >
+              </button>
+            </div>
+          </a>
+          }
+        </nav>
+        @if (tabService.tabs.length > 0) {
+        <button
+          matIconButton
+          type="button"
+          class="shrink-0"
+          aria-label="Cerrar todas las pestañas"
+          matTooltip="Cerrar todas las pestañas"
+          (click)="tabService.closeAllTabs()"
         >
-          <div class="flex items-center justify-between w-full h-full pl-4 pr-2 gap-2">
-            <span class="truncate text-sm font-medium tracking-wide">
-              {{ tab.label }}
-            </span>
-            <button type="button" class="w-7 h-7 flex items-center justify-center rounded-full">
-              <mat-icon
-                class="!inline-flex align-middle items-center justify-center active:scale-90"
-                (click)="closeTab($index, $event, tab)"
-                >close</mat-icon
-              >
-            </button>
-          </div>
-        </a>
+          <mat-icon>clear_all</mat-icon>
+        </button>
         }
-      </nav>
+      </div>
       <mat-tab-nav-panel #tabPanel>
         @if (tabService.tabs.length > 0) {
         <router-outlet></router-outlet>

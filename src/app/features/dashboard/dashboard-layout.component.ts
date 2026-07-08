@@ -8,6 +8,7 @@ import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '@app/core/services/auth.service';
@@ -180,6 +181,7 @@ export const MENU_CONFIG: NavCategory[] = [
     MatListModule,
     MatExpansionModule,
     MatTabsModule,
+    MatTooltipModule,
     RouterLinkWithHref,
     RouterLinkActive,
     HasPermissionPipe,

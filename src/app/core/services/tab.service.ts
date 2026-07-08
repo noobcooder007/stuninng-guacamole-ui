@@ -47,6 +47,12 @@ export class TabService {
         });
     }
 
+    public closeAllTabs() {
+        this.tabs = [];
+        this.saveTabs();
+        this.router.navigateByUrl('/');
+    }
+
     public removeTab(index: number, tab: Tab) {
         const isClosingActive = this.router.url === tab.link;
         this.tabs.splice(index, 1);
