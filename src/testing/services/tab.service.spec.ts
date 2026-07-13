@@ -111,6 +111,7 @@ describe('TabService', () => {
           TabService,
           { provide: Router, useValue: routerSpy },
           { provide: AuthService, useValue: authSpy },
+          { provide: SoundFeedbackService, useValue: soundSpy },
         ],
       });
       const freshService = TestBed.inject(TabService);

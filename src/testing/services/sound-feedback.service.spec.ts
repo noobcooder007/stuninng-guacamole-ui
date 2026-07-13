@@ -10,15 +10,30 @@ const cuelumeMock = vi.hoisted(() => ({
 
 vi.mock('cuelume', () => cuelumeMock);
 
+// The Angular test runner provides a broken localStorage via --localstorage-file.
+// We replace it with an in-memory stub for every test.
+const _store: Record<string, string> = {};
+const localStorageMock = {
+  getItem: (key: string): string | null => _store[key] ?? null,
+  setItem: (key: string, value: string): void => { _store[key] = value; },
+  removeItem: (key: string): void => { delete _store[key]; },
+  clear: (): void => { Object.keys(_store).forEach(k => delete _store[k]); },
+};
+
 describe('SoundFeedbackService', () => {
   let service: SoundFeedbackService;
 
   beforeEach(() => {
-    localStorage.clear();
+    Object.keys(_store).forEach(k => delete _store[k]);
+    vi.stubGlobal('localStorage', localStorageMock);
     vi.clearAllMocks();
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({ providers: [SoundFeedbackService] });
     service = TestBed.inject(SoundFeedbackService);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('should be enabled by default when localStorage has no preference', () => {
