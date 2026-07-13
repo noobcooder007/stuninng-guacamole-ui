@@ -27,6 +27,7 @@
           class="ml-auto"
           [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission) || isDeactivatingSelected() || deactivatingId() !== null"
           (click)="deactivateSelected()"
+        data-cuelume-press data-cuelume-release
         >
           @if (isDeactivatingSelected()) {
             <mat-spinner diameter="20" />
@@ -84,6 +85,7 @@
             color="warn"
             [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission) || deactivatingId() !== null || isDeactivatingSelected()"
             (click)="deactivateOne(element)"
+          data-cuelume-press data-cuelume-release
           >
             @if (deactivatingId() === element.id) {
               <mat-spinner diameter="20" />

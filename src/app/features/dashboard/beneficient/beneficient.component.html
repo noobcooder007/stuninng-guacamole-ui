@@ -2,7 +2,7 @@
 
   <section class="flex flex-col gap-3 px-4">
     <div class="flex justify-end gap-2">
-      <button type="button" matButton="tonal" [disabled]="isGeneratingRegistro()" (click)="generarRegistro()">
+      <button type="button" matButton="tonal" [disabled]="isGeneratingRegistro()" (click)="generarRegistro()" data-cuelume-press data-cuelume-release>
         @if (isGeneratingRegistro()) {
           <mat-spinner diameter="18" />
         } @else {

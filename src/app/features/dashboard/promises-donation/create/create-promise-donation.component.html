@@ -106,6 +106,7 @@
         matButton="filled"
         (click)="createPromiseDonation()"
         [disabled]="createPromiseDonationForm.invalid || isLoading() || !(Permissions.ADD_PROMISE | hasPermission)"
+      data-cuelume-press data-cuelume-release
       >
         @if (isLoading()) {
           <mat-spinner diameter="20" />

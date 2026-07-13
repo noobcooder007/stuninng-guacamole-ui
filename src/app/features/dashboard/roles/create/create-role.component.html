@@ -36,6 +36,7 @@
         matButton="filled"
         [disabled]="form.invalid || isLoading() || !(Permissions.ADD_ROLE | hasPermission)"
         (click)="submit()"
+      data-cuelume-press data-cuelume-release
       >
         @if (isLoading()) {
           <mat-spinner diameter="20" />

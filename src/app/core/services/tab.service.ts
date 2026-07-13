@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/core/services/auth.service';
+import { SoundFeedbackService } from '@app/core/services/sound-feedback.service';
 
 export interface Tab {
     id: string;
@@ -17,6 +18,7 @@ export class TabService {
     constructor(
         private router: Router,
         private authService: AuthService,
+        private soundFeedbackService: SoundFeedbackService,
     ) {
         this.loadTabs();
     }
@@ -43,6 +45,7 @@ export class TabService {
             if (success !== false && !this.tabs.find(t => t.id === tab.id)) {
                 this.tabs.push(tab);
                 this.saveTabs();
+                this.soundFeedbackService.play('bloom');
             }
         });
     }
@@ -50,6 +53,7 @@ export class TabService {
     public closeAllTabs() {
         this.tabs = [];
         this.saveTabs();
+        this.soundFeedbackService.play('droplet');
         this.router.navigateByUrl('/');
     }
 
@@ -57,6 +61,7 @@ export class TabService {
         const isClosingActive = this.router.url === tab.link;
         this.tabs.splice(index, 1);
         this.saveTabs();
+        this.soundFeedbackService.play('droplet');
         if (isClosingActive) {
             const remainingTabs = this.tabs;
             if (remainingTabs.length > 0) {

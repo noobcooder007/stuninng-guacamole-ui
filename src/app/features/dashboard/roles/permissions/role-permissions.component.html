@@ -6,7 +6,7 @@
         <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">{{ roleName() }} · {{ selectedCount() }} permiso(s) asignado(s)</p>
       }
     </div>
-    <button type="button" matButton="filled" [disabled]="isLoading() || isSaving() || !(Permissions.MANAGE_ROLE | hasPermission)" (click)="save()">
+    <button type="button" matButton="filled" [disabled]="isLoading() || isSaving() || !(Permissions.MANAGE_ROLE | hasPermission)" (click)="save()" data-cuelume-press data-cuelume-release>
       @if (isSaving()) {
         <mat-spinner diameter="20" />
       } @else {

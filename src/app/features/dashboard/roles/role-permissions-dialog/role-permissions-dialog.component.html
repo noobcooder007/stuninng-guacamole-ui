@@ -68,6 +68,7 @@
     type="button"
     [disabled]="isLoading() || isSaving() || !(Permissions.MANAGE_ROLE | hasPermission)"
     (click)="save()"
+  data-cuelume-press data-cuelume-release
   >
     @if (isSaving()) {
       <mat-spinner diameter="20" />

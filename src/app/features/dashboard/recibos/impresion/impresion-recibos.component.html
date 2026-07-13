@@ -110,6 +110,7 @@
         matButton="filled"
         [disabled]="loadingAction() !== null || !(Permissions.PRINT_INVOICE | hasPermission)"
         (click)="printCarta()"
+      data-cuelume-press data-cuelume-release
       >
         @if (loadingAction() === 'carta') {
           <mat-spinner diameter="18" />
@@ -125,6 +126,7 @@
         matButton="filled"
         [disabled]="loadingAction() !== null || !(Permissions.PRINT_INVOICE | hasPermission)"
         (click)="printRecibos()"
+      data-cuelume-press data-cuelume-release
       >
         @if (loadingAction() === 'recibos') {
           <mat-spinner diameter="18" />

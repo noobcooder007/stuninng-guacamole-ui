@@ -64,7 +64,7 @@
         </form>
         <div class="flex gap-2">
           <button type="button" matButton (click)="cancelEdit()" [disabled]="isSaving()">Cancelar</button>
-          <button type="button" matButton="filled" [disabled]="amountForm.invalid || isSaving()" (click)="saveAmount()">
+          <button type="button" matButton="filled" [disabled]="amountForm.invalid || isSaving()" (click)="saveAmount()" data-cuelume-press data-cuelume-release>
             @if (isSaving()) { <mat-spinner diameter="18" /> } @else { Guardar }
           </button>
         </div>
@@ -110,7 +110,7 @@
         </form>
         <div class="flex gap-2">
           <button type="button" matButton (click)="cancelEdit()" [disabled]="isSaving()">Cancelar</button>
-          <button type="button" matButton="filled" [disabled]="recurrenceForm.invalid || isSaving()" (click)="saveRecurrence()">
+          <button type="button" matButton="filled" [disabled]="recurrenceForm.invalid || isSaving()" (click)="saveRecurrence()" data-cuelume-press data-cuelume-release>
             @if (isSaving()) { <mat-spinner diameter="18" /> } @else { Guardar }
           </button>
         </div>
@@ -205,7 +205,7 @@
 
           <div class="flex gap-2">
             <button type="button" matButton (click)="cancelEdit()" [disabled]="isSaving()">Cancelar</button>
-            <button type="button" matButton="filled" [disabled]="isSaving()" (click)="saveInstructions()">
+            <button type="button" matButton="filled" [disabled]="isSaving()" (click)="saveInstructions()" data-cuelume-press data-cuelume-release>
               @if (isSaving()) { <mat-spinner diameter="18" /> } @else { Guardar }
             </button>
           </div>
@@ -259,14 +259,14 @@
       @if (p.isActive) {
         <button type="button" matButton="tonal"
           [disabled]="isSaving() || !(Permissions.EDIT_PROMISE | hasPermission)"
-          (click)="deactivate()">
+          (click)="deactivate()" data-cuelume-press data-cuelume-release>
           @if (isSaving()) { <mat-spinner diameter="18" /> } @else { <mat-icon>block</mat-icon> }
           Desactivar
         </button>
       } @else {
         <button type="button" matButton="filled"
           [disabled]="isSaving() || !(Permissions.EDIT_PROMISE | hasPermission)"
-          (click)="reactivate()">
+          (click)="reactivate()" data-cuelume-press data-cuelume-release>
           @if (isSaving()) { <mat-spinner diameter="18" /> } @else { <mat-icon>replay</mat-icon> }
           Reactivar
         </button>

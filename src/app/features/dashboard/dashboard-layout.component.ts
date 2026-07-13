@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '@app/core/services/auth.service';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
 import { Tab, TabService } from '@app/core/services/tab.service';
+import { SoundFeedbackService } from '@app/core/services/sound-feedback.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { OverviewComponent } from "./overview/overview.component";
@@ -200,6 +201,7 @@ export class DashboardLayoutComponent implements OnDestroy {
     private readonly _mobileQueryListener: () => void;
 
     private readonly snackbar = inject(MatSnackBar);
+    protected readonly soundFeedbackService = inject(SoundFeedbackService);
 
     constructor(
         public readonly tabService: TabService,

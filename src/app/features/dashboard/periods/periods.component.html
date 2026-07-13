@@ -45,6 +45,7 @@
             matButton="tonal"
             [disabled]="isProcessing() || !(Permissions.RUN_PROCESS | hasPermission)"
             (click)="generarRecibos()"
+          data-cuelume-press data-cuelume-release
           >
             @if (isProcessing()) { <mat-spinner diameter="18" /> } @else { <mat-icon>receipt_long</mat-icon> }
             Generar recibos
@@ -68,20 +69,20 @@
               }
             </mat-select>
           </mat-form-field>
-          <button type="button" matButton="tonal" [disabled]="isGeneratingReport() || periodReportsForm.invalid" (click)="generarReportePeriodo()">
+          <button type="button" matButton="tonal" [disabled]="isGeneratingReport() || periodReportsForm.invalid" (click)="generarReportePeriodo()" data-cuelume-press data-cuelume-release>
             @if (isGeneratingReport()) { <mat-spinner diameter="18" /> } @else { <mat-icon>picture_as_pdf</mat-icon> }
             Reporte periodo
           </button>
         </form>
 
         @if (period.status === PeriodStatusEnum.CLOSED) {
-          <button type="button" matButton="tonal" [disabled]="isGeneratingSettlement()" (click)="generarCartasLiquidacion()">
+          <button type="button" matButton="tonal" [disabled]="isGeneratingSettlement()" (click)="generarCartasLiquidacion()" data-cuelume-press data-cuelume-release>
             @if (isGeneratingSettlement()) { <mat-spinner diameter="18" /> } @else { <mat-icon>picture_as_pdf</mat-icon> }
             Cartas liquidación
           </button>
         }
 
-        <button type="button" matButton="filled" [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)" (click)="togglePeriod()">
+        <button type="button" matButton="filled" [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)" (click)="togglePeriod()" data-cuelume-press data-cuelume-release>
           @if (isTogglingPeriod()) {
             <mat-spinner diameter="20" />
           } @else {
@@ -103,7 +104,7 @@
         </p>
       </mat-card-content>
       <mat-card-actions align="end">
-        <button type="button" matButton="filled" [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)" (click)="togglePeriod()">
+        <button type="button" matButton="filled" [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)" (click)="togglePeriod()" data-cuelume-press data-cuelume-release>
           @if (isTogglingPeriod()) {
             <mat-spinner diameter="20" />
           } @else {

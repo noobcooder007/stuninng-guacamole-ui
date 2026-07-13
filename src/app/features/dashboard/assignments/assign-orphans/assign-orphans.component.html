@@ -20,7 +20,7 @@
       }
 
       @if (canAssign) {
-        <button type="button" matButton="filled" class="ml-auto" [disabled]="isSaving() || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="assign()">
+        <button type="button" matButton="filled" class="ml-auto" [disabled]="isSaving() || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="assign()" data-cuelume-press data-cuelume-release>
           @if (isSaving()) {
             <mat-spinner diameter="20" />
           } @else {

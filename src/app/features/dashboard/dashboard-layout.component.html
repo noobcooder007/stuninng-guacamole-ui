@@ -6,6 +6,15 @@
     <span class="pl-2 cursor-pointer flex-grow" routerLink="/"
       >Sistema de Procuración de Fondos del Seminario Conciliar de México</span
     >
+    <button
+      matIconButton
+      [attr.aria-label]="soundFeedbackService.enabled() ? 'Silenciar sonidos' : 'Activar sonidos'"
+      [matTooltip]="soundFeedbackService.enabled() ? 'Silenciar sonidos' : 'Activar sonidos'"
+      (click)="soundFeedbackService.setEnabled(!soundFeedbackService.enabled())"
+      data-cuelume-toggle
+    >
+      <mat-icon>{{ soundFeedbackService.enabled() ? 'volume_up' : 'volume_off' }}</mat-icon>
+    </button>
     <img class="w-32 h-auto object-cover" srcset="logo.webp" alt="logo">
   </mat-toolbar>
   <mat-sidenav-container

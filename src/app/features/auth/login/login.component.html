@@ -41,7 +41,7 @@
           <mat-error>Por favor, ingresa una contraseña.</mat-error>
         </mat-form-field>
         <mat-checkbox formControlName="rememberMe">Recordarme</mat-checkbox>
-        <button matButton="filled" type="submit" [disabled]="!loginForm.valid || isLoading()">
+        <button matButton="filled" type="submit" [disabled]="!loginForm.valid || isLoading()" data-cuelume-press data-cuelume-release>
           @if (isLoading()) {
             <mat-spinner diameter="20" />
           } @else {

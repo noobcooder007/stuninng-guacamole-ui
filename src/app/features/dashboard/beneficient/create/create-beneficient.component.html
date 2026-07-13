@@ -165,6 +165,7 @@
         matButton="filled"
         (click)="createBeneficient()"
         [disabled]="createBeneficientForm.invalid || isLoading() || !(Permissions.ADD_BENEFICIENT | hasPermission)"
+      data-cuelume-press data-cuelume-release
       >
         @if (isLoading()) {
           <mat-spinner diameter="20" />

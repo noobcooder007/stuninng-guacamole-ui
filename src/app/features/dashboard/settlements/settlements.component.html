@@ -23,6 +23,7 @@
         matButton="filled"
         [disabled]="isBulkPaying() || !(Permissions.EDIT_SETTLEMENT | hasPermission)"
         (click)="openBulkPayment()"
+      data-cuelume-press data-cuelume-release
       >
         @if (isBulkPaying()) {
           <mat-spinner diameter="18" />
@@ -150,6 +151,7 @@
                     matTooltip="Registrar pago"
                     [disabled]="isRegistering() === row.id || !(Permissions.EDIT_SETTLEMENT | hasPermission)"
                     (click)="openRegisterPayment(row)"
+                  data-cuelume-press data-cuelume-release
                   >
                     @if (isRegistering() === row.id) {
                       <mat-spinner diameter="18" />

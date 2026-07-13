@@ -32,6 +32,7 @@
         matButton="filled"
         (click)="onAddFolioToTable()"
         [disabled]="isAddingFolio() || !folioAddControl.value.trim() || !(Permissions.ADD_INVOICE | hasPermission)"
+      data-cuelume-press data-cuelume-release
       >
         @if (isAddingFolio()) {
           <mat-spinner diameter="20" />
@@ -73,6 +74,7 @@
             matButton="filled"
             [disabled]="isConfirming() || !(Permissions.ADD_INVOICE | hasPermission)"
             (click)="confirmarCola()"
+          data-cuelume-press data-cuelume-release
           >
             @if (isConfirming()) {
               <mat-spinner diameter="20" />

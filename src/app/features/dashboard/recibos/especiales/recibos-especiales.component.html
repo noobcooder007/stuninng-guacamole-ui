@@ -130,6 +130,7 @@
         type="button"
         [disabled]="!canSave || isSaving()"
         (click)="onSave()"
+      data-cuelume-press data-cuelume-release
       >
         @if (isSaving()) {
           <mat-spinner diameter="20" />

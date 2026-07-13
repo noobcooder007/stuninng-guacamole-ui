@@ -38,6 +38,7 @@
     type="button"
     [disabled]="form.invalid || isLoading() || !(isEditMode ? (Permissions.EDIT_ROLE | hasPermission) : (Permissions.ADD_ROLE | hasPermission))"
     (click)="submit()"
+  data-cuelume-press data-cuelume-release
   >
     @if (isLoading()) {
       <mat-spinner diameter="20" />

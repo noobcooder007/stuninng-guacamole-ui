@@ -27,7 +27,7 @@
             </span>
           </div>
         </div>
-        <button type="button" matButton="tonal" [disabled]="isGeneratingReport()" (click)="generarReporte()">
+        <button type="button" matButton="tonal" [disabled]="isGeneratingReport()" (click)="generarReporte()" data-cuelume-press data-cuelume-release>
           @if (isGeneratingReport()) {
             <mat-spinner diameter="18" />
           } @else {
@@ -107,7 +107,7 @@
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
             <button type="button" matButton="filled" (click)="savePersonal()"
-              [disabled]="personalForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+              [disabled]="personalForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)" data-cuelume-press data-cuelume-release>
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -213,7 +213,7 @@
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
             <button type="button" matButton="filled" (click)="saveAddress()"
-              [disabled]="addressForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+              [disabled]="addressForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)" data-cuelume-press data-cuelume-release>
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -281,7 +281,7 @@
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
             <button type="button" matButton="filled" (click)="saveContact()"
-              [disabled]="contactForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+              [disabled]="contactForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)" data-cuelume-press data-cuelume-release>
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -334,7 +334,7 @@
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
             <button type="button" matButton="filled" (click)="saveChurch()"
-              [disabled]="churchForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+              [disabled]="churchForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)" data-cuelume-press data-cuelume-release>
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -408,7 +408,7 @@
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
             <button type="button" matButton="filled" (click)="saveTax()"
-              [disabled]="taxForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+              [disabled]="taxForm.invalid || isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)" data-cuelume-press data-cuelume-release>
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>
@@ -456,7 +456,7 @@
           <div class="flex gap-2 justify-end mt-4">
             <button type="button" matButton (click)="cancelEdit()">Cancelar</button>
             <button type="button" matButton="filled" (click)="savePrivacy()"
-              [disabled]="isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)">
+              [disabled]="isSaving() || !(Permissions.EDIT_BENEFICIENT | hasPermission)" data-cuelume-press data-cuelume-release>
               @if (isSaving()) { <mat-spinner diameter="20" /> } @else { Guardar }
             </button>
           </div>

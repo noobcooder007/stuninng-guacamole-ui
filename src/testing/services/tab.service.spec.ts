@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { vi } from 'vitest';
 import { TabService, Tab } from '@app/core/services/tab.service';
 import { AuthService } from '@app/core/services/auth.service';
+import { SoundFeedbackService } from '@app/core/services/sound-feedback.service';
 
 const TAB_A: Tab = { id: 'assignments', label: 'Asignaciones', link: '/dashboard/assignments', permission: 'ASSIGNMENTS_READ' };
 const TAB_B: Tab = { id: 'collectors', label: 'Colectores', link: '/dashboard/collectors', permission: 'COLLECTORS_READ' };
@@ -12,6 +13,7 @@ describe('TabService', () => {
   // navigateByUrl returns a Promise; the service calls .then() on it when adding a new tab
   const routerSpy = { navigateByUrl: vi.fn().mockResolvedValue(true), url: '/dashboard/assignments' };
   const authSpy = { hasPermission: vi.fn().mockReturnValue(true) };
+  const soundSpy = { play: vi.fn() };
 
   beforeEach(() => {
     sessionStorage.clear();
@@ -21,6 +23,7 @@ describe('TabService', () => {
         TabService,
         { provide: Router, useValue: routerSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: SoundFeedbackService, useValue: soundSpy },
       ],
     });
     service = TestBed.inject(TabService);

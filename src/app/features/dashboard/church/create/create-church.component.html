@@ -121,6 +121,7 @@
         matButton="filled"
         (click)="createChurch()"
         [disabled]="createChurchForm.invalid || isLoading() || !(Permissions.ADD_CHURCH | hasPermission)"
+      data-cuelume-press data-cuelume-release
       >
         @if (isLoading()) {
           <mat-spinner diameter="20" />

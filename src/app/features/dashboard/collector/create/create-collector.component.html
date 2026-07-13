@@ -169,6 +169,7 @@
         matButton="filled"
         (click)="createCollector()"
         [disabled]="createCollectorForm.invalid || isLoading() || !(Permissions.ADD_COLLECTOR | hasPermission)"
+      data-cuelume-press data-cuelume-release
       >
         @if (isLoading()) {
           <mat-spinner diameter="20" />

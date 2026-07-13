@@ -54,7 +54,7 @@
           </mat-form-field>
           <div class="flex gap-2 justify-end mt-2">
             <button type="button" matButton (click)="cancelEditUsername()">Cancelar</button>
-            <button type="submit" matButton="filled" [disabled]="usernameForm.invalid || isSavingUsername()">
+            <button type="submit" matButton="filled" [disabled]="usernameForm.invalid || isSavingUsername()" data-cuelume-press data-cuelume-release>
               @if (isSavingUsername()) {
                 <mat-spinner diameter="20" />
               } @else {
@@ -108,7 +108,7 @@
         </mat-form-field>
         <div class="flex gap-2 justify-end mt-2">
           <button type="submit" matButton="filled"
-            [disabled]="passwordForm.invalid || isSavingPassword() || !(Permissions.EDIT_USER | hasPermission)">
+            [disabled]="passwordForm.invalid || isSavingPassword() || !(Permissions.EDIT_USER | hasPermission)" data-cuelume-press data-cuelume-release>
             @if (isSavingPassword()) {
               <mat-spinner diameter="20" />
             } @else {
@@ -142,7 +142,7 @@
         @if (isActive()) {
           <button type="button" matButton="outlined"
             [disabled]="isTogglingStatus() || !(Permissions.EDIT_USER | hasPermission)"
-            (click)="toggleStatus()">
+            (click)="toggleStatus()" data-cuelume-press data-cuelume-release>
             @if (isTogglingStatus()) {
               <mat-spinner diameter="20" />
             } @else {
@@ -153,7 +153,7 @@
         } @else {
           <button type="button" matButton="filled"
             [disabled]="isTogglingStatus() || !(Permissions.EDIT_USER | hasPermission)"
-            (click)="toggleStatus()">
+            (click)="toggleStatus()" data-cuelume-press data-cuelume-release>
             @if (isTogglingStatus()) {
               <mat-spinner diameter="20" />
             } @else {

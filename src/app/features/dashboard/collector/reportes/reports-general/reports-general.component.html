@@ -40,7 +40,7 @@
               </mat-form-field>
 
               <button matButton="filled" type="button" (click)="generateQuantityDifferenceReport()"
-                      [disabled]="isLoading() || quantityDifferenceForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)">
+                      [disabled]="isLoading() || quantityDifferenceForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)" data-cuelume-press data-cuelume-release>
                 @if (isLoading()) { <mat-spinner diameter="20" /> }
                 @else {
                   <span class="flex items-center gap-1">
@@ -120,7 +120,7 @@
               </mat-form-field>
 
               <button matButton="filled" type="button" (click)="generateEfficiencyReport()"
-                      [disabled]="isLoading() || efficiencyForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)">
+                      [disabled]="isLoading() || efficiencyForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)" data-cuelume-press data-cuelume-release>
                 @if (isLoading()) { <mat-spinner diameter="20" /> }
                 @else {
                   <span class="flex items-center gap-1">
@@ -196,7 +196,7 @@
               </mat-form-field>
 
               <button matButton="filled" type="button" (click)="generateConcentratedEfficiencyReport()"
-                      [disabled]="isLoading() || concentratedEfficiencyForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)">
+                      [disabled]="isLoading() || concentratedEfficiencyForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)" data-cuelume-press data-cuelume-release>
                 @if (isLoading()) { <mat-spinner diameter="20" /> }
                 @else {
                   <span class="flex items-center gap-1">
