@@ -34,71 +34,18 @@
                 <mat-label>Año</mat-label>
                 <mat-select formControlName="year">
                   @for (year of years; track year) {
-                    <mat-option [value]="year.toString()">{{ year }}</mat-option>
+                    <mat-option [value]="year">{{ year }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
 
               <button matButton="filled" type="button" (click)="generateQuantityDifferenceReport()"
-                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                @if (isLoading) { <mat-spinner diameter="20" /> }
+                      [disabled]="isLoading() || quantityDifferenceForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading()) { <mat-spinner diameter="20" /> }
                 @else {
                   <span class="flex items-center gap-1">
                     <mat-icon>picture_as_pdf</mat-icon>
                     Crear PDF
-                  </span>
-                }
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    }
-
-    @if (selectedReport === 'monthly-report') {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Reporte Informe Mensual</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="monthlyReportForm" class="form-container">
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Mes</mat-label>
-                <mat-select formControlName="month">
-                  @for (month of months; track month.value) {
-                    <mat-option [value]="month.value">{{ month.label }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Año</mat-label>
-                <mat-select formControlName="year">
-                  @for (year of years; track year) {
-                    <mat-option [value]="year.toString()">{{ year }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-
-              <button matButton="filled" type="button" (click)="generateMonthlyReportPdf()"
-                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                @if (isLoading) { <mat-spinner diameter="20" /> }
-                @else {
-                  <span class="flex items-center gap-1">
-                    <mat-icon>picture_as_pdf</mat-icon>
-                    Crear PDF
-                  </span>
-                }
-              </button>
-
-              <button matButton="tonal" type="button" (click)="generateMonthlyReportExcel()"
-                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                @if (isLoading) { <mat-spinner diameter="20" /> }
-                @else {
-                  <span class="flex items-center gap-1">
-                    <mat-icon>table_chart</mat-icon>
-                    Crear Excel
                   </span>
                 }
               </button>
@@ -129,7 +76,7 @@
                 <mat-label>Año</mat-label>
                 <mat-select formControlName="year">
                   @for (year of years; track year) {
-                    <mat-option [value]="year.toString()">{{ year }}</mat-option>
+                    <mat-option [value]="year">{{ year }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
@@ -138,17 +85,17 @@
             <div class="form-row">
               <mat-form-field appearance="outline">
                 <mat-label>Donativo Inicial</mat-label>
-                <input matInput formControlName="initialDonation" type="number" />
+                <input matInput formControlName="initialDonation" type="number" min="0" />
               </mat-form-field>
 
               <mat-form-field appearance="outline">
                 <mat-label>Donativo Final</mat-label>
-                <input matInput formControlName="finalDonation" type="number" />
+                <input matInput formControlName="finalDonation" type="number" min="0" />
               </mat-form-field>
 
               <mat-form-field appearance="outline">
-                <mat-label>Num. Colector</mat-label>
-                <input matInput formControlName="collectorNum" type="text" />
+                <mat-label>Num. Colector (opcional)</mat-label>
+                <input matInput formControlName="collectorNum" type="number" min="1" />
               </mat-form-field>
             </div>
 
@@ -156,15 +103,15 @@
               <mat-form-field appearance="outline">
                 <mat-label>Frecuencia</mat-label>
                 <mat-select formControlName="frequency">
-                  @for (freq of frequencies; track freq.value) {
+                  @for (freq of efficiencyFrequencies; track freq.value) {
                     <mat-option [value]="freq.value">{{ freq.label }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
 
               <button matButton="filled" type="button" (click)="generateEfficiencyReport()"
-                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                @if (isLoading) { <mat-spinner diameter="20" /> }
+                      [disabled]="isLoading() || efficiencyForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading()) { <mat-spinner diameter="20" /> }
                 @else {
                   <span class="flex items-center gap-1">
                     <mat-icon>picture_as_pdf</mat-icon>
@@ -204,12 +151,12 @@
             <div class="form-row">
               <mat-form-field appearance="outline">
                 <mat-label>Porcentaje Inicial</mat-label>
-                <input matInput formControlName="initialPercentage" type="number" />
+                <input matInput formControlName="initialPercentage" type="number" min="0" max="100" />
               </mat-form-field>
 
               <mat-form-field appearance="outline">
                 <mat-label>Porcentaje Final</mat-label>
-                <input matInput formControlName="finalPercentage" type="number" />
+                <input matInput formControlName="finalPercentage" type="number" min="0" max="100" />
               </mat-form-field>
             </div>
 
@@ -217,196 +164,20 @@
               <mat-form-field appearance="outline">
                 <mat-label>Tipo Eficiencia</mat-label>
                 <mat-select formControlName="efficiencyType">
-                  @for (type of efficiencyTypes; track type.value) {
+                  @for (type of concentratedEfficiencyTypes; track type.value) {
                     <mat-option [value]="type.value">{{ type.label }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
 
               <mat-form-field appearance="outline">
-                <mat-label>Num. Colector</mat-label>
-                <input matInput formControlName="collectorNum" type="text" />
+                <mat-label>Num. Colector (opcional)</mat-label>
+                <input matInput formControlName="collectorNum" type="number" min="1" />
               </mat-form-field>
 
               <button matButton="filled" type="button" (click)="generateConcentratedEfficiencyReport()"
-                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                @if (isLoading) { <mat-spinner diameter="20" /> }
-                @else {
-                  <span class="flex items-center gap-1">
-                    <mat-icon>picture_as_pdf</mat-icon>
-                    Crear PDF
-                  </span>
-                }
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    }
-
-    @if (selectedReport === 'decreased-donations') {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Reporte Disminución de Donativos</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="dateRangeForm" class="form-container">
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Fecha Inicial</mat-label>
-                <input matInput [matDatepicker]="pickerDDStart" formControlName="startDate" />
-                <mat-datepicker-toggle matIconSuffix [for]="pickerDDStart"></mat-datepicker-toggle>
-                <mat-datepicker #pickerDDStart></mat-datepicker>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Fecha Final</mat-label>
-                <input matInput [matDatepicker]="pickerDDEnd" formControlName="endDate" />
-                <mat-datepicker-toggle matIconSuffix [for]="pickerDDEnd"></mat-datepicker-toggle>
-                <mat-datepicker #pickerDDEnd></mat-datepicker>
-              </mat-form-field>
-
-              <button matButton="filled" type="button" (click)="generateDecreasedDonationReport()"
-                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                @if (isLoading) { <mat-spinner diameter="20" /> }
-                @else {
-                  <span class="flex items-center gap-1">
-                    <mat-icon>picture_as_pdf</mat-icon>
-                    Crear PDF
-                  </span>
-                }
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    }
-
-    @if (selectedReport === 'increased-donations') {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Reporte Aumento de Donativos</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="dateRangeForm" class="form-container">
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Fecha Inicial</mat-label>
-                <input matInput [matDatepicker]="pickerIDStart" formControlName="startDate" />
-                <mat-datepicker-toggle matIconSuffix [for]="pickerIDStart"></mat-datepicker-toggle>
-                <mat-datepicker #pickerIDStart></mat-datepicker>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Fecha Final</mat-label>
-                <input matInput [matDatepicker]="pickerIDEnd" formControlName="endDate" />
-                <mat-datepicker-toggle matIconSuffix [for]="pickerIDEnd"></mat-datepicker-toggle>
-                <mat-datepicker #pickerIDEnd></mat-datepicker>
-              </mat-form-field>
-
-              <button matButton="filled" type="button" (click)="generateIncreasedDonationReport()"
-                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                @if (isLoading) { <mat-spinner diameter="20" /> }
-                @else {
-                  <span class="flex items-center gap-1">
-                    <mat-icon>picture_as_pdf</mat-icon>
-                    Crear PDF
-                  </span>
-                }
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    }
-
-    @if (selectedReport === 'donations') {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Reporte Donativos</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="dateRangeForm" class="form-container">
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Fecha Inicial</mat-label>
-                <input matInput [matDatepicker]="pickerDStart" formControlName="startDate" />
-                <mat-datepicker-toggle matIconSuffix [for]="pickerDStart"></mat-datepicker-toggle>
-                <mat-datepicker #pickerDStart></mat-datepicker>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Fecha Final</mat-label>
-                <input matInput [matDatepicker]="pickerDEnd" formControlName="endDate" />
-                <mat-datepicker-toggle matIconSuffix [for]="pickerDEnd"></mat-datepicker-toggle>
-                <mat-datepicker #pickerDEnd></mat-datepicker>
-              </mat-form-field>
-
-              <button matButton="filled" type="button" (click)="generateDonationReport()"
-                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                @if (isLoading) { <mat-spinner diameter="20" /> }
-                @else {
-                  <span class="flex items-center gap-1">
-                    <mat-icon>picture_as_pdf</mat-icon>
-                    Crear PDF
-                  </span>
-                }
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    }
-
-    @if (selectedReport === 'issued-receipts') {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Reporte de Recibos Emitidos</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="issuedReceiptsForm" class="form-container">
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Mes</mat-label>
-                <mat-select formControlName="month">
-                  @for (month of months; track month.value) {
-                    <mat-option [value]="month.value">{{ month.label }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Año</mat-label>
-                <mat-select formControlName="year">
-                  @for (year of years; track year) {
-                    <mat-option [value]="year.toString()">{{ year }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Frecuencia</mat-label>
-                <mat-select formControlName="frequency">
-                  @for (freq of frequencies; track freq.value) {
-                    <mat-option [value]="freq.value">{{ freq.label }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Tipo de Recibo</mat-label>
-                <mat-select formControlName="receiptType">
-                  @for (type of receiptTypes; track type.value) {
-                    <mat-option [value]="type.value">{{ type.label }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-
-              <button matButton="filled" type="button" (click)="generateIssuedReceiptsReport()"
-                      [disabled]="isLoading || !(Permissions.VIEW_REPORT | hasPermission)">
-                @if (isLoading) { <mat-spinner diameter="20" /> }
+                      [disabled]="isLoading() || concentratedEfficiencyForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)">
+                @if (isLoading()) { <mat-spinner diameter="20" /> }
                 @else {
                   <span class="flex items-center gap-1">
                     <mat-icon>picture_as_pdf</mat-icon>

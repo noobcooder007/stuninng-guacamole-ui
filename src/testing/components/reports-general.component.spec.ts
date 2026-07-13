@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { ReportsGeneralComponent } from '@app/features/dashboard/collector/reportes/reports-general/reports-general.component';
@@ -8,35 +7,27 @@ import { ReportsService } from '@app/core/services/reports.service';
 import { AuthService } from '@app/core/services/auth.service';
 
 const CURRENT_YEAR = new Date().getFullYear();
-const CURRENT_MONTH = (new Date().getMonth() + 1).toString().padStart(2, '0');
+const CURRENT_MONTH = new Date().getMonth() + 1;
 
 const mockBlob = new Blob(['pdf'], { type: 'application/pdf' });
 
 describe('ReportsGeneralComponent', () => {
   let component: ReportsGeneralComponent;
-  const snackBarSpy = { open: vi.fn() };
   const reportsServiceSpy = {
     quantityDifferenceReport: vi.fn().mockReturnValue(of(mockBlob)),
-    monthlyReportPdf: vi.fn().mockReturnValue(of(mockBlob)),
-    monthlyReportExcel: vi.fn().mockReturnValue(of(mockBlob)),
     efficiencyReport: vi.fn().mockReturnValue(of(mockBlob)),
     concentratedEfficiencyReport: vi.fn().mockReturnValue(of(mockBlob)),
-    decreasedDonationReport: vi.fn().mockReturnValue(of(mockBlob)),
-    increasedDonationReport: vi.fn().mockReturnValue(of(mockBlob)),
-    donationReport: vi.fn().mockReturnValue(of(mockBlob)),
-    issuedReceiptsReport: vi.fn().mockReturnValue(of(mockBlob)),
   };
 
   beforeEach(() => {
-    vi.stubGlobal('URL', { createObjectURL: vi.fn(() => 'blob:mock'), revokeObjectURL: vi.fn() });
-    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    vi.stubGlobal('URL', { createObjectURL: vi.fn(() => 'blob:mock') });
+    vi.stubGlobal('open', vi.fn());
 
     TestBed.configureTestingModule({
       imports: [ReportsGeneralComponent],
       providers: [
         provideAnimationsAsync(),
         { provide: ReportsService, useValue: reportsServiceSpy },
-        { provide: MatSnackBar, useValue: snackBarSpy },
         { provide: AuthService, useValue: { hasPermission: () => true } },
       ],
     });
@@ -56,134 +47,110 @@ describe('ReportsGeneralComponent', () => {
       expect(component.years[10]).toBe(CURRENT_YEAR + 5);
     });
 
-    it('should set current month and year on quantityDifferenceForm', () => {
+    it('should set current month and year on quantityDifferenceForm as numbers', () => {
       component.ngOnInit();
       expect(component.quantityDifferenceForm.value.month).toBe(CURRENT_MONTH);
-      expect(component.quantityDifferenceForm.value.year).toBe(CURRENT_YEAR.toString());
+      expect(component.quantityDifferenceForm.value.year).toBe(CURRENT_YEAR);
     });
 
-    it('should set current month and year on monthlyReportForm', () => {
-      component.ngOnInit();
-      expect(component.monthlyReportForm.value.month).toBe(CURRENT_MONTH);
-      expect(component.monthlyReportForm.value.year).toBe(CURRENT_YEAR.toString());
-    });
-
-    it('should set current month and year on efficiencyForm', () => {
+    it('should set current month and year on efficiencyForm as numbers', () => {
       component.ngOnInit();
       expect(component.efficiencyForm.value.month).toBe(CURRENT_MONTH);
-      expect(component.efficiencyForm.value.year).toBe(CURRENT_YEAR.toString());
-    });
-
-    it('should set current month and year on issuedReceiptsForm', () => {
-      component.ngOnInit();
-      expect(component.issuedReceiptsForm.value.month).toBe(CURRENT_MONTH);
-      expect(component.issuedReceiptsForm.value.year).toBe(CURRENT_YEAR.toString());
+      expect(component.efficiencyForm.value.year).toBe(CURRENT_YEAR);
     });
   });
 
   describe('generateQuantityDifferenceReport()', () => {
-    it('should call the service with form values and set isLoading', () => {
-      component.quantityDifferenceForm.patchValue({ month: '06', year: '2026' });
+    it('should not call the service when the form is invalid', () => {
+      component.quantityDifferenceForm.patchValue({ month: null, year: null });
       component.generateQuantityDifferenceReport();
-      expect(reportsServiceSpy.quantityDifferenceReport).toHaveBeenCalledWith(
-        expect.objectContaining({ month: '06', year: '2026' })
-      );
+      expect(reportsServiceSpy.quantityDifferenceReport).not.toHaveBeenCalled();
     });
 
-    it('should set isLoading to false after success', () => {
+    it('should call the service with numeric month/year', () => {
+      component.quantityDifferenceForm.patchValue({ month: 6, year: 2026 });
       component.generateQuantityDifferenceReport();
-      expect(component.isLoading).toBe(false);
+      expect(reportsServiceSpy.quantityDifferenceReport).toHaveBeenCalledWith({ month: 6, year: 2026 });
+      expect(component.isLoading()).toBe(false);
     });
 
-    it('should show snackbar and reset isLoading on error', () => {
-      reportsServiceSpy.quantityDifferenceReport.mockReturnValue(throwError(() => new Error()));
+    it('should reset isLoading on error', () => {
+      component.quantityDifferenceForm.patchValue({ month: 6, year: 2026 });
+      reportsServiceSpy.quantityDifferenceReport.mockReturnValueOnce(throwError(() => new Error()));
       component.generateQuantityDifferenceReport();
-      expect(component.isLoading).toBe(false);
-      expect(snackBarSpy.open).toHaveBeenCalledWith(
-        'Error al generar el reporte', 'Cerrar', { duration: 4000 }
-      );
-    });
-  });
-
-  describe('generateMonthlyReportPdf()', () => {
-    it('should call monthlyReportPdf with form values', () => {
-      component.monthlyReportForm.patchValue({ month: '01', year: '2025' });
-      component.generateMonthlyReportPdf();
-      expect(reportsServiceSpy.monthlyReportPdf).toHaveBeenCalledWith(
-        expect.objectContaining({ month: '01', year: '2025' })
-      );
-      expect(component.isLoading).toBe(false);
+      expect(component.isLoading()).toBe(false);
     });
 
-    it('should show snackbar on error', () => {
-      reportsServiceSpy.monthlyReportPdf.mockReturnValue(throwError(() => new Error()));
-      component.generateMonthlyReportPdf();
-      expect(snackBarSpy.open).toHaveBeenCalledWith(
-        'Error al generar el reporte', 'Cerrar', { duration: 4000 }
-      );
-    });
-  });
-
-  describe('generateMonthlyReportExcel()', () => {
-    it('should call monthlyReportExcel with form values', () => {
-      component.generateMonthlyReportExcel();
-      expect(reportsServiceSpy.monthlyReportExcel).toHaveBeenCalled();
-      expect(component.isLoading).toBe(false);
+    it('should open the generated PDF in a new tab', () => {
+      component.quantityDifferenceForm.patchValue({ month: 6, year: 2026 });
+      component.generateQuantityDifferenceReport();
+      expect(window.open).toHaveBeenCalledWith('blob:mock', '_blank');
     });
   });
 
   describe('generateEfficiencyReport()', () => {
-    it('should call efficiencyReport with form values', () => {
+    it('should not call the service when the form is invalid', () => {
       component.generateEfficiencyReport();
-      expect(reportsServiceSpy.efficiencyReport).toHaveBeenCalled();
-      expect(component.isLoading).toBe(false);
+      expect(reportsServiceSpy.efficiencyReport).not.toHaveBeenCalled();
+    });
+
+    it('should call efficiencyReport with numeric values and omit collectorNum when empty', () => {
+      component.efficiencyForm.patchValue({
+        month: 6, year: 2026, initialDonation: 100, finalDonation: 200, frequency: 1,
+      });
+      component.generateEfficiencyReport();
+      expect(reportsServiceSpy.efficiencyReport).toHaveBeenCalledWith({
+        month: 6, year: 2026, initialDonation: 100, finalDonation: 200, frequency: 1,
+      });
+    });
+
+    it('should include collectorNum when provided', () => {
+      component.efficiencyForm.patchValue({
+        month: 6, year: 2026, initialDonation: 100, finalDonation: 200, frequency: 1, collectorNum: 3,
+      });
+      component.generateEfficiencyReport();
+      expect(reportsServiceSpy.efficiencyReport).toHaveBeenCalledWith(
+        expect.objectContaining({ collectorNum: 3 })
+      );
     });
   });
 
   describe('generateConcentratedEfficiencyReport()', () => {
-    it('should call concentratedEfficiencyReport with form values', () => {
+    it('should not call the service when the form is invalid', () => {
       component.generateConcentratedEfficiencyReport();
-      expect(reportsServiceSpy.concentratedEfficiencyReport).toHaveBeenCalled();
-      expect(component.isLoading).toBe(false);
-    });
-  });
-
-  describe('generateDecreasedDonationReport()', () => {
-    it('should call decreasedDonationReport with date range form values', () => {
-      component.generateDecreasedDonationReport();
-      expect(reportsServiceSpy.decreasedDonationReport).toHaveBeenCalled();
-      expect(component.isLoading).toBe(false);
-    });
-  });
-
-  describe('generateIncreasedDonationReport()', () => {
-    it('should call increasedDonationReport with date range form values', () => {
-      component.generateIncreasedDonationReport();
-      expect(reportsServiceSpy.increasedDonationReport).toHaveBeenCalled();
-      expect(component.isLoading).toBe(false);
-    });
-  });
-
-  describe('generateDonationReport()', () => {
-    it('should call donationReport with date range form values', () => {
-      component.generateDonationReport();
-      expect(reportsServiceSpy.donationReport).toHaveBeenCalled();
-      expect(component.isLoading).toBe(false);
-    });
-  });
-
-  describe('generateIssuedReceiptsReport()', () => {
-    it('should call issuedReceiptsReport with form values', () => {
-      component.generateIssuedReceiptsReport();
-      expect(reportsServiceSpy.issuedReceiptsReport).toHaveBeenCalled();
-      expect(component.isLoading).toBe(false);
+      expect(reportsServiceSpy.concentratedEfficiencyReport).not.toHaveBeenCalled();
     });
 
-    it('should show snackbar on error', () => {
-      reportsServiceSpy.issuedReceiptsReport.mockReturnValue(throwError(() => new Error()));
-      component.generateIssuedReceiptsReport();
-      expect(snackBarSpy.open).toHaveBeenCalledWith(
-        'Error al generar el reporte', 'Cerrar', { duration: 4000 }
+    it('should format dates as YYYY-MM-DD and omit collectorNum when empty', () => {
+      component.concentratedEfficiencyForm.patchValue({
+        startDate: new Date(2026, 0, 1),
+        endDate: new Date(2026, 0, 31),
+        initialPercentage: 10,
+        finalPercentage: 90,
+        efficiencyType: 'HISTORICAL',
+      });
+      component.generateConcentratedEfficiencyReport();
+      expect(reportsServiceSpy.concentratedEfficiencyReport).toHaveBeenCalledWith({
+        startDate: '2026-01-01',
+        endDate: '2026-01-31',
+        initialPercentage: 10,
+        finalPercentage: 90,
+        efficiencyType: 'HISTORICAL',
+      });
+    });
+
+    it('should include collectorNum when provided', () => {
+      component.concentratedEfficiencyForm.patchValue({
+        startDate: new Date(2026, 0, 1),
+        endDate: new Date(2026, 0, 31),
+        initialPercentage: 10,
+        finalPercentage: 90,
+        efficiencyType: 'PERIOD',
+        collectorNum: 3,
+      });
+      component.generateConcentratedEfficiencyReport();
+      expect(reportsServiceSpy.concentratedEfficiencyReport).toHaveBeenCalledWith(
+        expect.objectContaining({ collectorNum: 3 })
       );
     });
   });

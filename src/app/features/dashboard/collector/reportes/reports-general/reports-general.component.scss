@@ -1,75 +1,44 @@
 .reports-general-layout {
-  display: flex;
-  gap: 0;
-  min-height: 400px;
+  padding: 24px;
 
-  .reports-menu {
-    width: 220px;
-    flex-shrink: 0;
-    border-right: 1px solid var(--mat-sys-outline-variant);
-
-    a[mat-list-item] {
-      border-radius: 0;
-
-      &.mdc-list-item--activated {
-        font-weight: 500;
-      }
-    }
+  mat-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  .report-content {
-    flex: 1;
-    padding: 24px;
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 8px;
+  }
 
-    mat-card {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  .form-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
+    mat-form-field {
+      flex: 1;
+      min-width: 180px;
     }
 
-    .form-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding-top: 8px;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 16px;
-      align-items: flex-end;
-      flex-wrap: wrap;
-
-      mat-form-field {
-        flex: 1;
-        min-width: 180px;
-      }
-
-      button {
-        min-height: 56px;
-        white-space: nowrap;
-      }
+    button {
+      min-height: 56px;
+      white-space: nowrap;
     }
   }
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    padding: 16px;
 
-    .reports-menu {
-      width: 100%;
-      border-right: none;
-      border-bottom: 1px solid var(--mat-sys-outline-variant);
-    }
+    .form-row {
+      flex-direction: column;
+      align-items: stretch;
 
-    .report-content {
-      padding: 16px;
-
-      .form-row {
-        flex-direction: column;
-        align-items: stretch;
-
-        mat-form-field,
-        button {
-          width: 100%;
-        }
+      mat-form-field,
+      button {
+        width: 100%;
       }
     }
   }

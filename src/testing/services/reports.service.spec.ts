@@ -1,125 +1,76 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { ReportsService, ReportFilter } from '@app/core/services/reports.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { vi } from 'vitest';
+import {
+  ConcentratedEfficiencyFilter,
+  EfficiencyFilter,
+  QuantityDifferenceFilter,
+  ReportsService,
+} from '@app/core/services/reports.service';
+import { environment } from 'environments/environment.development';
 
-const BASE = '/api/reports';
-const FILTERS: ReportFilter = { month: '6', year: '2026' };
+const BASE = `${environment.apiBaseUrl}/reports`;
+const QUANTITY_DIFFERENCE_FILTERS: QuantityDifferenceFilter = { month: 6, year: 2026 };
+const EFFICIENCY_FILTERS: EfficiencyFilter = {
+  month: 6, year: 2026, initialDonation: 100, finalDonation: 500, frequency: 1, collectorNum: 3,
+};
+const CONCENTRATED_EFFICIENCY_FILTERS: ConcentratedEfficiencyFilter = {
+  startDate: '2024-01-01', endDate: '2024-06-30', initialPercentage: 0, finalPercentage: 50,
+  efficiencyType: 'HISTORICAL', collectorNum: 3,
+};
 
 describe('ReportsService', () => {
   let service: ReportsService;
   let httpMock: HttpTestingController;
+  const snackBarSpy = { open: vi.fn() };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         ReportsService,
         provideHttpClient(),
         provideHttpClientTesting(),
+        { provide: MatSnackBar, useValue: snackBarSpy },
       ],
     });
     service = TestBed.inject(ReportsService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => httpMock.verify());
+  afterEach(() => {
+    httpMock.verify();
+    vi.clearAllMocks();
+  });
 
-  const expectBlobPost = (url: string) => {
+  const expectBlobPost = (url: string, body: unknown) => {
     const req = httpMock.expectOne(url);
     expect(req.request.method).toBe('POST');
     expect(req.request.responseType).toBe('blob');
-    expect(req.request.body).toEqual(FILTERS);
+    expect(req.request.body).toEqual(body);
     req.flush(new Blob());
   };
 
-  describe('general reports', () => {
-    it('quantityDifferenceReport → POST /general/quantity-difference', () => {
-      service.quantityDifferenceReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/general/quantity-difference`);
-    });
-
-    it('monthlyReportPdf → POST /general/monthly-report', () => {
-      service.monthlyReportPdf(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/general/monthly-report`);
-    });
-
-    it('monthlyReportExcel → POST /general/monthly-report/excel', () => {
-      service.monthlyReportExcel(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/general/monthly-report/excel`);
-    });
-
-    it('efficiencyReport → POST /general/efficiency', () => {
-      service.efficiencyReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/general/efficiency`);
-    });
-
-    it('concentratedEfficiencyReport → POST /general/efficiency-concentrated', () => {
-      service.concentratedEfficiencyReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/general/efficiency-concentrated`);
-    });
-
-    it('decreasedDonationReport → POST /general/decreased-donations', () => {
-      service.decreasedDonationReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/general/decreased-donations`);
-    });
-
-    it('increasedDonationReport → POST /general/increased-donations', () => {
-      service.increasedDonationReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/general/increased-donations`);
-    });
-
-    it('donationReport → POST /general/donations', () => {
-      service.donationReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/general/donations`);
-    });
-
-    it('issuedReceiptsReport → POST /general/issued-receipts', () => {
-      service.issuedReceiptsReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/general/issued-receipts`);
+  describe('quantityDifferenceReport', () => {
+    it('should POST /reports/general/quantity-difference with numeric month/year', () => {
+      service.quantityDifferenceReport(QUANTITY_DIFFERENCE_FILTERS).subscribe();
+      expectBlobPost(`${BASE}/general/quantity-difference`, QUANTITY_DIFFERENCE_FILTERS);
     });
   });
 
-  describe('beneficiary reports', () => {
-    it('beneficiaryMovementsReport → POST /beneficiary/movements', () => {
-      service.beneficiaryMovementsReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/beneficiary/movements`);
-    });
-
-    it('beneficiaryConcentratedReport → POST /beneficiary/concentrated', () => {
-      service.beneficiaryConcentratedReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/beneficiary/concentrated`);
-    });
-
-    it('beneficiaryStatusReport → POST /beneficiary/status', () => {
-      service.beneficiaryStatusReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/beneficiary/status`);
-    });
-
-    it('beneficiaryExcelReport → POST /beneficiary/excel', () => {
-      service.beneficiaryExcelReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/beneficiary/excel`);
-    });
-
-    it('beneficiaryReport → POST /beneficiary/general', () => {
-      service.beneficiaryReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/beneficiary/general`);
+  describe('efficiencyReport', () => {
+    it('should POST /reports/general/efficiency with numeric filters', () => {
+      service.efficiencyReport(EFFICIENCY_FILTERS).subscribe();
+      expectBlobPost(`${BASE}/general/efficiency`, EFFICIENCY_FILTERS);
     });
   });
 
-  describe('collector reports', () => {
-    it('collectorDepositsReport → POST /collector/deposits', () => {
-      service.collectorDepositsReport(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/collector/deposits`);
-    });
-
-    it('collectorLiquidationReportPdf → POST /collector/liquidation', () => {
-      service.collectorLiquidationReportPdf(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/collector/liquidation`);
-    });
-
-    it('collectorLiquidationReportExcel → POST /collector/liquidation/excel', () => {
-      service.collectorLiquidationReportExcel(FILTERS).subscribe();
-      expectBlobPost(`${BASE}/collector/liquidation/excel`);
+  describe('concentratedEfficiencyReport', () => {
+    it('should POST /reports/general/efficiency-concentrated with ISO dates and uppercase type', () => {
+      service.concentratedEfficiencyReport(CONCENTRATED_EFFICIENCY_FILTERS).subscribe();
+      expectBlobPost(`${BASE}/general/efficiency-concentrated`, CONCENTRATED_EFFICIENCY_FILTERS);
     });
   });
 });

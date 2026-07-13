@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -9,9 +9,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ReportsService } from '@app/core/services/reports.service';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  EfficiencyConcentratedType,
+  EfficiencyFilter,
+  ConcentratedEfficiencyFilter,
+  ReportsService,
+} from '@app/core/services/reports.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
 
@@ -38,98 +42,72 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
 export class ReportsGeneralComponent implements OnInit {
   protected readonly Permissions = Permissions;
   private reportsService = inject(ReportsService);
-  private snackBar = inject(MatSnackBar);
 
   public selectedReport = 'quantity-difference';
-  public isLoading = false;
+  public isLoading = signal(false);
 
   public reports = [
     { id: 'quantity-difference',        label: 'Diferencia Cantidades' },
-    { id: 'monthly-report',             label: 'Informe Mensual' },
     { id: 'efficiency',                 label: 'Eficiencia' },
     { id: 'concentrated-efficiency',    label: 'Eficiencia Concentrada' },
-    { id: 'decreased-donations',        label: 'Disminución Donativos' },
-    { id: 'increased-donations',        label: 'Aumento Donativos' },
-    { id: 'donations',                  label: 'Donativos' },
-    { id: 'issued-receipts',            label: 'Recibos Emitidos' },
   ];
 
+  // Meses en formato numérico (1-12), usados por los endpoints con contrato confirmado
   public months = [
-    { value: '01', label: 'Enero' },
-    { value: '02', label: 'Febrero' },
-    { value: '03', label: 'Marzo' },
-    { value: '04', label: 'Abril' },
-    { value: '05', label: 'Mayo' },
-    { value: '06', label: 'Junio' },
-    { value: '07', label: 'Julio' },
-    { value: '08', label: 'Agosto' },
-    { value: '09', label: 'Septiembre' },
-    { value: '10', label: 'Octubre' },
-    { value: '11', label: 'Noviembre' },
-    { value: '12', label: 'Diciembre' },
+    { value: 1, label: 'Enero' },
+    { value: 2, label: 'Febrero' },
+    { value: 3, label: 'Marzo' },
+    { value: 4, label: 'Abril' },
+    { value: 5, label: 'Mayo' },
+    { value: 6, label: 'Junio' },
+    { value: 7, label: 'Julio' },
+    { value: 8, label: 'Agosto' },
+    { value: 9, label: 'Septiembre' },
+    { value: 10, label: 'Octubre' },
+    { value: 11, label: 'Noviembre' },
+    { value: 12, label: 'Diciembre' },
   ];
 
-  public frequencies = [
-    { value: 'todas',               label: 'Todas' },
-    { value: 'todas-sin-especiales', label: 'Todas sin especiales' },
-    { value: 'especiales',          label: 'Especiales' },
-    { value: 'mensual',             label: 'Mensual' },
-    { value: 'bimestral',           label: 'Bimestral' },
-    { value: 'trimestral',          label: 'Trimestral' },
-    { value: 'cuatrimestral',       label: 'Cuatrimestral' },
-    { value: 'semestral',           label: 'Semestral' },
-    { value: 'anual',               label: 'Anual' },
+  // Recurrencia en meses, igual que promesas de donación (1=mensual, 2=bimestral, 3=trimestral, 4=cuatrimestral, 6=semestral, 12=anual)
+  public efficiencyFrequencies = [
+    { value: 1,  label: 'Mensual' },
+    { value: 2,  label: 'Bimestral' },
+    { value: 3,  label: 'Trimestral' },
+    { value: 4,  label: 'Cuatrimestral' },
+    { value: 6,  label: 'Semestral' },
+    { value: 12, label: 'Anual' },
   ];
 
-  public efficiencyTypes = [
-    { value: 'dinero', label: 'Dinero' },
-  ];
-
-  public receiptTypes = [
-    { value: 'normales', label: 'Normales' },
+  public concentratedEfficiencyTypes: { value: EfficiencyConcentratedType; label: string }[] = [
+    { value: 'PERIOD',     label: 'Periodo' },
+    { value: 'YEAR',       label: 'Año' },
+    { value: 'HISTORICAL', label: 'Histórico' },
   ];
 
   public currentYear = new Date().getFullYear();
   public years: number[] = [];
 
   public quantityDifferenceForm = new FormGroup({
-    month: new FormControl(''),
-    year: new FormControl(''),
-  });
-
-  public monthlyReportForm = new FormGroup({
-    month: new FormControl(''),
-    year: new FormControl(''),
+    month: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(12)]),
+    year: new FormControl<number | null>(null, [Validators.required, Validators.min(2000)]),
   });
 
   public efficiencyForm = new FormGroup({
-    month: new FormControl(''),
-    year: new FormControl(''),
-    initialDonation: new FormControl(''),
-    finalDonation: new FormControl(''),
-    collectorNum: new FormControl(''),
-    frequency: new FormControl(''),
+    month: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(12)]),
+    year: new FormControl<number | null>(null, [Validators.required, Validators.min(2000)]),
+    initialDonation: new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
+    finalDonation: new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
+    frequency: new FormControl<number | null>(null, Validators.required),
+    collectorNum: new FormControl<number | null>(null, Validators.min(1)),
   });
 
   public concentratedEfficiencyForm = new FormGroup({
-    startDate: new FormControl<Date | null>(null),
-    endDate: new FormControl<Date | null>(null),
-    initialPercentage: new FormControl(''),
-    finalPercentage: new FormControl(''),
-    efficiencyType: new FormControl(''),
-    collectorNum: new FormControl(''),
-  });
-
-  public dateRangeForm = new FormGroup({
-    startDate: new FormControl<Date | null>(null),
-    endDate: new FormControl<Date | null>(null),
-  });
-
-  public issuedReceiptsForm = new FormGroup({
-    month: new FormControl(''),
-    year: new FormControl(''),
-    frequency: new FormControl(''),
-    receiptType: new FormControl(''),
+    startDate: new FormControl<Date | null>(null, Validators.required),
+    endDate: new FormControl<Date | null>(null, Validators.required),
+    initialPercentage: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(100)]),
+    finalPercentage: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(100)]),
+    efficiencyType: new FormControl<EfficiencyConcentratedType | ''>('', Validators.required),
+    collectorNum: new FormControl<number | null>(null, Validators.min(1)),
   });
 
   ngOnInit(): void {
@@ -144,105 +122,69 @@ export class ReportsGeneralComponent implements OnInit {
   }
 
   private setCurrentValues(): void {
-    const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
-    this.quantityDifferenceForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
-    this.monthlyReportForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
-    this.efficiencyForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
-    this.issuedReceiptsForm.patchValue({ month: currentMonth, year: this.currentYear.toString() });
+    const currentMonth = new Date().getMonth() + 1;
+    this.quantityDifferenceForm.patchValue({ month: currentMonth, year: this.currentYear });
+    this.efficiencyForm.patchValue({ month: currentMonth, year: this.currentYear });
   }
 
-  private downloadFile(blob: Blob, filename: string): void {
+  private openBlob(blob: Blob): void {
     const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    window.URL.revokeObjectURL(url);
+    window.open(url, '_blank');
   }
 
-  private handleError(): void {
-    this.isLoading = false;
-    this.snackBar.open('Error al generar el reporte', 'Cerrar', { duration: 4000 });
+  private toIsoDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   generateQuantityDifferenceReport(): void {
     if (this.quantityDifferenceForm.invalid) return;
-    this.isLoading = true;
-    this.reportsService.quantityDifferenceReport(this.quantityDifferenceForm.value).subscribe({
-      next: (blob) => { this.downloadFile(blob, 'Reporte_Diferencia_Cantidades.pdf'); this.isLoading = false; },
-      error: () => this.handleError(),
-    });
-  }
-
-  generateMonthlyReportPdf(): void {
-    if (this.monthlyReportForm.invalid) return;
-    this.isLoading = true;
-    this.reportsService.monthlyReportPdf(this.monthlyReportForm.value).subscribe({
-      next: (blob) => { this.downloadFile(blob, 'Reporte_Informe_Mensual.pdf'); this.isLoading = false; },
-      error: () => this.handleError(),
-    });
-  }
-
-  generateMonthlyReportExcel(): void {
-    if (this.monthlyReportForm.invalid) return;
-    this.isLoading = true;
-    this.reportsService.monthlyReportExcel(this.monthlyReportForm.value).subscribe({
-      next: (blob) => { this.downloadFile(blob, 'Reporte_Informe_Mensual.xlsx'); this.isLoading = false; },
-      error: () => this.handleError(),
+    const { month, year } = this.quantityDifferenceForm.getRawValue();
+    this.isLoading.set(true);
+    this.reportsService.quantityDifferenceReport({ month: month!, year: year! }).subscribe({
+      next: (blob) => { this.openBlob(blob); this.isLoading.set(false); },
+      error: () => this.isLoading.set(false),
     });
   }
 
   generateEfficiencyReport(): void {
     if (this.efficiencyForm.invalid) return;
-    this.isLoading = true;
-    this.reportsService.efficiencyReport(this.efficiencyForm.value).subscribe({
-      next: (blob) => { this.downloadFile(blob, 'Reporte_Eficiencia.pdf'); this.isLoading = false; },
-      error: () => this.handleError(),
+    const { month, year, initialDonation, finalDonation, frequency, collectorNum } = this.efficiencyForm.getRawValue();
+    const payload: EfficiencyFilter = {
+      month: month!,
+      year: year!,
+      initialDonation: initialDonation!,
+      finalDonation: finalDonation!,
+      frequency: frequency!,
+    };
+    if (collectorNum) payload.collectorNum = collectorNum;
+
+    this.isLoading.set(true);
+    this.reportsService.efficiencyReport(payload).subscribe({
+      next: (blob) => { this.openBlob(blob); this.isLoading.set(false); },
+      error: () => this.isLoading.set(false),
     });
   }
 
   generateConcentratedEfficiencyReport(): void {
     if (this.concentratedEfficiencyForm.invalid) return;
-    this.isLoading = true;
-    this.reportsService.concentratedEfficiencyReport(this.concentratedEfficiencyForm.value).subscribe({
-      next: (blob) => { this.downloadFile(blob, 'Reporte_Eficiencia_Concentrada.pdf'); this.isLoading = false; },
-      error: () => this.handleError(),
-    });
-  }
+    const { startDate, endDate, initialPercentage, finalPercentage, efficiencyType, collectorNum } =
+      this.concentratedEfficiencyForm.getRawValue();
+    const payload: ConcentratedEfficiencyFilter = {
+      startDate: this.toIsoDate(startDate!),
+      endDate: this.toIsoDate(endDate!),
+      initialPercentage: initialPercentage!,
+      finalPercentage: finalPercentage!,
+      efficiencyType: efficiencyType as EfficiencyConcentratedType,
+    };
+    if (collectorNum) payload.collectorNum = collectorNum;
 
-  generateDecreasedDonationReport(): void {
-    if (this.dateRangeForm.invalid) return;
-    this.isLoading = true;
-    this.reportsService.decreasedDonationReport(this.dateRangeForm.value).subscribe({
-      next: (blob) => { this.downloadFile(blob, 'Reporte_Disminucion_Donativos.pdf'); this.isLoading = false; },
-      error: () => this.handleError(),
-    });
-  }
-
-  generateIncreasedDonationReport(): void {
-    if (this.dateRangeForm.invalid) return;
-    this.isLoading = true;
-    this.reportsService.increasedDonationReport(this.dateRangeForm.value).subscribe({
-      next: (blob) => { this.downloadFile(blob, 'Reporte_Aumento_Donativos.pdf'); this.isLoading = false; },
-      error: () => this.handleError(),
-    });
-  }
-
-  generateDonationReport(): void {
-    if (this.dateRangeForm.invalid) return;
-    this.isLoading = true;
-    this.reportsService.donationReport(this.dateRangeForm.value).subscribe({
-      next: (blob) => { this.downloadFile(blob, 'Reporte_Donativos.pdf'); this.isLoading = false; },
-      error: () => this.handleError(),
-    });
-  }
-
-  generateIssuedReceiptsReport(): void {
-    if (this.issuedReceiptsForm.invalid) return;
-    this.isLoading = true;
-    this.reportsService.issuedReceiptsReport(this.issuedReceiptsForm.value).subscribe({
-      next: (blob) => { this.downloadFile(blob, 'Reporte_Recibos_Emitidos.pdf'); this.isLoading = false; },
-      error: () => this.handleError(),
+    this.isLoading.set(true);
+    this.reportsService.concentratedEfficiencyReport(payload).subscribe({
+      next: (blob) => { this.openBlob(blob); this.isLoading.set(false); },
+      error: () => this.isLoading.set(false),
     });
   }
 }

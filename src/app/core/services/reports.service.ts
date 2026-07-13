@@ -1,131 +1,65 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { catchError, Observable, throwError } from 'rxjs';
+import { environment } from 'environments/environment.development';
+import { apiErrorMessage } from '@app/shared/utils/api-error';
 
-export interface ReportFilter {
-  month?: string | null;
-  year?: string | null;
-  startDate?: Date | string | null;
-  endDate?: Date | string | null;
-  [key: string]: any;
+export interface QuantityDifferenceFilter {
+    month: number;
+    year: number;
 }
 
-export interface ReportResponse {
-  success: boolean;
-  data?: Blob;
-  message?: string;
+export interface EfficiencyFilter {
+    month: number;
+    year: number;
+    initialDonation: number;
+    finalDonation: number;
+    frequency: number;
+    collectorNum?: number;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+export type EfficiencyConcentratedType = 'PERIOD' | 'YEAR' | 'HISTORICAL';
+
+export interface ConcentratedEfficiencyFilter {
+    startDate: string;
+    endDate: string;
+    initialPercentage: number;
+    finalPercentage: number;
+    efficiencyType: EfficiencyConcentratedType;
+    collectorNum?: number;
+}
+
+@Injectable({ providedIn: 'root' })
 export class ReportsService {
-  private apiUrl = '/api/reports';
+    private readonly http = inject(HttpClient);
+    private readonly snackbar = inject(MatSnackBar);
+    private readonly apiUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) {}
+    quantityDifferenceReport(filters: QuantityDifferenceFilter): Observable<Blob> {
+        return this.http.post(`${this.apiUrl}/reports/general/quantity-difference`, filters, { responseType: 'blob' }).pipe(
+            catchError((error) => {
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar el reporte de diferencia de cantidades'), 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
 
-  // General Reports
-  quantityDifferenceReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/general/quantity-difference`, filters, {
-      responseType: 'blob'
-    });
-  }
+    efficiencyReport(filters: EfficiencyFilter): Observable<Blob> {
+        return this.http.post(`${this.apiUrl}/reports/general/efficiency`, filters, { responseType: 'blob' }).pipe(
+            catchError((error) => {
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar el reporte de eficiencia'), 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
 
-  monthlyReportPdf(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/general/monthly-report`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  monthlyReportExcel(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/general/monthly-report/excel`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  efficiencyReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/general/efficiency`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  concentratedEfficiencyReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/general/efficiency-concentrated`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  decreasedDonationReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/general/decreased-donations`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  increasedDonationReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/general/increased-donations`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  donationReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/general/donations`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  issuedReceiptsReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/general/issued-receipts`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  // Beneficiary Reports
-  beneficiaryMovementsReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/beneficiary/movements`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  beneficiaryConcentratedReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/beneficiary/concentrated`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  beneficiaryStatusReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/beneficiary/status`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  beneficiaryExcelReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/beneficiary/excel`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  beneficiaryReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/beneficiary/general`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  // Collector Reports
-  collectorDepositsReport(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/collector/deposits`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  collectorLiquidationReportPdf(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/collector/liquidation`, filters, {
-      responseType: 'blob'
-    });
-  }
-
-  collectorLiquidationReportExcel(filters: ReportFilter): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/collector/liquidation/excel`, filters, {
-      responseType: 'blob'
-    });
-  }
+    concentratedEfficiencyReport(filters: ConcentratedEfficiencyFilter): Observable<Blob> {
+        return this.http.post(`${this.apiUrl}/reports/general/efficiency-concentrated`, filters, { responseType: 'blob' }).pipe(
+            catchError((error) => {
+                this.snackbar.open(apiErrorMessage(error, 'Error al generar el reporte de eficiencia concentrada'), 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
 }

@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ReportsGeneralComponent } from './reports-general/reports-general.component';
-import { ReportsBeneficiaryComponent } from './reports-beneficiary/reports-beneficiary.component';
-import { ReportsCollectorComponent } from './reports-collector/reports-collector.component';
 import { ReportsGrowthComponent } from './reports-growth/reports-growth.component';
 import { ReportsEfficiencyConsolidatedComponent } from './reports-efficiency-consolidated/reports-efficiency-consolidated.component';
 
@@ -14,8 +12,6 @@ import { ReportsEfficiencyConsolidatedComponent } from './reports-efficiency-con
   imports: [
     MatTabsModule,
     ReportsGeneralComponent,
-    ReportsBeneficiaryComponent,
-    ReportsCollectorComponent,
     ReportsGrowthComponent,
     ReportsEfficiencyConsolidatedComponent,
   ],
