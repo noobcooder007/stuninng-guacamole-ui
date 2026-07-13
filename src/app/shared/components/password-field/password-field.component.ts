@@ -30,7 +30,7 @@ export class ParentErrorStateMatcher implements ErrorStateMatcher {
         <mat-form-field class="w-full" appearance="outline">
             <mat-label>{{ label }}</mat-label>
             <input matInput [type]="hide ? 'password' : 'text'" [placeholder]="placeholder" [formControl]="internalControl" [errorStateMatcher]="matcher" (blur)="onTouched()" />
-            <button type="button" mat-icon-button matSuffix (click)="hide = !hide">
+            <button type="button" matIconButton matSuffix (click)="hide = !hide">
                 <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
             @if (controlDir.hasError('passwordMismatch')) {
