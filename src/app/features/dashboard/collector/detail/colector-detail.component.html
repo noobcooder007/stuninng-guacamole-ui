@@ -257,14 +257,14 @@
       <mat-card-content>
         @if (editingSection() === 'payment') {
           <form [formGroup]="paymentForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="w-48">
               <mat-label>Comisión (%)</mat-label>
               <input type="number" matInput formControlName="commissionPercent" aria-label="Comisión" />
               @if (paymentForm.get('commissionPercent')?.hasError('min') || paymentForm.get('commissionPercent')?.hasError('max')) {
                 <mat-error>Valor entre 0 y 100</mat-error>
               }
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="w-48">
               <mat-label>Nómina ($)</mat-label>
               <input type="number" matInput formControlName="nomina" aria-label="Nómina" />
             </mat-form-field>

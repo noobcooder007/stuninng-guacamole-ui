@@ -49,11 +49,11 @@
         <mat-label>Apellido materno</mat-label>
         <input matInput formControlName="secondLastname" aria-label="secondLastname" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-48">
         <mat-label>NSS</mat-label>
         <input type="tel" maxlength="11" minlength="11" matInput formControlName="nss" aria-label="nss" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-48">
         <mat-label>Teléfono celular</mat-label>
         <input
           type="tel"
@@ -64,7 +64,7 @@
           aria-label="phoneNumber"
         />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-48">
         <mat-label>Teléfono</mat-label>
         <input
           type="tel"
@@ -109,14 +109,14 @@
         <mat-label>Estado</mat-label>
         <input matInput formControlName="state" aria-label="address-state" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-40">
         <mat-label>Código postal</mat-label>
         <input type="tel" minlength="5" maxlength="5" matInput formControlName="zipCode" aria-label="address-postalCode" />
       </mat-form-field>
     </div>
     <p class="text-2xl pb-4 font-semibold">Información de pago</p>
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-48">
         <mat-label>Porcentaje de comisión</mat-label>
         <input
           class="text-right"

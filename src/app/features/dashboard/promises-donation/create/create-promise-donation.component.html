@@ -1,7 +1,7 @@
 <section class="flex flex-col h-full w-full items-center overflow-x-auto no-scrollbar p-6">
   <form class="flex flex-col gap-4 w-2/3" [formGroup]="createPromiseDonationForm">
     <p class="text-2xl pb-4 font-semibold">Datos generales</p>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-4 items-end">
       <mat-form-field appearance="outline">
         <mat-label>Bienhechor</mat-label>
         <input
@@ -25,14 +25,14 @@
         </mat-autocomplete>
       </mat-form-field>
       <button type="button" matButton (click)="openAdvancedSearch()">Busqueda avanzada</button>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-36">
         <mat-label>Moneda</mat-label>
         <mat-select formControlName="currency">
           <mat-option value="MXN">Pesos</mat-option>
           <mat-option value="USD">Dolares</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-48">
         <mat-label>Monto prometido</mat-label>
         <input type="number" min="0.01" max="999999" matInput formControlName="promiseAmount" aria-label="promiseAmount" />
         <span matTextPrefix>$</span>

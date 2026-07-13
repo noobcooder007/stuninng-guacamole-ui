@@ -1,7 +1,7 @@
 <app-list-shell [isLoading]="isLoading()" [pagination]="pagination()" (pageChange)="onPageChange($event)">
 
   <section class="flex flex-row items-baseline justify-between w-full px-4">
-    <form [formGroup]="searchForm" class="flex flex-row gap-4 items-baseline flex-wrap">
+    <form [formGroup]="searchForm" class="flex flex-row gap-4 items-end flex-wrap">
       <mat-form-field class="w-52" appearance="outline">
         <mat-label>Moneda</mat-label>
         <mat-select formControlName="currency">

@@ -140,7 +140,7 @@
               <mat-label>Estado</mat-label>
               <input matInput formControlName="state" aria-label="Estado" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="w-40">
               <mat-label>Código postal</mat-label>
               <input matInput formControlName="zipCode" maxlength="5" aria-label="Código postal" />
               @if (addressForm.get('zipCode')?.hasError('pattern')) {

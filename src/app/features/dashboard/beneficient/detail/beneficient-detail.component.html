@@ -54,7 +54,7 @@
       <mat-card-content>
         @if (editingSection() === 'personal') {
           <form [formGroup]="personalForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="w-40">
               <mat-label>Título</mat-label>
               <mat-select formControlName="title">
                 <mat-option value="Sr">Señor</mat-option>
@@ -202,7 +202,7 @@
               <mat-label>Estado</mat-label>
               <input matInput formControlName="state" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="w-40">
               <mat-label>Código postal</mat-label>
               <input matInput formControlName="zipCode" maxlength="5" />
               @if (addressForm.get('zipCode')?.hasError('pattern')) {
@@ -397,7 +397,7 @@
               <mat-label>Nombre registrado</mat-label>
               <input matInput formControlName="registeredName" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="w-48">
               <mat-label>RFC</mat-label>
               <input matInput formControlName="rfc" />
               @if (taxForm.get('rfc')?.hasError('minlength') || taxForm.get('rfc')?.hasError('maxlength')) {
