@@ -4,10 +4,15 @@ import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { Collector } from '@app/core/services/collector.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
+import { CollectorListItem, CollectorService } from '@app/core/services/collector.service';
 import { Assignment, AssignmentService } from '@app/core/services/assignment.service';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { SearchCollectorComponent } from './search-collector/search-collector.component';
 import { DatePipe } from '@angular/common';
 import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 import { TabService } from '@app/core/services/tab.service';
@@ -27,7 +32,12 @@ type ViewMode = 'activas' | 'huerfanas';
         MatSortModule,
         MatButtonModule,
         MatButtonToggleModule,
-        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatAutocompleteModule,
+        MatTooltipModule,
+        ReactiveFormsModule,
         DatePipe,
         FullnamePipe,
         HasPermissionPipe,
@@ -43,7 +53,14 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
     protected readonly pagination = this.list.pagination;
     protected readonly dataSource = this.list.dataSource;
     public viewMode = signal<ViewMode>('activas');
-    public selectedCollector = signal<Collector | null>(null);
+    public selectedCollector = signal<CollectorListItem | null>(null);
+
+    public collectorCtrl = new FormControl('');
+    public filteredCollectors = signal<CollectorListItem[]>([]);
+    public isLoadingCollectors = signal(false);
+
+    displayCollector = (option: CollectorListItem | null) =>
+        option ? `${option.firstname} ${option.firstLastname} ${option.secondLastname ?? ''}`.trim() : '';
 
     public readonly displayedColumns = computed<string[]>(() =>
         this.viewMode() === 'activas'
@@ -54,11 +71,12 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
     @ViewChild(MatSort) sort!: MatSort;
 
     private readonly assignmentsService = inject(AssignmentService);
-    private readonly dialog = inject(MatDialog);
+    private readonly collectorService = inject(CollectorService);
     private readonly tabService = inject(TabService);
 
     ngOnInit() {
         this.loadData(1, this.list.pagination().limit);
+        this.setupCollectorSearch();
     }
 
     ngAfterViewInit(): void {
@@ -78,6 +96,7 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
     onViewModeChange(mode: ViewMode) {
         this.viewMode.set(mode);
         this.selectedCollector.set(null);
+        this.collectorCtrl.reset('');
         this.list.resetPagination();
         this.dataSource.data = [];
         this.loadData(1, 5);
@@ -85,7 +104,41 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
 
     clearFilter() {
         this.selectedCollector.set(null);
+        this.collectorCtrl.reset('');
         this.loadData(1, this.pagination().limit);
+    }
+
+    private setupCollectorSearch() {
+        this.isLoadingCollectors.set(true);
+        this.collectorService.getActiveList().subscribe({
+            next: items => {
+                this.filteredCollectors.set(items);
+                this.isLoadingCollectors.set(false);
+            },
+            error: () => this.isLoadingCollectors.set(false),
+        });
+
+        this.collectorCtrl.valueChanges.pipe(
+            filter(v => typeof v === 'string'),
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap(v => {
+                const term = (v as string).trim();
+                this.isLoadingCollectors.set(true);
+                return this.collectorService.getActiveList(term || undefined);
+            }),
+        ).subscribe({
+            next: items => {
+                this.filteredCollectors.set(items);
+                this.isLoadingCollectors.set(false);
+            },
+            error: () => this.isLoadingCollectors.set(false),
+        });
+    }
+
+    onCollectorSelected(option: CollectorListItem) {
+        this.selectedCollector.set(option);
+        this.loadData(1, this.pagination().limit, option.id);
     }
 
     loadData(page: number, limit: number, collectorId?: string) {
@@ -143,21 +196,6 @@ export class AssignmentsComponent implements OnInit, AfterViewInit {
             label: 'Asignar huérfanas',
             link: '/assignments/assign-orphans',
             permission: '',
-        });
-    }
-
-    openAdvancedSearch() {
-        const dialogRef = this.dialog.open(SearchCollectorComponent, {
-            minWidth: '70vw',
-            disableClose: true,
-            hasBackdrop: true,
-            data: { currentFilter: this.selectedCollector() }
-        });
-        dialogRef.afterClosed().subscribe((result: Collector) => {
-            if (result) {
-                this.selectedCollector.set(result);
-                this.loadData(1, this.pagination().limit, result.id);
-            }
         });
     }
 }

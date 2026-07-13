@@ -1,19 +1,19 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Beneficient, BeneficientFilters, BeneficientService } from '@app/core/services/beneficient.service';
-import { startWith, debounceTime, distinctUntilChanged, switchMap, map, catchError, of, delay } from 'rxjs';
+import { Beneficient, BeneficientService } from '@app/core/services/beneficient.service';
+import { startWith, debounceTime, distinctUntilChanged, switchMap, catchError, of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { SearchBeneficientComponent } from '../../beneficient/search-beneficient/search-beneficient.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CollectorInstructions, CreatePromiseDonationDto, PromisesDonationService, WeeklyScheduleItem } from '@app/core/services/promise-donation.service';
 import { AddInstructionComponent } from '../add-instruction/add-instruction.component';
@@ -34,6 +34,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         MatButtonModule,
         MatCheckboxModule,
         MatIconModule,
+        MatTooltipModule,
         MatTableModule,
         MatProgressSpinnerModule,
         HourPipe,
@@ -66,8 +67,6 @@ export class CreatePromiseDonationComponent implements OnInit {
     private readonly dialog = inject(MatDialog);
     beneficientList = signal<Beneficient[]>([]);
 
-    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger!: MatAutocompleteTrigger;
-
     ngOnInit() {
         this.loadBeneficients();
     }
@@ -78,18 +77,10 @@ export class CreatePromiseDonationComponent implements OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             switchMap(value => {
-                const searchTerm = typeof value === 'string'
-                    ? value
-                    : typeof value === 'object' ? value?.firstname || '' : '';
-                const filters: BeneficientFilters = {
-                    firstname: searchTerm,
-                };
-                if (searchTerm === '') this.dataSource.data = [];
+                const searchTerm = typeof value === 'string' ? value.trim() : '';
                 if (typeof value !== 'object') {
-                    return this.beneficientService.getBeneficents(1, 5, filters).pipe(
-                        map((response) => response.data.items),
-                        catchError(() => of([])),
-                        delay(0)
+                    return this.beneficientService.getActiveList(searchTerm || undefined).pipe(
+                        catchError(() => of([]))
                     );
                 }
                 return of([]);
@@ -132,25 +123,6 @@ export class CreatePromiseDonationComponent implements OnInit {
         return beneficient && `${beneficient.firstname} ${beneficient.firstLastname} ${beneficient.secondLastname ?? ''}`;
     }
 
-    openAdvancedSearch(): void {
-        if (this.autocompleteTrigger) this.autocompleteTrigger.closePanel();
-        const dialogRef = this.dialog.open(SearchBeneficientComponent, {
-            minWidth: '70vw',
-            disableClose: true,
-            hasBackdrop: true,
-            data: { currentFilter: this.createPromiseDonationForm.get('beneficientId')?.value }
-        });
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.createPromiseDonationForm.patchValue({ beneficientId: result });
-                const beneficientCtrl = this.createPromiseDonationForm.get('beneficientId');
-                beneficientCtrl?.setValue(result);
-                beneficientCtrl?.markAsDirty();
-                beneficientCtrl?.updateValueAndValidity();
-            }
-        });
-    }
-    
     addInstruction(): void {
         const dialogRef = this.dialog.open(AddInstructionComponent, {
             minWidth: '70vw',

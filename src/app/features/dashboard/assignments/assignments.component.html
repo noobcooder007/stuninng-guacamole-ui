@@ -1,5 +1,9 @@
 <app-list-shell [isLoading]="isLoading()" [pagination]="pagination()" (pageChange)="onPageChange($event)">
 
+  <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] px-4 mb-2">
+    "Activas" muestra las asignaciones colector–bienhechor vigentes. "Huérfanas" muestra bienhechores sin colector asignado.
+  </p>
+
   <section class="flex flex-row items-center justify-between w-full px-4 gap-4 flex-wrap">
     <div class="flex flex-row items-center gap-4 flex-wrap">
       <mat-button-toggle-group [value]="viewMode()" (change)="onViewModeChange($event.value)" hideSingleSelectionIndicator>
@@ -8,9 +12,30 @@
       </mat-button-toggle-group>
 
       @if (viewMode() === 'activas') {
-        <button type="button" matButton="tonal" (click)="openAdvancedSearch()">
-          Búsqueda avanzada
-        </button>
+        <mat-form-field appearance="outline" class="w-72" subscriptSizing="dynamic">
+          <mat-label>Colector</mat-label>
+          <input matInput [formControl]="collectorCtrl" [matAutocomplete]="collectorAuto"
+                 placeholder="Busca por nombre o apellido…">
+          @if (collectorCtrl.value) {
+            <button matSuffix matIconButton type="button" matTooltip="Limpiar búsqueda" (click)="clearFilter()">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+          <mat-autocomplete #collectorAuto [displayWith]="displayCollector"
+                            (optionSelected)="onCollectorSelected($event.option.value)">
+            @if (isLoadingCollectors()) {
+              <mat-option disabled>Cargando…</mat-option>
+            } @else {
+              @for (option of filteredCollectors(); track option.id) {
+                <mat-option [value]="option">
+                  {{ option.firstname }} {{ option.firstLastname }} {{ option.secondLastname ?? '' }}
+                </mat-option>
+              } @empty {
+                <mat-option disabled>Sin resultados</mat-option>
+              }
+            }
+          </mat-autocomplete>
+        </mat-form-field>
         @if (selectedCollector()) {
           <button type="button" matButton="tonal" (click)="clearFilter()">
             Borrar filtro
