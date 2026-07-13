@@ -23,7 +23,7 @@ export interface Beneficient {
     title: string;
     firstname: string;
     firstLastname: string;
-    secondLastname: string;
+    secondLastname: string | null;
     birthday: Date;
     genre: string;
     maritalStatus: string;

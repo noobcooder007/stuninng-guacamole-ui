@@ -15,12 +15,24 @@ describe('FullnamePipe', () => {
   it('should omit secondLastname when null', () => {
     const person = { firstname: 'Ana', firstLastname: 'Martínez', secondLastname: null };
     const result = pipe.transform(person);
-    expect(result).toBe('Ana Martínez ');
+    expect(result).toBe('Ana Martínez');
   });
 
   it('should omit secondLastname when undefined', () => {
     const person = { firstname: 'Pedro', firstLastname: 'Sánchez', secondLastname: undefined };
     const result = pipe.transform(person);
-    expect(result).toBe('Pedro Sánchez ');
+    expect(result).toBe('Pedro Sánchez');
+  });
+
+  it('should omit firstLastname when null', () => {
+    const person = { firstname: 'Luis', firstLastname: null, secondLastname: 'Torres' };
+    const result = pipe.transform(person);
+    expect(result).toBe('Luis Torres');
+  });
+
+  it('should omit any part that is an empty string', () => {
+    const person = { firstname: 'Rosa', firstLastname: '', secondLastname: 'Díaz' };
+    const result = pipe.transform(person);
+    expect(result).toBe('Rosa Díaz');
   });
 });

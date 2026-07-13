@@ -6,6 +6,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 export class FullnamePipe implements PipeTransform {
     transform(value: any, ...args: any[]): any {
-        return `${value.firstname} ${value.firstLastname} ${value.secondLastname ?? ''}`;
+        return [value?.firstname, value?.firstLastname, value?.secondLastname]
+            .filter((part) => part !== null && part !== undefined && part !== '')
+            .join(' ');
     }
 }
