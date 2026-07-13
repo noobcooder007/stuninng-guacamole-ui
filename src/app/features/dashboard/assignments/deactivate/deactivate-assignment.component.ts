@@ -23,6 +23,7 @@ import { FullnamePipe } from '@app/shared/pipes/fullname.pipe';
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/confirm-dialog.component';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-state.component';
 
 @Component({
     selector: 'deactivate-assignment',
@@ -44,6 +45,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         DatePipe,
         FullnamePipe,
         HasPermissionPipe,
+        EmptyStateComponent,
     ],
     templateUrl: './deactivate-assignment.component.html',
 })

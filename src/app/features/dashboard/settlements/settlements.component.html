@@ -15,6 +15,9 @@
       } @else if (!isLoading()) {
         <h1 class="text-xl font-semibold text-[color:var(--mat-sys-on-surface-variant)]">Sin periodo activo</h1>
       }
+      <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] mt-1">
+        La comisión de cada colector se calcula sobre lo recaudado; las deducciones (nómina y subsidio de transporte) se restan para obtener el neto a pagar.
+      </p>
     </div>
 
     @if (pendingRows().length > 0) {

@@ -62,6 +62,7 @@
         <mat-form-field appearance="outline" class="w-40">
           <mat-label>Código postal</mat-label>
           <input type="tel" minlength="5" maxlength="5" matInput formControlName="zipCode" aria-label="address-postalCode" />
+          <mat-hint>5 dígitos</mat-hint>
         </mat-form-field>
       </div>
     </div>
@@ -112,6 +113,7 @@
       <mat-form-field appearance="outline" class="w-48">
         <mat-label>Telefono</mat-label>
         <input type="tel" maxlength="10" minlength="10" matInput formControlName="phoneNumber" aria-label="phoneNumber" />
+        <mat-hint>10 dígitos, sin espacios ni guiones</mat-hint>
       </mat-form-field>
     </div>
     <div class="flex flex-col gap-4 w-full">

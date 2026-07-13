@@ -46,7 +46,7 @@
           Información personal
         </mat-card-title>
         @if (editingSection() !== 'personal') {
-          <button type="button" matIconButton (click)="startEdit('personal')">
+          <button type="button" matIconButton matTooltip="Editar datos personales" (click)="startEdit('personal')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -160,7 +160,7 @@
           Domicilio
         </mat-card-title>
         @if (editingSection() !== 'address') {
-          <button type="button" matIconButton (click)="startEdit('address')">
+          <button type="button" matIconButton matTooltip="Editar domicilio" (click)="startEdit('address')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -205,6 +205,7 @@
             <mat-form-field appearance="outline" class="w-40">
               <mat-label>Código postal</mat-label>
               <input matInput formControlName="zipCode" maxlength="5" />
+              <mat-hint>5 dígitos</mat-hint>
               @if (addressForm.get('zipCode')?.hasError('pattern')) {
                 <mat-error>Debe tener exactamente 5 dígitos</mat-error>
               }
@@ -258,7 +259,7 @@
           Contacto
         </mat-card-title>
         @if (editingSection() !== 'contact') {
-          <button type="button" matIconButton (click)="startEdit('contact')">
+          <button type="button" matIconButton matTooltip="Editar contacto" (click)="startEdit('contact')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -308,7 +309,7 @@
           Iglesia
         </mat-card-title>
         @if (editingSection() !== 'church') {
-          <button type="button" matIconButton (click)="startEdit('church')">
+          <button type="button" matIconButton matTooltip="Editar iglesia" (click)="startEdit('church')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -377,7 +378,7 @@
           Datos fiscales
         </mat-card-title>
         @if (editingSection() !== 'tax') {
-          <button type="button" matIconButton (click)="startEdit('tax')">
+          <button type="button" matIconButton matTooltip="Editar datos fiscales" (click)="startEdit('tax')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -400,6 +401,7 @@
             <mat-form-field appearance="outline" class="w-48">
               <mat-label>RFC</mat-label>
               <input matInput formControlName="rfc" />
+              <mat-hint>13 caracteres para persona física, 12 para persona moral</mat-hint>
               @if (taxForm.get('rfc')?.hasError('minlength') || taxForm.get('rfc')?.hasError('maxlength')) {
                 <mat-error>RFC inválido para el tipo de persona</mat-error>
               }
@@ -443,7 +445,7 @@
           Privacidad
         </mat-card-title>
         @if (editingSection() !== 'privacy') {
-          <button type="button" matIconButton (click)="startEdit('privacy')">
+          <button type="button" matIconButton matTooltip="Editar privacidad" (click)="startEdit('privacy')">
             <mat-icon>edit</mat-icon>
           </button>
         }

@@ -26,6 +26,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
 
 export class AddInstructionComponent implements OnInit {
     protected readonly Permissions = Permissions;
+    protected isEdit = false;
     public instructionForm = new FormGroup({
         day: new FormControl(null, [Validators.required]),
         hours: new FormControl(null, [Validators.required]),
@@ -38,6 +39,7 @@ export class AddInstructionComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.isEdit = !!this.data;
         if (this.data) {
             this.instructionForm.patchValue(this.data);
         }

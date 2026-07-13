@@ -52,6 +52,7 @@
       <mat-form-field appearance="outline" class="w-48">
         <mat-label>NSS</mat-label>
         <input type="tel" maxlength="11" minlength="11" matInput formControlName="nss" aria-label="nss" />
+        <mat-hint>11 dígitos</mat-hint>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-48">
         <mat-label>Teléfono celular</mat-label>
@@ -63,6 +64,7 @@
           formControlName="phoneNumber"
           aria-label="phoneNumber"
         />
+        <mat-hint>10 dígitos, sin espacios ni guiones</mat-hint>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-48">
         <mat-label>Teléfono</mat-label>
@@ -74,6 +76,7 @@
           formControlName="telephoneNumber"
           aria-label="telephoneNumber"
         />
+        <mat-hint>10 dígitos, sin espacios ni guiones</mat-hint>
       </mat-form-field>
     </div>
     <p class="text-2xl pb-4 font-semibold">Domicilio</p>
@@ -112,6 +115,7 @@
       <mat-form-field appearance="outline" class="w-40">
         <mat-label>Código postal</mat-label>
         <input type="tel" minlength="5" maxlength="5" matInput formControlName="zipCode" aria-label="address-postalCode" />
+        <mat-hint>5 dígitos</mat-hint>
       </mat-form-field>
     </div>
     <p class="text-2xl pb-4 font-semibold">Información de pago</p>
@@ -128,6 +132,7 @@
           aria-label="commissionPercent"
         />
         <span matTextSuffix>%</span>
+        <mat-hint>Entre 0 y 100</mat-hint>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Banco</mat-label>

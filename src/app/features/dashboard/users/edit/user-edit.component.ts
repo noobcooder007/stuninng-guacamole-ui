@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
@@ -25,6 +26,7 @@ import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialo
         MatFormFieldModule,
         MatInputModule,
         MatIconModule,
+        MatTooltipModule,
         MatProgressSpinnerModule,
         HasPermissionPipe,
     ],

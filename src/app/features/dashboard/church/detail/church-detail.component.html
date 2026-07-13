@@ -27,7 +27,7 @@
           Identidad eclesiástica
         </mat-card-title>
         @if (editingSection() !== 'identity') {
-          <button type="button" matIconButton (click)="startEdit('identity')">
+          <button type="button" matIconButton matTooltip="Editar identidad" (click)="startEdit('identity')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -98,7 +98,7 @@
           Domicilio
         </mat-card-title>
         @if (editingSection() !== 'address') {
-          <button type="button" matIconButton (click)="startEdit('address')">
+          <button type="button" matIconButton matTooltip="Editar domicilio" (click)="startEdit('address')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -143,6 +143,7 @@
             <mat-form-field appearance="outline" class="w-40">
               <mat-label>Código postal</mat-label>
               <input matInput formControlName="zipCode" maxlength="5" aria-label="Código postal" />
+              <mat-hint>5 dígitos</mat-hint>
               @if (addressForm.get('zipCode')?.hasError('pattern')) {
                 <mat-error>Debe tener exactamente 5 dígitos</mat-error>
               }
@@ -196,7 +197,7 @@
           Párroco
         </mat-card-title>
         @if (editingSection() !== 'priest') {
-          <button type="button" matIconButton (click)="startEdit('priest')">
+          <button type="button" matIconButton matTooltip="Editar párroco" (click)="startEdit('priest')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -240,7 +241,7 @@
           Vicario auxiliar
         </mat-card-title>
         @if (editingSection() !== 'auxiliar') {
-          <button type="button" matIconButton (click)="startEdit('auxiliar')">
+          <button type="button" matIconButton matTooltip="Editar vicario" (click)="startEdit('auxiliar')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -284,7 +285,7 @@
           Teléfono
         </mat-card-title>
         @if (editingSection() !== 'phone') {
-          <button type="button" matIconButton (click)="startEdit('phone')">
+          <button type="button" matIconButton matTooltip="Editar teléfono" (click)="startEdit('phone')">
             <mat-icon>edit</mat-icon>
           </button>
         }

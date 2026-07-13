@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -25,6 +26,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
+        MatTooltipModule,
         MatProgressSpinnerModule,
         FullnamePipe,
         HasPermissionPipe,

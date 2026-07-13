@@ -8,7 +8,7 @@
       <input matInput [formControl]="beneficentCtrl" [matAutocomplete]="beneficentAuto"
              placeholder="Busca por nombre o apellido…">
       @if (beneficentCtrl.value) {
-        <button matSuffix matIconButton type="button" (click)="clearBeneficent()">
+        <button matSuffix matIconButton type="button" matTooltip="Limpiar donador" (click)="clearBeneficent()">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -32,7 +32,7 @@
       <input matInput [formControl]="collectorCtrl" [matAutocomplete]="collectorAuto"
              placeholder="Busca por nombre o apellido…">
       @if (collectorCtrl.value) {
-        <button matSuffix matIconButton type="button" (click)="clearCollector()">
+        <button matSuffix matIconButton type="button" matTooltip="Limpiar colector" (click)="clearCollector()">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -79,7 +79,7 @@
                 <span class="text-sm font-medium truncate text-[color:var(--mat-sys-on-surface)]">{{ pair.beneficentLabel }}</span>
                 <span class="text-xs truncate text-[color:var(--mat-sys-on-surface-variant)]">{{ pair.collectorLabel }}</span>
               </div>
-              <button type="button" matIconButton color="warn" (click)="removePair(i)">
+              <button type="button" matIconButton color="warn" matTooltip="Quitar par" (click)="removePair(i)">
                 <mat-icon>close</mat-icon>
               </button>
             </div>

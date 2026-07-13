@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -14,6 +15,7 @@ import { Permission, Role, RoleService } from '@app/core/services/role.service';
 import { TabService } from '@app/core/services/tab.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-state.component';
 
 @Component({
     selector: 'roles-component',
@@ -28,9 +30,11 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         MatInputModule,
         MatButtonModule,
         MatIconModule,
+        MatTooltipModule,
         MatProgressBarModule,
         MatChipsModule,
         HasPermissionPipe,
+        EmptyStateComponent,
     ],
 })
 export class RolesComponent implements OnInit, AfterViewInit {

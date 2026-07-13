@@ -28,7 +28,7 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Acciones</th>
       <td mat-cell *matCellDef="let permission">
-        <button type="button" matIconButton [disabled]="!(Permissions.DELETE_PERMISSION | hasPermission)" (click)="deletePermission(permission)">
+        <button type="button" matIconButton matTooltip="Eliminar permiso" [disabled]="!(Permissions.DELETE_PERMISSION | hasPermission)" (click)="deletePermission(permission)">
           <mat-icon>delete</mat-icon>
         </button>
       </td>
@@ -39,11 +39,7 @@
     <tr *matNoDataRow>
       <td [attr.colspan]="displayedColumns.length">
         @if (!isLoading()) {
-          <div class="py-20 flex flex-col items-center gap-2">
-            <mat-icon class="!text-[56px] !w-14 !h-14 text-[color:var(--mat-sys-outline-variant)]">lock</mat-icon>
-            <span class="text-base font-medium text-[color:var(--mat-sys-on-surface-variant)]">Sin permisos</span>
-            <span class="text-sm text-[color:var(--mat-sys-outline)]">No hay permisos registrados</span>
-          </div>
+          <app-empty-state icon="lock" title="Sin permisos" message="No hay permisos registrados" />
         }
       </td>
     </tr>

@@ -12,6 +12,7 @@
       <mat-form-field appearance="outline" class="flex-1">
         <mat-label>Acción</mat-label>
         <input matInput formControlName="action" placeholder="add, view, edit, delete..." autocomplete="off" />
+        <mat-hint>Solo letras minúsculas, sin espacios</mat-hint>
         @if (form.controls.action.hasError('required')) {
           <mat-error>Obligatorio</mat-error>
         }
@@ -23,6 +24,7 @@
       <mat-form-field appearance="outline" class="flex-1">
         <mat-label>Recurso</mat-label>
         <input matInput formControlName="resource" placeholder="church, collector..." autocomplete="off" />
+        <mat-hint>Solo letras minúsculas, sin espacios</mat-hint>
         @if (form.controls.resource.hasError('required')) {
           <mat-error>Obligatorio</mat-error>
         }
@@ -40,6 +42,7 @@
         rows="3"
         placeholder="Describe qué permite hacer este permiso..."
       ></textarea>
+      <mat-hint>Máximo 200 caracteres</mat-hint>
       @if (form.controls.description.hasError('maxlength')) {
         <mat-error>Máximo 200 caracteres</mat-error>
       }

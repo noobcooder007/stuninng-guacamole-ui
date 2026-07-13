@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -34,6 +35,7 @@ interface AssignedDonor {
         MatAutocompleteModule,
         MatButtonModule,
         MatIconModule,
+        MatTooltipModule,
         MatProgressSpinnerModule,
         HasPermissionPipe,
     ],

@@ -46,10 +46,10 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Acciones</th>
       <td mat-cell *matCellDef="let role">
-        <button type="button" matIconButton [disabled]="!(Permissions.MANAGE_ROLE | hasPermission)" (click)="openPermissionsTab(role)">
+        <button type="button" matIconButton matTooltip="Gestionar permisos" [disabled]="!(Permissions.MANAGE_ROLE | hasPermission)" (click)="openPermissionsTab(role)">
           <mat-icon>security</mat-icon>
         </button>
-        <button type="button" matIconButton [disabled]="!(Permissions.DELETE_ROLE | hasPermission)" (click)="deleteRole(role)">
+        <button type="button" matIconButton matTooltip="Eliminar rol" [disabled]="!(Permissions.DELETE_ROLE | hasPermission)" (click)="deleteRole(role)">
           <mat-icon>delete</mat-icon>
         </button>
       </td>
@@ -60,11 +60,7 @@
     <tr *matNoDataRow>
       <td [attr.colspan]="displayedColumns.length">
         @if (!isLoading()) {
-          <div class="py-20 flex flex-col items-center gap-2">
-            <mat-icon class="!text-[56px] !w-14 !h-14 text-[color:var(--mat-sys-outline-variant)]">manage_accounts</mat-icon>
-            <span class="text-base font-medium text-[color:var(--mat-sys-on-surface-variant)]">Sin roles</span>
-            <span class="text-sm text-[color:var(--mat-sys-outline)]">No hay roles configurados</span>
-          </div>
+          <app-empty-state icon="manage_accounts" title="Sin roles" message="No hay roles configurados" />
         }
       </td>
     </tr>

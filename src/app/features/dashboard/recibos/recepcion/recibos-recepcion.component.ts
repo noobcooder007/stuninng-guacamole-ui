@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CurrencyPipe } from '@angular/common';
@@ -39,6 +40,7 @@ import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-st
         MatProgressBarModule,
         MatProgressSpinnerModule,
         MatDividerModule,
+        MatTooltipModule,
         MatDialogModule,
         CurrencyPipe,
         HasPermissionPipe,

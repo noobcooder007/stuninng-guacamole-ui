@@ -85,11 +85,7 @@
     <tr *matNoDataRow>
       <td [attr.colspan]="displayedColumns.length">
         @if (!isLoading()) {
-          <div class="py-20 flex flex-col items-center gap-2">
-            <mat-icon class="!text-[56px] !w-14 !h-14 text-[color:var(--mat-sys-outline-variant)]">group</mat-icon>
-            <span class="text-base font-medium text-[color:var(--mat-sys-on-surface-variant)]">Sin usuarios</span>
-            <span class="text-sm text-[color:var(--mat-sys-outline)]">No se encontraron usuarios con los filtros actuales</span>
-          </div>
+          <app-empty-state icon="group" title="Sin usuarios" message="No se encontraron usuarios con los filtros actuales" />
         }
       </td>
     </tr>

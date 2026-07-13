@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Búsqueda Avanzada de Colectores</h2>
+<h2 mat-dialog-title>{{ isEdit ? 'Editar instrucción' : 'Agregar instrucción' }}</h2>
 
 <mat-dialog-content>
     <form class="grid grid-cols-3 gap-4 p-4" [formGroup]="instructionForm">

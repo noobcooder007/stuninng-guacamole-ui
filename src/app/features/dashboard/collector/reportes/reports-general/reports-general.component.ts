@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -35,6 +36,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatIconModule,
+    MatTooltipModule,
     MatCardModule,
     MatDatepickerModule,
     MatNativeDateModule,

@@ -2,6 +2,9 @@
   <div class="flex items-center justify-between">
     <div>
       <h2 class="text-2xl font-semibold">Permisos del rol</h2>
+      <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">
+        Marca los permisos que tendrán los usuarios con este rol. El checkbox de cada módulo selecciona o quita todos sus permisos a la vez.
+      </p>
       @if (roleName()) {
         <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">{{ roleName() }} · {{ selectedCount() }} permiso(s) asignado(s)</p>
       }

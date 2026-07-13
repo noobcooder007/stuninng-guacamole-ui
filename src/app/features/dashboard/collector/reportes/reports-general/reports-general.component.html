@@ -1,4 +1,7 @@
 <div class="reports-general-layout">
+  <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] p-4 pb-0">
+    "Diferencia Cantidades" compara lo asignado contra lo cobrado en un periodo. "Eficiencia" y "Eficiencia Concentrada" muestran la tasa de cobro por colector; la segunda permite filtrar por rango de porcentaje.
+  </p>
   <!-- Menú lateral -->
   <mat-nav-list class="reports-menu">
     @for (report of reports; track report.id) {
@@ -97,7 +100,7 @@
                 <mat-label>Colector (opcional)</mat-label>
                 <input matInput [formControl]="efficiencyCollectorCtrl" [matAutocomplete]="efficiencyCollectorAuto" placeholder="Buscar colector…" />
                 @if (efficiencyCollectorCtrl.value) {
-                  <button matSuffix matIconButton type="button" (click)="clearEfficiencyCollector()">
+                  <button matSuffix matIconButton type="button" matTooltip="Limpiar colector" (click)="clearEfficiencyCollector()">
                     <mat-icon>close</mat-icon>
                   </button>
                 }
@@ -184,7 +187,7 @@
                 <mat-label>Colector (opcional)</mat-label>
                 <input matInput [formControl]="concentratedCollectorCtrl" [matAutocomplete]="concentratedCollectorAuto" placeholder="Buscar colector…" />
                 @if (concentratedCollectorCtrl.value) {
-                  <button matSuffix matIconButton type="button" (click)="clearConcentratedCollector()">
+                  <button matSuffix matIconButton type="button" matTooltip="Limpiar colector" (click)="clearConcentratedCollector()">
                     <mat-icon>close</mat-icon>
                   </button>
                 }

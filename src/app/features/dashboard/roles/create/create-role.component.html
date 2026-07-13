@@ -24,6 +24,7 @@
         rows="3"
         placeholder="Describe brevemente las responsabilidades de este rol..."
       ></textarea>
+      <mat-hint>Máximo 200 caracteres</mat-hint>
       @if (form.controls.description.hasError('maxlength')) {
         <mat-error>Máximo 200 caracteres</mat-error>
       }

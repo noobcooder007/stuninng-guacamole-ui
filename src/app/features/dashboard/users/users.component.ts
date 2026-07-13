@@ -15,6 +15,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { User, UserService } from '@app/core/services/user.service';
 import { TabService } from '@app/core/services/tab.service';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-state.component';
 
 @Component({
     selector: 'users-component',
@@ -33,6 +34,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         MatIconModule,
         MatProgressBarModule,
         MatTooltipModule,
+        EmptyStateComponent,
     ],
 })
 export class UsersComponent implements OnInit, AfterViewInit {

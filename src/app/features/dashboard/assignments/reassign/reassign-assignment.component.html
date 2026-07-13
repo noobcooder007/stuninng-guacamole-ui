@@ -1,6 +1,9 @@
 <div class="flex flex-col h-full w-full overflow-y-auto no-scrollbar p-6 items-center">
   <div class="flex flex-col w-full max-w-3xl">
-    <h2 class="text-xl font-semibold mb-6">Reasignar asignaciones</h2>
+    <h2 class="text-xl font-semibold mb-2">Reasignar asignaciones</h2>
+    <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] mb-6">
+      Elige un colector de origen y uno destino. Mueve bienhechores de la lista "Disponibles" a "Seleccionados" con las flechas y confirma para transferirlos al colector destino.
+    </p>
 
     <div class="grid grid-cols-2 gap-4 mb-6">
       <mat-form-field appearance="outline" class="w-full">
@@ -39,7 +42,7 @@
           @for (a of availableAssignments; track a.id) {
             <div class="flex items-center justify-between px-2 py-1 rounded hover:bg-[color:var(--mat-sys-surface-container-low)]">
               <span class="text-sm">{{ a.beneficient | fullname }}</span>
-              <button type="button" matIconButton (click)="moveRight(a)">
+              <button type="button" matIconButton matTooltip="Mover a seleccionados" (click)="moveRight(a)">
                 <mat-icon>chevron_right</mat-icon>
               </button>
             </div>
@@ -58,7 +61,7 @@
         <div class="flex flex-col gap-1">
           @for (a of selectedAssignments; track a.id) {
             <div class="flex items-center justify-between px-2 py-1 rounded hover:bg-[color:var(--mat-sys-surface-container-low)]">
-              <button type="button" matIconButton (click)="moveLeft(a)">
+              <button type="button" matIconButton matTooltip="Mover a disponibles" (click)="moveLeft(a)">
                 <mat-icon>chevron_left</mat-icon>
               </button>
               <span class="text-sm">{{ a.beneficient | fullname }}</span>

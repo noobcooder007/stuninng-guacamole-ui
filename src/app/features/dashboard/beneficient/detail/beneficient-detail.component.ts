@@ -10,6 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
@@ -51,6 +52,7 @@ const atMostOneAddressField: ValidatorFn = (control: AbstractControl): Validatio
         MatIconModule,
         MatFormFieldModule,
         MatInputModule,
+        MatTooltipModule,
         MatSelectModule,
         MatDatepickerModule,
         MatCheckboxModule,

@@ -1,5 +1,9 @@
 <div class="p-6 flex flex-col gap-6 max-w-4xl mx-auto">
 
+  <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">
+    Filtra por periodo, rango de folios o colector y genera el PDF que necesites: "Carta de recibos" produce una carta resumen, "Imprimir recibos" produce los recibos individuales listos para imprimir.
+  </p>
+
   <mat-card>
     <mat-card-content class="flex flex-col gap-6 pt-4">
 
@@ -46,6 +50,7 @@
               [ngModel]="filters.fromSequence"
               (ngModelChange)="filters.fromSequence = $event ? +$event.replace(/\D/g, '') || null : null"
             />
+            <mat-hint>Solo números</mat-hint>
           </mat-form-field>
           <mat-form-field appearance="outline" class="min-w-44 flex-1">
             <mat-label>Folio final</mat-label>
@@ -57,6 +62,7 @@
               [ngModel]="filters.toSequence"
               (ngModelChange)="filters.toSequence = $event ? +$event.replace(/\D/g, '') || null : null"
             />
+            <mat-hint>Solo números</mat-hint>
           </mat-form-field>
         </div>
       </div>

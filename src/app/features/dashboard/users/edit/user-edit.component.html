@@ -22,11 +22,12 @@
         Nombre de usuario
       </mat-card-title>
       @if (editingUsername()) {
-        <button type="button" matIconButton (click)="cancelEditUsername()">
+        <button type="button" matIconButton matTooltip="Cancelar" (click)="cancelEditUsername()">
           <mat-icon>close</mat-icon>
         </button>
       } @else {
         <button type="button" matIconButton
+          matTooltip="Editar nombre de usuario"
           [disabled]="!(Permissions.EDIT_USER | hasPermission)"
           (click)="startEditUsername()">
           <mat-icon>edit</mat-icon>
@@ -39,6 +40,7 @@
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Nuevo nombre de usuario</mat-label>
             <input matInput formControlName="username" aria-label="Nuevo nombre de usuario" autocomplete="off" />
+            <mat-hint>Entre 4 y 50 caracteres, solo letras y números</mat-hint>
             @if (usernameForm.controls.username.hasError('required')) {
               <mat-error>Campo obligatorio</mat-error>
             }
@@ -93,9 +95,12 @@
             [type]="showPassword() ? 'text' : 'password'"
             autocomplete="new-password"
           />
-          <button matIconSuffix type="button" (click)="togglePasswordVisibility()">
+          <button matIconSuffix type="button"
+            [matTooltip]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            (click)="togglePasswordVisibility()">
             <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
+          <mat-hint>Entre 6 y 50 caracteres</mat-hint>
           @if (passwordForm.controls.newPassword.hasError('required')) {
             <mat-error>Campo obligatorio</mat-error>
           }

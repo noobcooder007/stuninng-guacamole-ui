@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CurrencyPipe } from '@angular/common';
 import { PaginatedMetadata } from '@app/core/services/collector.service';
 import { Recibo, ReceiptType, RecibosService, ReciboFilters } from '@app/core/services/recibos.service';
@@ -31,6 +32,7 @@ import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-st
         MatButtonModule,
         MatIconModule,
         MatProgressBarModule,
+        MatTooltipModule,
         CurrencyPipe,
         EmptyStateComponent,
     ],

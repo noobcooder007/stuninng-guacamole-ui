@@ -49,7 +49,7 @@
           Información personal
         </mat-card-title>
         @if (editingSection() !== 'personal') {
-          <button type="button" matIconButton (click)="startEdit('personal')">
+          <button type="button" matIconButton matTooltip="Editar datos personales" (click)="startEdit('personal')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -104,7 +104,7 @@
           Domicilio
         </mat-card-title>
         @if (editingSection() !== 'address') {
-          <button type="button" matIconButton (click)="startEdit('address')">
+          <button type="button" matIconButton matTooltip="Editar domicilio" (click)="startEdit('address')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -202,7 +202,7 @@
           Contacto
         </mat-card-title>
         @if (editingSection() !== 'contact') {
-          <button type="button" matIconButton (click)="startEdit('contact')">
+          <button type="button" matIconButton matTooltip="Editar contacto" (click)="startEdit('contact')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -249,7 +249,7 @@
           Datos de pago
         </mat-card-title>
         @if (editingSection() !== 'payment') {
-          <button type="button" matIconButton (click)="startEdit('payment')">
+          <button type="button" matIconButton matTooltip="Editar datos de pago" (click)="startEdit('payment')">
             <mat-icon>edit</mat-icon>
           </button>
         }
@@ -260,6 +260,7 @@
             <mat-form-field appearance="outline" class="w-48">
               <mat-label>Comisión (%)</mat-label>
               <input type="number" matInput formControlName="commissionPercent" aria-label="Comisión" />
+              <mat-hint>Entre 0 y 100</mat-hint>
               @if (paymentForm.get('commissionPercent')?.hasError('min') || paymentForm.get('commissionPercent')?.hasError('max')) {
                 <mat-error>Valor entre 0 y 100</mat-error>
               }
@@ -323,7 +324,7 @@
           Notas
         </mat-card-title>
         @if (editingSection() !== 'notes') {
-          <button type="button" matIconButton (click)="startEdit('notes')">
+          <button type="button" matIconButton matTooltip="Editar notas" (click)="startEdit('notes')">
             <mat-icon>edit</mat-icon>
           </button>
         }

@@ -1,5 +1,9 @@
 <div class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6 gap-6 max-w-4xl mx-auto">
 
+  <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">
+    Inserta o busca un folio pendiente para agregarlo a la cola. Cuando termines, confirma la cola completa para registrar el pago de todos los recibos agregados.
+  </p>
+
   <!-- ── Zona de captura y cola ───────────────────────────────────────── -->
   <section class="flex flex-col gap-4">
 
@@ -15,6 +19,7 @@
           placeholder="ej. JUN2026-0001-R-0001"
           (keydown.enter)="onAddFolioToTable()"
         />
+        <mat-hint>Ej. JUN2026-0001-R-0001</mat-hint>
         <mat-error>
           @if (folioAddControl.hasError('notFound')) {
             Folio no encontrado o ya fue pagado
@@ -116,7 +121,7 @@
       <ng-container matColumnDef="remove">
         <th mat-header-cell *matHeaderCellDef><span class="sr-only">Quitar de cola</span></th>
         <td mat-cell *matCellDef="let row" class="text-right">
-          <button type="button" matIconButton (click)="removeFromQueue(row)" [disabled]="isConfirming()">
+          <button type="button" matIconButton matTooltip="Quitar de cola" (click)="removeFromQueue(row)" [disabled]="isConfirming()">
             <mat-icon>remove_circle_outline</mat-icon>
           </button>
         </td>
@@ -125,13 +130,8 @@
       <tr mat-header-row *matHeaderRowDef="queueDisplayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: queueDisplayedColumns;"></tr>
       <tr *matNoDataRow>
-        <td [attr.colspan]="queueDisplayedColumns.length" class="py-20 text-center">
-          <div class="flex flex-col items-center gap-2">
-            <mat-icon class="!text-[40px] !w-10 !h-10 text-[color:var(--mat-sys-outline-variant)]">inbox</mat-icon>
-            <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">
-              Cola vacía — inserta un folio para comenzar
-            </span>
-          </div>
+        <td [attr.colspan]="queueDisplayedColumns.length" class="text-center">
+          <app-empty-state icon="inbox" title="Cola vacía" message="Inserta un folio para comenzar" [compact]="true" />
         </td>
       </tr>
     </table>
@@ -227,7 +227,7 @@
               type="button"
               matIconButton
               (click)="addToQueueFromBrowse(row)"
-              title="Agregar a cola"
+              matTooltip="Agregar a cola"
             >
               <mat-icon>add_circle_outline</mat-icon>
             </button>
