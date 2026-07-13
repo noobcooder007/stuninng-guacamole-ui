@@ -14,14 +14,25 @@
       </mat-form-field>
 
       @if (selectedCollectorId) {
-        <button type="button" mat-stroked-button (click)="clearFilter()">
+        <button type="button" matButton="outlined" (click)="clearFilter()">
           <span class="flex items-center gap-1"><mat-icon>close</mat-icon> Quitar filtro</span>
         </button>
       }
 
       @if (selection.hasValue()) {
-        <button type="button" mat-flat-button color="warn" class="ml-auto" [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission)" (click)="deactivateSelected()">
-          Desactivar seleccionados ({{ selection.selected.length }})
+        <button
+          type="button"
+          matButton="filled"
+          color="warn"
+          class="ml-auto"
+          [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission) || isDeactivatingSelected() || deactivatingId() !== null"
+          (click)="deactivateSelected()"
+        >
+          @if (isDeactivatingSelected()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            Desactivar seleccionados ({{ selection.selected.length }})
+          }
         </button>
       }
     </div>
@@ -67,8 +78,18 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef aria-label="Acciones"></th>
         <td mat-cell *matCellDef="let element">
-          <button type="button" mat-stroked-button color="warn" [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission)" (click)="deactivateOne(element)">
-            Desactivar
+          <button
+            type="button"
+            matButton="outlined"
+            color="warn"
+            [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission) || deactivatingId() !== null || isDeactivatingSelected()"
+            (click)="deactivateOne(element)"
+          >
+            @if (deactivatingId() === element.id) {
+              <mat-spinner diameter="20" />
+            } @else {
+              Desactivar
+            }
           </button>
         </td>
       </ng-container>
@@ -99,7 +120,7 @@
     />
 
     <div class="flex justify-end mt-4">
-      <button type="button" mat-button (click)="cancel()">Cerrar</button>
+      <button type="button" matButton (click)="cancel()">Cerrar</button>
     </div>
   </div>
 </div>

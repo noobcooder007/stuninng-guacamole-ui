@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -37,6 +38,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
         MatIconModule,
         MatPaginatorModule,
         MatProgressBarModule,
+        MatProgressSpinnerModule,
         MatSortModule,
         MatTableModule,
         DatePipe,
@@ -58,6 +60,8 @@ export class DeactivateAssignmentComponent implements OnInit, AfterViewInit {
     };
 
     public isLoading = signal(false);
+    public isDeactivatingSelected = signal(false);
+    public deactivatingId = signal<string | null>(null);
     public pagination = signal<PaginatedMetadata>(this.initialPagination);
     public dataSource = new MatTableDataSource<Assignment>();
     public selection = new SelectionModel<Assignment>(true, []);
@@ -152,11 +156,14 @@ export class DeactivateAssignmentComponent implements OnInit, AfterViewInit {
             },
         }).afterClosed().subscribe(confirmed => {
             if (!confirmed) return;
+            this.deactivatingId.set(assignment.id);
             this.assignmentService.deactivate(assignment.id).subscribe({
                 next: () => {
                     this.snackbar.open('Asignación desactivada correctamente', 'Cerrar', { duration: 4000 });
+                    this.deactivatingId.set(null);
                     this.loadData(this.pagination().page, this.pagination().limit);
                 },
+                error: () => this.deactivatingId.set(null),
             });
         });
     }
@@ -171,11 +178,14 @@ export class DeactivateAssignmentComponent implements OnInit, AfterViewInit {
             },
         }).afterClosed().subscribe(confirmed => {
             if (!confirmed) return;
+            this.isDeactivatingSelected.set(true);
             forkJoin(selected.map(a => this.assignmentService.deactivate(a.id))).subscribe({
                 next: () => {
                     this.snackbar.open(`${selected.length} asignaciones desactivadas correctamente`, 'Cerrar', { duration: 4000 });
+                    this.isDeactivatingSelected.set(false);
                     this.loadData(this.pagination().page, this.pagination().limit);
                 },
+                error: () => this.isDeactivatingSelected.set(false),
             });
         });
     }

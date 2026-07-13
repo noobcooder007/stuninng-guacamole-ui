@@ -56,7 +56,7 @@
             <button type="button" matButton (click)="cancelEditUsername()">Cancelar</button>
             <button type="submit" matButton="filled" [disabled]="usernameForm.invalid || isSavingUsername()">
               @if (isSavingUsername()) {
-                <mat-progress-spinner diameter="18" mode="indeterminate" />
+                <mat-spinner diameter="20" />
               } @else {
                 Guardar
               }
@@ -110,7 +110,7 @@
           <button type="submit" matButton="filled"
             [disabled]="passwordForm.invalid || isSavingPassword() || !(Permissions.EDIT_USER | hasPermission)">
             @if (isSavingPassword()) {
-              <mat-progress-spinner diameter="18" mode="indeterminate" />
+              <mat-spinner diameter="20" />
             } @else {
               Cambiar contraseña
             }
@@ -144,7 +144,7 @@
             [disabled]="isTogglingStatus() || !(Permissions.EDIT_USER | hasPermission)"
             (click)="toggleStatus()">
             @if (isTogglingStatus()) {
-              <mat-progress-spinner diameter="18" mode="indeterminate" />
+              <mat-spinner diameter="20" />
             } @else {
               <mat-icon>person_off</mat-icon>
             }
@@ -155,7 +155,7 @@
             [disabled]="isTogglingStatus() || !(Permissions.EDIT_USER | hasPermission)"
             (click)="toggleStatus()">
             @if (isTogglingStatus()) {
-              <mat-progress-spinner diameter="18" mode="indeterminate" />
+              <mat-spinner diameter="20" />
             } @else {
               <mat-icon>how_to_reg</mat-icon>
             }

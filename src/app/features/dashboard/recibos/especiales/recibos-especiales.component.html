@@ -36,7 +36,7 @@
         }
       </mat-autocomplete>
       @if (beneficientCtrl.value) {
-        <button matSuffix mat-icon-button (click)="clearBeneficient()" type="button">
+        <button matSuffix matIconButton (click)="clearBeneficient()" type="button">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -75,7 +75,7 @@
         }
       </mat-autocomplete>
       @if (collectorCtrl.value) {
-        <button matSuffix mat-icon-button (click)="clearCollector()" type="button">
+        <button matSuffix matIconButton (click)="clearCollector()" type="button">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -132,9 +132,10 @@
         (click)="onSave()"
       >
         @if (isSaving()) {
-          <mat-spinner diameter="18" class="mr-2" />
+          <mat-spinner diameter="20" />
+        } @else {
+          Crear recibo especial
         }
-        Crear recibo especial
       </button>
     </div>
 

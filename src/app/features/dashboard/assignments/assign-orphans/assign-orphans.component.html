@@ -14,13 +14,13 @@
       </mat-form-field>
 
       @if (selectedCollector) {
-        <button type="button" mat-icon-button (click)="clearCollector()" matTooltip="Quitar colector">
+        <button type="button" matIconButton (click)="clearCollector()" matTooltip="Quitar colector">
           <mat-icon>close</mat-icon>
         </button>
       }
 
       @if (canAssign) {
-        <button type="button" mat-flat-button class="ml-auto" [disabled]="isSaving() || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="assign()">
+        <button type="button" matButton="filled" class="ml-auto" [disabled]="isSaving() || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="assign()">
           @if (isSaving()) {
             <mat-spinner diameter="20" />
           } @else {
@@ -89,7 +89,7 @@
     />
 
     <div class="flex justify-end mt-4">
-      <button type="button" mat-button (click)="cancel()">Cerrar</button>
+      <button type="button" matButton (click)="cancel()">Cerrar</button>
     </div>
   </div>
 </div>

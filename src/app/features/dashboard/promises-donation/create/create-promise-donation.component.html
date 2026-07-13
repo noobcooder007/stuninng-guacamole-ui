@@ -24,7 +24,7 @@
           }
         </mat-autocomplete>
       </mat-form-field>
-      <button type="button" mat-button (click)="openAdvancedSearch()">Busqueda avanzada</button>
+      <button type="button" matButton (click)="openAdvancedSearch()">Busqueda avanzada</button>
       <mat-form-field appearance="outline">
         <mat-label>Moneda</mat-label>
         <mat-select formControlName="currency">
@@ -97,13 +97,13 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-      <button type="button" mat-stroked-button [disabled]="!canAddInstruction() || !(Permissions.ADD_PROMISE | hasPermission)" (click)="addInstruction()">Añadir instrucción</button>
+      <button type="button" matButton="outlined" [disabled]="!canAddInstruction() || !(Permissions.ADD_PROMISE | hasPermission)" (click)="addInstruction()">Añadir instrucción</button>
     </div>
     <div class="flex flex-col gap-4 w-full">
       <button
         class="w-full"
         type="button"
-        mat-flat-button
+        matButton="filled"
         (click)="createPromiseDonation()"
         [disabled]="createPromiseDonationForm.invalid || isLoading() || !(Permissions.ADD_PROMISE | hasPermission)"
       >

@@ -8,7 +8,7 @@
       <input matInput [formControl]="beneficentCtrl" [matAutocomplete]="beneficentAuto"
              placeholder="Busca por nombre o apellido…">
       @if (beneficentCtrl.value) {
-        <button matSuffix mat-icon-button type="button" (click)="clearBeneficent()">
+        <button matSuffix matIconButton type="button" (click)="clearBeneficent()">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -32,7 +32,7 @@
       <input matInput [formControl]="collectorCtrl" [matAutocomplete]="collectorAuto"
              placeholder="Busca por nombre o apellido…">
       @if (collectorCtrl.value) {
-        <button matSuffix mat-icon-button type="button" (click)="clearCollector()">
+        <button matSuffix matIconButton type="button" (click)="clearCollector()">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -54,7 +54,7 @@
 
     <!-- Botón agregar -->
     <div class="mb-6">
-      <button type="button" mat-stroked-button class="w-full"
+      <button type="button" matButton="outlined" class="w-full"
               [disabled]="!canAddPair || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="addPair()">
         Agregar par
       </button>
@@ -79,7 +79,7 @@
                 <span class="text-sm font-medium truncate text-[color:var(--mat-sys-on-surface)]">{{ pair.beneficentLabel }}</span>
                 <span class="text-xs truncate text-[color:var(--mat-sys-on-surface-variant)]">{{ pair.collectorLabel }}</span>
               </div>
-              <button type="button" mat-icon-button color="warn" (click)="removePair(i)">
+              <button type="button" matIconButton color="warn" (click)="removePair(i)">
                 <mat-icon>close</mat-icon>
               </button>
             </div>
@@ -95,8 +95,8 @@
 
     <!-- Acciones -->
     <div class="flex justify-end gap-3">
-      <button type="button" mat-button (click)="cancel()">Cancelar</button>
-      <button type="button" mat-flat-button
+      <button type="button" matButton (click)="cancel()">Cancelar</button>
+      <button type="button" matButton="filled"
               [disabled]="!addedDonors.length || isSaving() || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="save()">
         @if (isSaving()) {
           <mat-spinner diameter="20" />

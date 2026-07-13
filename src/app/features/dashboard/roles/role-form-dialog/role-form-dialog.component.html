@@ -40,7 +40,7 @@
     (click)="submit()"
   >
     @if (isLoading()) {
-      <mat-progress-spinner diameter="18" mode="indeterminate" />
+      <mat-spinner diameter="20" />
     } @else {
       {{ isEditMode ? 'Guardar cambios' : 'Crear rol' }}
     }

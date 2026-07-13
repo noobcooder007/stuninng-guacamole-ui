@@ -41,11 +41,11 @@
           <mat-error>Por favor, ingresa una contraseña.</mat-error>
         </mat-form-field>
         <mat-checkbox formControlName="rememberMe">Recordarme</mat-checkbox>
-        <button mat-flat-button type="submit" [disabled]="!loginForm.valid || isLoading()">
-          @if (!isLoading()) {
-          <ng-container> Iniciar sesión </ng-container>
+        <button matButton="filled" type="submit" [disabled]="!loginForm.valid || isLoading()">
+          @if (isLoading()) {
+            <mat-spinner diameter="20" />
           } @else {
-          <mat-spinner diameter="20"></mat-spinner>
+            Iniciar sesión
           }
         </button>
       </form>

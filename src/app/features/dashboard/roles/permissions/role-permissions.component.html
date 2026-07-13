@@ -8,7 +8,7 @@
     </div>
     <button type="button" matButton="filled" [disabled]="isLoading() || isSaving() || !(Permissions.MANAGE_ROLE | hasPermission)" (click)="save()">
       @if (isSaving()) {
-        <mat-progress-spinner diameter="18" mode="indeterminate" />
+        <mat-spinner diameter="20" />
       } @else {
         Guardar permisos
       }
