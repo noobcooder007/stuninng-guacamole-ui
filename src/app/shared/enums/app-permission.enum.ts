@@ -17,16 +17,11 @@ export enum Permissions {
     EDIT_BENEFICIENT = 'edit:beneficient',
     DELETE_BENEFICIENT = 'delete:beneficient',
 
-    // Asignaciones
-    VIEW_ASSIGNMENT = 'view:assignment',
-    ADD_ASSIGNMENT = 'add:assignment',
-    DELETE_ASSIGNMENT = 'delete:assignment',
-
     // Promesas de donación
-    VIEW_PROMISE = 'view:promise',
-    ADD_PROMISE = 'add:promise',
-    EDIT_PROMISE = 'edit:promise',
-    DELETE_PROMISE = 'delete:promise',
+    VIEW_PROMISE = 'view:promise-donation',
+    ADD_PROMISE = 'add:promise-donation',
+    EDIT_PROMISE = 'edit:promise-donation',
+    DELETE_PROMISE = 'delete:promise-donation',
 
     // Recibos
     VIEW_INVOICE = 'view:invoice',
@@ -35,10 +30,16 @@ export enum Permissions {
     PRINT_INVOICE = 'print:invoice',
     VOID_INVOICE = 'void:invoice',
 
+    // Asignaciones
+    VIEW_ASSIGNMENT = 'view:assignment',
+    ADD_ASSIGNMENT = 'add:assignment',
+    EDIT_ASSIGNMENT = 'edit:assignment',
+    DELETE_ASSIGNMENT = 'delete:assignment',
+
     // Reportes
     VIEW_REPORT = 'view:report',
 
-    // Procesos
+    // Procesos de colecta
     VIEW_PROCESS = 'view:process',
     RUN_PROCESS = 'run:process',
 

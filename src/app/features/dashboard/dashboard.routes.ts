@@ -117,7 +117,7 @@ export const DASHBOARD_ROUTES: Routes = [
             {
                 path: 'assignments/reassign',
                 canActivate: [permissionGuard],
-                data: { permission: Permissions.ADD_ASSIGNMENT },
+                data: { permission: Permissions.EDIT_ASSIGNMENT },
                 loadComponent: () => import('./assignments/reassign/reassign-assignment.component')
                     .then(m => m.ReassignAssignmentComponent),
             },
@@ -194,7 +194,7 @@ export const DASHBOARD_ROUTES: Routes = [
             {
                 path: 'settlements',
                 canActivate: [permissionGuard],
-                data: { permission: Permissions.VIEW_INVOICE },
+                data: { permission: Permissions.VIEW_SETTLEMENT },
                 loadComponent: () => import('./settlements/settlements.component')
                     .then(m => m.SettlementsComponent),
             },
