@@ -94,8 +94,18 @@
               </mat-form-field>
 
               <mat-form-field appearance="outline">
-                <mat-label>Num. Colector (opcional)</mat-label>
-                <input matInput formControlName="collectorNum" type="number" min="1" />
+                <mat-label>Colector (opcional)</mat-label>
+                <input matInput [formControl]="efficiencyCollectorCtrl" [matAutocomplete]="efficiencyCollectorAuto" placeholder="Buscar colector…" />
+                @if (efficiencyCollectorCtrl.value) {
+                  <button matSuffix matIconButton type="button" (click)="clearEfficiencyCollector()">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
+                <mat-autocomplete #efficiencyCollectorAuto="matAutocomplete" [displayWith]="displayCollector" (optionSelected)="onEfficiencyCollectorSelected($event)">
+                  @for (c of filteredCollectors(); track c.id) {
+                    <mat-option [value]="c">{{ c.collectorNumber }} - {{ c.firstname }} {{ c.firstLastname }} {{ c.secondLastname ?? '' }}</mat-option>
+                  }
+                </mat-autocomplete>
               </mat-form-field>
             </div>
 
@@ -171,8 +181,18 @@
               </mat-form-field>
 
               <mat-form-field appearance="outline">
-                <mat-label>Num. Colector (opcional)</mat-label>
-                <input matInput formControlName="collectorNum" type="number" min="1" />
+                <mat-label>Colector (opcional)</mat-label>
+                <input matInput [formControl]="concentratedCollectorCtrl" [matAutocomplete]="concentratedCollectorAuto" placeholder="Buscar colector…" />
+                @if (concentratedCollectorCtrl.value) {
+                  <button matSuffix matIconButton type="button" (click)="clearConcentratedCollector()">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
+                <mat-autocomplete #concentratedCollectorAuto="matAutocomplete" [displayWith]="displayCollector" (optionSelected)="onConcentratedCollectorSelected($event)">
+                  @for (c of filteredCollectors(); track c.id) {
+                    <mat-option [value]="c">{{ c.collectorNumber }} - {{ c.firstname }} {{ c.firstLastname }} {{ c.secondLastname ?? '' }}</mat-option>
+                  }
+                </mat-autocomplete>
               </mat-form-field>
 
               <button matButton="filled" type="button" (click)="generateConcentratedEfficiencyReport()"

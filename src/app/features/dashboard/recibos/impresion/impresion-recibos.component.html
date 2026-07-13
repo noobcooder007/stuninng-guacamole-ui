@@ -81,9 +81,19 @@
             <mat-label>Apellido materno</mat-label>
             <input matInput type="text" aria-label="Apellido materno" [(ngModel)]="filters.secondLastname" />
           </mat-form-field>
-          <mat-form-field appearance="outline" class="min-w-36 flex-1">
-            <mat-label>Número de colector</mat-label>
-            <input matInput type="text" aria-label="Número de colector" [(ngModel)]="filters.collectorNumber" />
+          <mat-form-field appearance="outline" class="w-56">
+            <mat-label>Colector</mat-label>
+            <input matInput aria-label="Colector" [formControl]="collectorCtrl" [matAutocomplete]="impresionCollectorAuto" placeholder="Buscar colector…" />
+            @if (collectorCtrl.value) {
+              <button matSuffix matIconButton type="button" (click)="clearCollectorFilter()">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+            <mat-autocomplete #impresionCollectorAuto="matAutocomplete" [displayWith]="displayCollector" (optionSelected)="onCollectorSelected($event)">
+              @for (c of filteredCollectors(); track c.id) {
+                <mat-option [value]="c">{{ c.collectorNumber }} - {{ c.firstname }} {{ c.firstLastname }} {{ c.secondLastname ?? '' }}</mat-option>
+              }
+            </mat-autocomplete>
           </mat-form-field>
         </div>
       </div>

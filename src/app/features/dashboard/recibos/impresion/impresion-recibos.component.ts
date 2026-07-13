@@ -1,5 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,7 +9,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { RecibosService, ImpresionReciboFilters } from '@app/core/services/recibos.service';
+import { CollectorListItem, CollectorService } from '@app/core/services/collector.service';
 import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
@@ -23,6 +26,7 @@ type PrintAction = 'recibos' | 'carta';
     styleUrl: './impresion-recibos.component.scss',
     imports: [
         FormsModule,
+        ReactiveFormsModule,
         MatButtonModule,
         MatCardModule,
         MatDividerModule,
@@ -31,15 +35,22 @@ type PrintAction = 'recibos' | 'carta';
         MatInputModule,
         MatSelectModule,
         MatProgressSpinnerModule,
+        MatAutocompleteModule,
         HasPermissionPipe,
     ],
 })
-export class ImpresionRecibosComponent {
+export class ImpresionRecibosComponent implements OnInit {
     protected readonly Permissions = Permissions;
     private readonly recibosService = inject(RecibosService);
+    private readonly collectorService = inject(CollectorService);
     private readonly dialog = inject(MatDialog);
 
     readonly loadingAction = signal<PrintAction | null>(null);
+    readonly filteredCollectors = signal<CollectorListItem[]>([]);
+    readonly collectorCtrl = new FormControl<CollectorListItem | string | null>('');
+
+    displayCollector = (c: CollectorListItem | string | null) =>
+        c && typeof c !== 'string' ? `${c.collectorNumber} - ${c.firstname} ${c.firstLastname} ${c.secondLastname ?? ''}`.trim() : '';
 
     readonly months = [
         { value: '01', label: 'Enero' },
@@ -74,6 +85,25 @@ export class ImpresionRecibosComponent {
         toSequence: null,
     };
 
+    ngOnInit(): void {
+        this.collectorService.getActiveList().subscribe(items => this.filteredCollectors.set(items));
+        this.collectorCtrl.valueChanges.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap(v => this.collectorService.getActiveList(typeof v === 'string' ? v : undefined)),
+        ).subscribe(items => this.filteredCollectors.set(items));
+    }
+
+    onCollectorSelected(event: MatAutocompleteSelectedEvent): void {
+        const collector = event.option.value as CollectorListItem;
+        this.filters.collectorNumber = String(collector.collectorNumber);
+    }
+
+    clearCollectorFilter(): void {
+        this.collectorCtrl.setValue('');
+        this.filters.collectorNumber = null;
+    }
+
     clearFilters(): void {
         const now = new Date();
         this.filters = {
@@ -86,6 +116,7 @@ export class ImpresionRecibosComponent {
             fromSequence: null,
             toSequence: null,
         };
+        this.collectorCtrl.setValue('');
     }
 
     printRecibos(): void {

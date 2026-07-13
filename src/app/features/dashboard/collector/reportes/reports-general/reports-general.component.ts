@@ -9,13 +9,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import {
   EfficiencyConcentratedType,
   EfficiencyFilter,
   ConcentratedEfficiencyFilter,
   ReportsService,
 } from '@app/core/services/reports.service';
+import { CollectorListItem, CollectorService } from '@app/core/services/collector.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
 
@@ -35,6 +38,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
     MatCardModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatAutocompleteModule,
     ReactiveFormsModule,
     HasPermissionPipe,
   ],
@@ -42,6 +46,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
 export class ReportsGeneralComponent implements OnInit {
   protected readonly Permissions = Permissions;
   private reportsService = inject(ReportsService);
+  private collectorService = inject(CollectorService);
 
   public selectedReport = 'quantity-difference';
   public isLoading = signal(false);
@@ -110,9 +115,48 @@ export class ReportsGeneralComponent implements OnInit {
     collectorNum: new FormControl<number | null>(null, Validators.min(1)),
   });
 
+  public filteredCollectors = signal<CollectorListItem[]>([]);
+  public efficiencyCollectorCtrl = new FormControl<CollectorListItem | string | null>('');
+  public concentratedCollectorCtrl = new FormControl<CollectorListItem | string | null>('');
+
+  displayCollector = (c: CollectorListItem | string | null) =>
+    c && typeof c !== 'string' ? `${c.collectorNumber} - ${c.firstname} ${c.firstLastname} ${c.secondLastname ?? ''}`.trim() : '';
+
   ngOnInit(): void {
     this.generateYears();
     this.setCurrentValues();
+
+    this.collectorService.getActiveList().subscribe(items => this.filteredCollectors.set(items));
+    this.efficiencyCollectorCtrl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(v => this.collectorService.getActiveList(typeof v === 'string' ? v : undefined)),
+    ).subscribe(items => this.filteredCollectors.set(items));
+    this.concentratedCollectorCtrl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(v => this.collectorService.getActiveList(typeof v === 'string' ? v : undefined)),
+    ).subscribe(items => this.filteredCollectors.set(items));
+  }
+
+  onEfficiencyCollectorSelected(event: MatAutocompleteSelectedEvent): void {
+    const collector = event.option.value as CollectorListItem;
+    this.efficiencyForm.patchValue({ collectorNum: collector.collectorNumber });
+  }
+
+  clearEfficiencyCollector(): void {
+    this.efficiencyCollectorCtrl.setValue('');
+    this.efficiencyForm.patchValue({ collectorNum: null });
+  }
+
+  onConcentratedCollectorSelected(event: MatAutocompleteSelectedEvent): void {
+    const collector = event.option.value as CollectorListItem;
+    this.concentratedEfficiencyForm.patchValue({ collectorNum: collector.collectorNumber });
+  }
+
+  clearConcentratedCollector(): void {
+    this.concentratedCollectorCtrl.setValue('');
+    this.concentratedEfficiencyForm.patchValue({ collectorNum: null });
   }
 
   private generateYears(): void {

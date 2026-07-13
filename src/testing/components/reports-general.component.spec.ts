@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 import { ReportsGeneralComponent } from '@app/features/dashboard/collector/reportes/reports-general/reports-general.component';
 import { ReportsService } from '@app/core/services/reports.service';
 import { AuthService } from '@app/core/services/auth.service';
+import { CollectorService } from '@app/core/services/collector.service';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const CURRENT_MONTH = new Date().getMonth() + 1;
@@ -18,6 +19,9 @@ describe('ReportsGeneralComponent', () => {
     efficiencyReport: vi.fn().mockReturnValue(of(mockBlob)),
     concentratedEfficiencyReport: vi.fn().mockReturnValue(of(mockBlob)),
   };
+  const collectorServiceSpy = {
+    getActiveList: vi.fn().mockReturnValue(of([])),
+  };
 
   beforeEach(() => {
     vi.stubGlobal('URL', { createObjectURL: vi.fn(() => 'blob:mock') });
@@ -29,6 +33,7 @@ describe('ReportsGeneralComponent', () => {
         provideAnimationsAsync(),
         { provide: ReportsService, useValue: reportsServiceSpy },
         { provide: AuthService, useValue: { hasPermission: () => true } },
+        { provide: CollectorService, useValue: collectorServiceSpy },
       ],
     });
     component = TestBed.createComponent(ReportsGeneralComponent).componentInstance;
