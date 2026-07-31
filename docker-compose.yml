@@ -1,0 +1,8 @@
+services:
+  ui:
+    build: .
+    ports:
+      - "${UI_PORT:-4200}:80"
+    environment:
+      API_BASE_URL: ${API_BASE_URL:?Define API_BASE_URL en tu .env, ej. http://192.168.1.207:4321/api}
+    restart: unless-stopped
