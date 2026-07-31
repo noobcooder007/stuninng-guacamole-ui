@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
-import { environment } from 'environments/environment.development';
+import { environment } from 'environments/environment';
 import { LoginUsernamePasswordRequestDto }
     from '@app/features/auth/dto/login-username-password-request.dto';
 import { jwtDecode } from 'jwt-decode';

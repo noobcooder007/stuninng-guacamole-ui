@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { environment } from 'environments/environment.development';
+import { environment } from 'environments/environment';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Beneficient } from './beneficient.service';
 import { apiErrorMessage } from '@app/shared/utils/api-error';
