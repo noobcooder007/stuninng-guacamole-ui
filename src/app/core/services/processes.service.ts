@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { environment } from 'environments/environment.development';
+import { environment } from 'environments/environment';
 import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
 import { apiErrorMessage } from '@app/shared/utils/api-error';
 
@@ -54,6 +54,10 @@ export class ProcessesService {
 
     getPeriodStatus(): Observable<PeriodStatusResponse> {
         return this.http.get<PeriodStatusResponse>(`${this.apiUrl}/periods/current`);
+    }
+
+    getLastClosedPeriod(): Observable<PeriodStatusResponse> {
+        return this.http.get<PeriodStatusResponse>(`${this.apiUrl}/periods/last-closed`);
     }
 
     openPeriod(): Observable<PeriodStatusResponse> {

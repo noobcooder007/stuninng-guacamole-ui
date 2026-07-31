@@ -11,7 +11,14 @@
         Gestión de liquidaciones
       </span>
       @if (period(); as p) {
-        <h1 class="text-2xl font-bold leading-none">{{ periodLabel(p) }}</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="text-2xl font-bold leading-none">{{ periodLabel(p) }}</h1>
+          @if (p.status === PeriodStatusEnum.CLOSED) {
+            <span class="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-[color:var(--mat-sys-surface-variant)] text-[color:var(--mat-sys-on-surface-variant)]">
+              Cerrado
+            </span>
+          }
+        </div>
       } @else if (!isLoading()) {
         <h1 class="text-xl font-semibold text-[color:var(--mat-sys-on-surface-variant)]">Sin periodo activo</h1>
       }

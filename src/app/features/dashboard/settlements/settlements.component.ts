@@ -14,6 +14,7 @@ import { ProcessesService, PeriodStatus } from '@app/core/services/processes.ser
 import { Settlement, SettlementsService, RegisterPaymentDto, BulkPaymentDto } from '@app/core/services/settlements.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
 import { apiErrorMessage } from '@app/shared/utils/api-error';
 import { RegisterPaymentDialogComponent, RegisterPaymentDialogData } from './register-payment-dialog.component';
 import { BulkPaymentDialogComponent, BulkPaymentDialogData } from './bulk-payment-dialog.component';
@@ -42,6 +43,7 @@ interface SettlementRow extends Settlement {
 })
 export class SettlementsComponent implements OnInit {
     protected readonly Permissions = Permissions;
+    protected readonly PeriodStatusEnum = PeriodStatusEnum;
 
     private readonly settlementsService = inject(SettlementsService);
     private readonly processesService = inject(ProcessesService);
@@ -79,13 +81,31 @@ export class SettlementsComponent implements OnInit {
     ngOnInit(): void {
         this.processesService.getPeriodStatus().subscribe({
             next: ({ data }) => {
-                this.period.set(data);
-                this.loadSettlements(data.id);
+                if (data) {
+                    this.period.set(data);
+                    this.loadSettlements(data.id);
+                    return;
+                }
+                this.loadLastClosedPeriod();
             },
             error: (err) => {
                 this.isLoading.set(false);
                 this.snackbar.open(apiErrorMessage(err, 'No hay periodo activo'), 'Cerrar', { duration: 5000 });
             },
+        });
+    }
+
+    private loadLastClosedPeriod(): void {
+        this.processesService.getLastClosedPeriod().subscribe({
+            next: ({ data }) => {
+                this.period.set(data);
+                if (!data) {
+                    this.isLoading.set(false);
+                    return;
+                }
+                this.loadSettlements(data.id);
+            },
+            error: () => this.isLoading.set(false),
         });
     }
 
@@ -127,12 +147,14 @@ export class SettlementsComponent implements OnInit {
             .afterClosed()
             .subscribe((dto: RegisterPaymentDto | undefined) => {
                 if (!dto) return;
+                const periodId = this.period()?.id;
+                if (!periodId) return;
                 this.isRegistering.set(row.id);
                 this.settlementsService.registerPayment(row.id, dto).subscribe({
                     next: () => {
                         this.snackbar.open('Pago registrado correctamente', 'Cerrar', { duration: 4000 });
                         this.isRegistering.set(null);
-                        this.fetchSettlements(this.period()!.id);
+                        this.fetchSettlements(periodId);
                     },
                     error: () => this.isRegistering.set(null),
                 });
@@ -148,12 +170,14 @@ export class SettlementsComponent implements OnInit {
             .afterClosed()
             .subscribe((dto: BulkPaymentDto | undefined) => {
                 if (!dto) return;
+                const periodId = this.period()?.id;
+                if (!periodId) return;
                 this.isBulkPaying.set(true);
-                this.settlementsService.bulkPayment(this.period()!.id, dto).subscribe({
+                this.settlementsService.bulkPayment(periodId, dto).subscribe({
                     next: () => {
                         this.snackbar.open('Pago masivo registrado correctamente', 'Cerrar', { duration: 4000 });
                         this.isBulkPaying.set(false);
-                        this.fetchSettlements(this.period()!.id);
+                        this.fetchSettlements(periodId);
                     },
                     error: () => this.isBulkPaying.set(false),
                 });
