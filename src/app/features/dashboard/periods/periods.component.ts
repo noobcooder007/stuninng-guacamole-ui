@@ -91,11 +91,11 @@ export class PeriodsComponent implements OnInit {
         this.isLoadingPeriod.set(true);
         this.processesService.getPeriodStatus().subscribe({
             next: (res) => {
-                this.periodStatus.set(res.data);
-                this.isLoadingPeriod.set(false);
-                const month = res.data.month.toString().padStart(2, '0');
-                const year = res.data.year.toString();
-                this.periodReportsForm.patchValue({ month, year });
+                if (res.data) {
+                    this.applyPeriodStatus(res.data);
+                    return;
+                }
+                this.loadLastClosedPeriod();
             },
             error: (err) => {
                 this.periodStatus.set(null);
@@ -105,6 +105,31 @@ export class PeriodsComponent implements OnInit {
                 }
             },
         });
+    }
+
+    private loadLastClosedPeriod(): void {
+        this.processesService.getLastClosedPeriod().subscribe({
+            next: (res) => {
+                if (res.data) {
+                    this.applyPeriodStatus(res.data);
+                    return;
+                }
+                this.periodStatus.set(null);
+                this.isLoadingPeriod.set(false);
+            },
+            error: () => {
+                this.periodStatus.set(null);
+                this.isLoadingPeriod.set(false);
+            },
+        });
+    }
+
+    private applyPeriodStatus(period: PeriodStatus): void {
+        this.periodStatus.set(period);
+        this.isLoadingPeriod.set(false);
+        const month = period.month.toString().padStart(2, '0');
+        const year = period.year.toString();
+        this.periodReportsForm.patchValue({ month, year });
     }
 
     togglePeriod(): void {
