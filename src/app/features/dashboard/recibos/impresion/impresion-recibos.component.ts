@@ -129,7 +129,7 @@ export class ImpresionRecibosComponent implements OnInit {
 
     private confirmAndPrint(action: PrintAction, filename: string): void {
         const ref = this.dialog.open(PdfPreviewDialogComponent, {
-            data: { filename },
+            data: { filename, action },
             width: '480px',
         });
 

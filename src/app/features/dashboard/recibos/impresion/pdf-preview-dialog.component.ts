@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 export interface ConfirmPrintDialogData {
     filename: string;
+    action: 'recibos' | 'carta';
 }
 
 @Component({
@@ -14,23 +15,28 @@ export interface ConfirmPrintDialogData {
     template: `
         <h2 mat-dialog-title class="flex items-center gap-2">
             <mat-icon class="text-[color:var(--mat-sys-error)]">warning</mat-icon>
-            Confirmar impresión
+            {{ data.action === 'recibos' ? 'Confirmar impresión de recibos' : 'Confirmar carta de recibos' }}
         </h2>
 
         <mat-dialog-content>
             <p class="text-sm">
                 Estás a punto de generar <strong>{{ data.filename }}</strong>.
             </p>
-            <p class="text-sm text-[color:var(--mat-sys-error)] mt-2">
-                Después de la primera impresión los recibos quedan marcados como
-                <strong>reimpresión</strong> y llevarán una leyenda adicional en futuras impresiones.
-            </p>
+            @if (data.action === 'recibos') {
+                <p class="text-sm text-[color:var(--mat-sys-error)] mt-2">
+                    Después de la primera impresión los recibos quedan marcados como
+                    <strong>reimpresión</strong> y llevarán una leyenda adicional en futuras impresiones.
+                </p>
+            } @else {
+                <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] mt-2">
+                    Se generará la carta resumen de los recibos filtrados. Esto no marca los recibos como reimpresión.
+                </p>
+            }
         </mat-dialog-content>
 
         <mat-dialog-actions align="end">
             <button type="button" matButton mat-dialog-close>Cancelar</button>
             <button type="button" matButton="filled" (click)="dialogRef.close(true)">
-                <mat-icon>print</mat-icon>
                 Confirmar
             </button>
         </mat-dialog-actions>
