@@ -23,10 +23,7 @@
             [disabled]="isLoading() || filterForm.invalid || !(Permissions.VIEW_INVOICE | hasPermission)" data-cuelume-press data-cuelume-release>
       @if (isLoading()) { <mat-spinner diameter="20" /> }
       @else {
-        <span class="flex items-center gap-1">
-          <mat-icon>search</mat-icon>
-          Consultar
-        </span>
+        Consultar
       }
     </button>
   </form>

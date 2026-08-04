@@ -12,10 +12,7 @@
     <h2 class="text-lg font-semibold">Eficiencia de colectores</h2>
     <button matButton="tonal" type="button" (click)="cargar()"
             [disabled]="isLoading() || !(Permissions.VIEW_INVOICE | hasPermission)">
-      <span class="flex items-center gap-1">
-        <mat-icon>refresh</mat-icon>
-        Actualizar
-      </span>
+      Actualizar
     </button>
   </div>
 

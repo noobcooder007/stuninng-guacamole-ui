@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import type { PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
@@ -29,7 +28,6 @@ import { ListShellComponent, ListTableDirective } from '@app/shared/components/l
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MatIconModule,
         MatProgressSpinnerModule,
         GenderPipe,
         StatusPipe,

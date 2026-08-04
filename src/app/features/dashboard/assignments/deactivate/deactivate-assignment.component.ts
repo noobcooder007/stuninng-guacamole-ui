@@ -6,7 +6,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -36,7 +35,6 @@ import { EmptyStateComponent } from '@app/shared/components/empty-state/empty-st
         MatFormFieldModule,
         MatAutocompleteModule,
         MatInputModule,
-        MatIconModule,
         MatPaginatorModule,
         MatProgressBarModule,
         MatProgressSpinnerModule,

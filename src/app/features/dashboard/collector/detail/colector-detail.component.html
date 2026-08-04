@@ -33,8 +33,6 @@
         <button type="button" matButton="tonal" [disabled]="isGeneratingEfficiency()" (click)="generarEficiencia()" data-cuelume-press data-cuelume-release>
           @if (isGeneratingEfficiency()) {
             <mat-spinner diameter="18" />
-          } @else {
-            <mat-icon>picture_as_pdf</mat-icon>
           }
           Eficiencia
         </button>

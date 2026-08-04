@@ -30,8 +30,6 @@
         <button type="button" matButton="tonal" [disabled]="isGeneratingReport()" (click)="generarReporte()" data-cuelume-press data-cuelume-release>
           @if (isGeneratingReport()) {
             <mat-spinner diameter="18" />
-          } @else {
-            <mat-icon>picture_as_pdf</mat-icon>
           }
           Reporte
         </button>

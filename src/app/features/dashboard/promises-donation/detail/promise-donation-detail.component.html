@@ -196,7 +196,6 @@
           @if (editInstructions.weeklySchedule.length < 3) {
             <div>
               <button type="button" matButton="tonal" (click)="addInstruction()">
-                <mat-icon>add</mat-icon>
                 Agregar horario
               </button>
             </div>
@@ -264,14 +263,14 @@
         <button type="button" matButton="tonal"
           [disabled]="isSaving() || !(Permissions.EDIT_PROMISE | hasPermission)"
           (click)="deactivate()" data-cuelume-press data-cuelume-release>
-          @if (isSaving()) { <mat-spinner diameter="18" /> } @else { <mat-icon>block</mat-icon> }
+          @if (isSaving()) { <mat-spinner diameter="18" /> }
           Desactivar
         </button>
       } @else {
         <button type="button" matButton="filled"
           [disabled]="isSaving() || !(Permissions.EDIT_PROMISE | hasPermission)"
           (click)="reactivate()" data-cuelume-press data-cuelume-release>
-          @if (isSaving()) { <mat-spinner diameter="18" /> } @else { <mat-icon>replay</mat-icon> }
+          @if (isSaving()) { <mat-spinner diameter="18" /> }
           Reactivar
         </button>
       }

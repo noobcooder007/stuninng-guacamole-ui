@@ -5,8 +5,6 @@
       <button type="button" matButton="tonal" [disabled]="isGeneratingRegistro()" (click)="generarRegistro()" data-cuelume-press data-cuelume-release>
         @if (isGeneratingRegistro()) {
           <mat-spinner diameter="18" />
-        } @else {
-          <mat-icon>picture_as_pdf</mat-icon>
         }
         Registro PDF
       </button>
