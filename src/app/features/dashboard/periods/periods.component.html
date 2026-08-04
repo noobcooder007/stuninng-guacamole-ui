@@ -16,7 +16,9 @@
     } @else if (periodStatus(); as period) {
       <mat-card-header>
         <mat-card-title>{{ months[period.month - 1]?.label }} {{ period.year }}</mat-card-title>
-        <mat-card-subtitle>Periodo {{ period.status === PeriodStatusEnum.OPEN ? 'activo' : 'cerrado' }}</mat-card-subtitle>
+        <mat-card-subtitle>
+          {{ period.status === PeriodStatusEnum.OPEN ? 'Abierto' : 'Cerrado' }} el {{ period.createdAt | date: 'dd/MM/yyyy' }}
+        </mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
@@ -36,10 +38,18 @@
           @if (period.status === PeriodStatusEnum.OPEN) {
             <div class="flex flex-col gap-2">
               <span class="text-xs font-semibold uppercase tracking-wider text-[color:var(--mat-sys-outline)]">Recibos pendientes</span>
-              <span class="text-xl font-semibold">{{ period.pendingReceiptsCount }}</span>
+              <span
+                class="text-xl font-semibold"
+                [class.text-[color:var(--mat-sys-error)]]="period.pendingReceiptsCount > 0"
+              >{{ period.pendingReceiptsCount }}</span>
             </div>
           }
         </div>
+        @if (period.status === PeriodStatusEnum.OPEN && period.pendingReceiptsCount > 0) {
+          <p class="text-sm text-[color:var(--mat-sys-error)] pt-3">
+            Hay {{ period.pendingReceiptsCount }} recibo(s) pendiente(s). Revísalos antes de cerrar el periodo.
+          </p>
+        }
       </mat-card-content>
 
       <mat-card-actions class="flex flex-wrap gap-2 items-center">
@@ -51,49 +61,25 @@
             (click)="generarRecibos()"
           data-cuelume-press data-cuelume-release
           >
-            @if (isProcessing()) { <mat-spinner diameter="18" /> } @else { <mat-icon>receipt_long</mat-icon> }
+            @if (isProcessing()) { <mat-spinner diameter="18" /> }
             Generar recibos
           </button>
         }
 
-        <form [formGroup]="periodReportsForm" class="flex gap-2 items-end">
-          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-36">
-            <mat-label>Mes</mat-label>
-            <mat-select formControlName="month">
-              @for (month of months; track month.value) {
-                <mat-option [value]="month.value">{{ month.label }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-24">
-            <mat-label>Año</mat-label>
-            <mat-select formControlName="year">
-              @for (year of years; track year) {
-                <mat-option [value]="year">{{ year }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <button type="button" matButton="tonal" [disabled]="isGeneratingReport() || periodReportsForm.invalid" (click)="generarReportePeriodo()" data-cuelume-press data-cuelume-release>
-            @if (isGeneratingReport()) { <mat-spinner diameter="18" /> } @else { <mat-icon>picture_as_pdf</mat-icon> }
-            Reporte periodo
-          </button>
-        </form>
+        <span class="flex-1"></span>
 
-        @if (period.status === PeriodStatusEnum.CLOSED) {
-          <button type="button" matButton="tonal" [disabled]="isGeneratingSettlement()" (click)="generarCartasLiquidacion()" data-cuelume-press data-cuelume-release>
-            @if (isGeneratingSettlement()) { <mat-spinner diameter="18" /> } @else { <mat-icon>picture_as_pdf</mat-icon> }
-            Cartas liquidación
-          </button>
-        }
-
-        <button type="button" matButton="filled" [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)" (click)="togglePeriod()" data-cuelume-press data-cuelume-release>
+        <button
+          type="button"
+          matButton="filled"
+          [class]="period.status === PeriodStatusEnum.OPEN ? '!bg-[color:var(--mat-sys-error)] !text-[color:var(--mat-sys-on-error)]' : ''"
+          [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)"
+          (click)="togglePeriod()"
+          data-cuelume-press data-cuelume-release
+        >
           @if (isTogglingPeriod()) {
             <mat-spinner diameter="20" />
           } @else {
-            <span class="flex items-center gap-1">
-              <mat-icon>{{ period.status === PeriodStatusEnum.OPEN ? 'lock' : 'lock_open' }}</mat-icon>
-              {{ period.status === PeriodStatusEnum.OPEN ? 'Cerrar periodo' : 'Abrir nuevo periodo' }}
-            </span>
+            {{ period.status === PeriodStatusEnum.OPEN ? 'Cerrar periodo' : 'Abrir nuevo periodo' }}
           }
         </button>
       </mat-card-actions>
@@ -112,14 +98,58 @@
           @if (isTogglingPeriod()) {
             <mat-spinner diameter="20" />
           } @else {
-            <span class="flex items-center gap-1">
-              <mat-icon>lock_open</mat-icon>
-              Abrir nuevo periodo
-            </span>
+            Abrir nuevo periodo
           }
         </button>
       </mat-card-actions>
     }
   </mat-card>
+
+  @if (periodStatus(); as period) {
+    <!-- Card de reportes: independiente del ciclo de vida del periodo -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Reportes y documentos</mat-card-title>
+        <mat-card-subtitle>Genera el PDF de comisiones de cualquier mes o año registrado</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="periodReportsForm" class="flex flex-wrap gap-2 items-end pt-2">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-36">
+            <mat-label>Mes</mat-label>
+            <mat-select formControlName="month">
+              @for (month of months; track month.value) {
+                <mat-option [value]="month.value">{{ month.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-24">
+            <mat-label>Año</mat-label>
+            <mat-select formControlName="year">
+              @for (year of years; track year) {
+                <mat-option [value]="year">{{ year }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button type="button" matButton="tonal" [disabled]="isGeneratingReport() || periodReportsForm.invalid" (click)="generarReportePeriodo()" data-cuelume-press data-cuelume-release>
+            @if (isGeneratingReport()) { <mat-spinner diameter="18" /> }
+            Reporte periodo
+          </button>
+        </form>
+      </mat-card-content>
+
+      @if (period.status === PeriodStatusEnum.CLOSED) {
+        <mat-card-actions class="flex flex-wrap gap-2 items-center border-t border-[color:var(--mat-sys-outline-variant)] mt-2">
+          <span class="text-sm text-[color:var(--mat-sys-on-surface-variant)] flex-1">
+            Cartas de liquidación del periodo actual ({{ months[period.month - 1]?.label }} {{ period.year }})
+          </span>
+          <button type="button" matButton="tonal" [disabled]="isGeneratingSettlement()" (click)="generarCartasLiquidacion()" data-cuelume-press data-cuelume-release>
+            @if (isGeneratingSettlement()) { <mat-spinner diameter="18" /> }
+            Cartas liquidación
+          </button>
+        </mat-card-actions>
+      }
+    </mat-card>
+  }
 
 </div>
