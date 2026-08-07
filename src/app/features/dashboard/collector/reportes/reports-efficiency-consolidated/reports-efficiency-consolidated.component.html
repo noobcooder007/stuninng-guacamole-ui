@@ -11,7 +11,7 @@
   <div class="flex items-center justify-between">
     <h2 class="text-lg font-semibold">Eficiencia de colectores</h2>
     <button matButton="tonal" type="button" (click)="cargar()"
-            [disabled]="isLoading() || !(Permissions.VIEW_INVOICE | hasPermission)">
+            [disabled]="isLoading() || !(Permissions.VIEW_INVOICE | hasPermission)" data-cuelume-press data-cuelume-release>
       Actualizar
     </button>
   </div>

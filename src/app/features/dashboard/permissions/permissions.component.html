@@ -5,7 +5,7 @@
       <input matInput [formControl]="searchControl" placeholder="Nombre o descripción..." />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
-    <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_PERMISSION | hasPermission)" (click)="openCreateTab()">
+    <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_PERMISSION | hasPermission)" (click)="openCreateTab()" data-cuelume-press data-cuelume-release>
       Nuevo permiso
     </button>
   </section>

@@ -97,7 +97,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-      <button type="button" matButton="outlined" [disabled]="!canAddInstruction() || !(Permissions.ADD_PROMISE | hasPermission)" (click)="addInstruction()">Añadir instrucción</button>
+      <button type="button" matButton="outlined" [disabled]="!canAddInstruction() || !(Permissions.ADD_PROMISE | hasPermission)" (click)="addInstruction()" data-cuelume-press data-cuelume-release>Añadir instrucción</button>
     </div>
     <div class="flex flex-col gap-4 w-full">
       <button

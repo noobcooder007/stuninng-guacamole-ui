@@ -55,7 +55,7 @@
     <!-- Botón agregar -->
     <div class="mb-6">
       <button type="button" matButton="outlined" class="w-full"
-              [disabled]="!canAddPair || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="addPair()">
+              [disabled]="!canAddPair || !(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="addPair()" data-cuelume-press data-cuelume-release>
         Agregar par
       </button>
       @if (!canAddPair) {

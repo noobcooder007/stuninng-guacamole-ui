@@ -46,12 +46,12 @@
 
     <div class="flex gap-2">
       @if (viewMode() === 'activas') {
-        <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="addAssignment()">Añadir asignación</button>
-        <button type="button" matButton="outlined" [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission)" (click)="deactivateAssignment()">Desactivar</button>
-        <button type="button" matButton="outlined" [disabled]="!(Permissions.EDIT_ASSIGNMENT | hasPermission)" (click)="reassignAssignment()">Reasignar</button>
+        <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="addAssignment()" data-cuelume-press data-cuelume-release>Añadir asignación</button>
+        <button type="button" matButton="outlined" [disabled]="!(Permissions.DELETE_ASSIGNMENT | hasPermission)" (click)="deactivateAssignment()" data-cuelume-press data-cuelume-release>Desactivar</button>
+        <button type="button" matButton="outlined" [disabled]="!(Permissions.EDIT_ASSIGNMENT | hasPermission)" (click)="reassignAssignment()" data-cuelume-press data-cuelume-release>Reasignar</button>
       }
       @if (viewMode() === 'huerfanas') {
-        <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="assignOrphans()">Asignar huérfanas</button>
+        <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_ASSIGNMENT | hasPermission)" (click)="assignOrphans()" data-cuelume-press data-cuelume-release>Asignar huérfanas</button>
       }
     </div>
   </section>
