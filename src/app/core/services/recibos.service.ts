@@ -249,6 +249,15 @@ export class RecibosService {
         );
     }
 
+    reimprimirRecibo(folio: string): Observable<Blob> {
+        return this.http.get(`${environment.apiBaseUrl}/receipts/${folio}/pdf`, { responseType: 'blob' }).pipe(
+            catchError((error) => {
+                this.snackbar.open(apiErrorMessage(error, 'Error al reimprimir el recibo'), 'Cerrar', { duration: 5000 });
+                return throwError(() => error);
+            })
+        );
+    }
+
     private buildPrintParams(filters: ImpresionReciboFilters): HttpParams {
         let params = new HttpParams();
         const includeSequence = filters.fromSequence != null && filters.toSequence != null;

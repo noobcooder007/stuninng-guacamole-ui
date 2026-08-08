@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Recibo, RecibosService } from '@app/core/services/recibos.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
+import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import {
     CancelReceiptDialogComponent,
     CancelReceiptDialogResult,
@@ -47,6 +48,7 @@ export class ReceiptDetailComponent implements OnInit {
     receipt = signal<Recibo | null>(null);
     isLoading = signal(true);
     isCancelling = signal(false);
+    isReprinting = signal(false);
 
     private readonly monthNames = [
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -94,6 +96,33 @@ export class ReceiptDetailComponent implements OnInit {
                         this.loadReceipt(r.folio);
                     },
                     error: () => this.isCancelling.set(false),
+                });
+            });
+    }
+
+    openReprintDialog(): void {
+        const r = this.receipt();
+        if (!r) return;
+
+        this.dialog
+            .open(ConfirmDialogComponent, {
+                data: {
+                    title: 'Reimprimir recibo',
+                    message: `¿Generar de nuevo el PDF del folio ${r.folio}?`,
+                    confirmLabel: 'Reimprimir',
+                },
+            })
+            .afterClosed()
+            .subscribe((confirmed: boolean) => {
+                if (!confirmed) return;
+                this.isReprinting.set(true);
+                this.recibosService.reimprimirRecibo(r.folio).subscribe({
+                    next: (blob) => {
+                        window.open(URL.createObjectURL(blob), '_blank');
+                        this.isReprinting.set(false);
+                        this.loadReceipt(r.folio);
+                    },
+                    error: () => this.isReprinting.set(false),
                 });
             });
     }
