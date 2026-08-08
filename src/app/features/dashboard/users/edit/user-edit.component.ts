@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '@app/core/services/user.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'user-edit',
@@ -126,6 +126,7 @@ export class UserEditComponent implements OnInit {
                 title: active ? 'Desactivar usuario' : 'Activar usuario',
                 message: `¿Estás seguro de que deseas ${active ? 'desactivar' : 'activar'} a <strong>${this.currentUsername}</strong>?`,
                 confirmLabel: active ? 'Desactivar' : 'Activar',
+                warn: active,
             },
         }).afterClosed().subscribe(confirmed => {
             if (!confirmed) return;

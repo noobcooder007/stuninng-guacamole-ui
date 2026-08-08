@@ -153,6 +153,7 @@ export class DeactivateAssignmentComponent implements OnInit, AfterViewInit {
                 title: 'Desactivar asignación',
                 message: `¿Desactivar la asignación de ${assignment.beneficient.firstname} ${assignment.beneficient.firstLastname}?`,
                 confirmLabel: 'Desactivar',
+                warn: true,
             },
         }).afterClosed().subscribe(confirmed => {
             if (!confirmed) return;
@@ -175,6 +176,7 @@ export class DeactivateAssignmentComponent implements OnInit, AfterViewInit {
                 title: 'Desactivar asignaciones',
                 message: `¿Desactivar las ${selected.length} asignaciones seleccionadas?`,
                 confirmLabel: 'Desactivar',
+                warn: true,
             },
         }).afterClosed().subscribe(confirmed => {
             if (!confirmed) return;

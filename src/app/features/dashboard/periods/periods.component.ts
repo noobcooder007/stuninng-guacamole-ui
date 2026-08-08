@@ -11,7 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PeriodStatus, PeriodStatusResponse, ProcessesService } from '@app/core/services/processes.service';
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ClosePeriodDialogComponent } from './close-period-dialog.component';
 import { GenerateReceiptsDialogComponent, GenerateReceiptsTargetPeriod } from './generate-receipts-dialog.component';
 import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';

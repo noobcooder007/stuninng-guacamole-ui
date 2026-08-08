@@ -16,7 +16,7 @@ import { Permissions } from '@app/shared/enums/app-permission.enum';
 import { Tab, TabService } from '@app/core/services/tab.service';
 import { SoundFeedbackService } from '@app/core/services/sound-feedback.service';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/confirm-dialog.component';
 import { OverviewComponent } from "./overview/overview.component";
 
 export interface NavItem {
