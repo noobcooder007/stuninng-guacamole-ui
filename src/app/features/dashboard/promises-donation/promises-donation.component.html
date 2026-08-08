@@ -1,19 +1,31 @@
 <app-list-shell [isLoading]="isLoading()" [pagination]="pagination()" (pageChange)="onPageChange($event)">
 
-  <section class="flex flex-row items-baseline justify-between w-full px-4">
-    <form [formGroup]="searchForm" class="flex flex-row gap-4 items-end flex-wrap">
-      <mat-form-field class="w-52" appearance="outline">
+  <section class="flex flex-col gap-3 px-4">
+    <div class="flex justify-end">
+      <button
+        class="whitespace-nowrap w-full sm:w-auto"
+        type="button"
+        matButton="filled"
+        [disabled]="!(Permissions.ADD_PROMISE | hasPermission)"
+        (click)="addPromiseDonation()"
+        data-cuelume-press data-cuelume-release
+      >
+        Añadir promesa
+      </button>
+    </div>
+    <form [formGroup]="searchForm" class="flex flex-col md:flex-row gap-4 items-stretch md:items-end flex-wrap">
+      <mat-form-field class="flex-1 min-w-52" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Moneda</mat-label>
         <mat-select formControlName="currency">
           <mat-option value="MXN">MXN</mat-option>
           <mat-option value="USD">USD</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field class="w-52" appearance="outline">
+      <mat-form-field class="flex-1 min-w-52" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Metodo de pago</mat-label>
         <input placeholder="Escribe un metodo de pago" matInput formControlName="method" />
       </mat-form-field>
-      <mat-form-field class="w-52" appearance="outline">
+      <mat-form-field class="flex-1 min-w-52" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Recurrencia</mat-label>
         <mat-select matInput formControlName="recurrence">
           @for (recurrence of recurrences; track $index) {
@@ -27,7 +39,7 @@
         <mat-button-toggle [value]="false">Inactivas</mat-button-toggle>
       </mat-button-toggle-group>
       <button
-        class="whitespace-nowrap"
+        class="whitespace-nowrap w-full md:w-auto"
         type="button"
         matButton="tonal"
         (click)="searchForm.reset()"
@@ -35,16 +47,6 @@
         Borrar filtros
       </button>
     </form>
-    <button
-      class="whitespace-nowrap ml-2"
-      type="button"
-      matButton="filled"
-      [disabled]="!(Permissions.ADD_PROMISE | hasPermission)"
-      (click)="addPromiseDonation()"
-      data-cuelume-press data-cuelume-release
-    >
-      Añadir promesa
-    </button>
   </section>
 
   <table appListTable mat-table [dataSource]="dataSource" matSort>

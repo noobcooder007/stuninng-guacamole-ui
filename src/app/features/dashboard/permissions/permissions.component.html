@@ -1,11 +1,11 @@
 <div class="flex flex-col h-full w-full overflow-x-auto no-scrollbar p-6 max-w-4xl mx-auto">
-  <section class="flex flex-row items-baseline justify-between mb-4 w-full px-4">
-    <mat-form-field appearance="outline" class="w-72">
+  <section class="flex flex-row items-baseline justify-between flex-wrap gap-3 mb-4 w-full px-4">
+    <mat-form-field appearance="outline" class="flex-1 min-w-56">
       <mat-label>Buscar permiso</mat-label>
       <input matInput [formControl]="searchControl" placeholder="Nombre o descripción..." />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
-    <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_PERMISSION | hasPermission)" (click)="openCreateTab()" data-cuelume-press data-cuelume-release>
+    <button type="button" matButton="filled" class="whitespace-nowrap" [disabled]="!(Permissions.ADD_PERMISSION | hasPermission)" (click)="openCreateTab()" data-cuelume-press data-cuelume-release>
       Nuevo permiso
     </button>
   </section>

@@ -4,24 +4,24 @@
     <div class="flex justify-end">
       <button type="button" matButton="filled" [disabled]="!(Permissions.ADD_CHURCH | hasPermission)" (click)="addChurch()" data-cuelume-press data-cuelume-release>Añadir iglesia</button>
     </div>
-    <form class="flex flex-row gap-3 items-end flex-wrap" [formGroup]="searchForm">
-      <mat-form-field class="min-w-44 flex-1" appearance="outline">
+    <form class="flex flex-wrap items-end gap-3" [formGroup]="searchForm">
+      <mat-form-field class="w-44 shrink-0" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Nombre</mat-label>
         <input matInput formControlName="name" aria-label="Nombre de la iglesia" />
       </mat-form-field>
-      <mat-form-field class="min-w-36 flex-1" appearance="outline">
+      <mat-form-field class="w-36 shrink-0" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Vicaria</mat-label>
         <input matInput formControlName="vicaria" aria-label="Vicaria" />
       </mat-form-field>
-      <mat-form-field class="min-w-36 flex-1" appearance="outline">
+      <mat-form-field class="w-36 shrink-0" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Decanato</mat-label>
         <input matInput formControlName="decanato" aria-label="Decanato" />
       </mat-form-field>
-      <mat-form-field class="min-w-36 flex-1" appearance="outline">
+      <mat-form-field class="w-36 shrink-0" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Parroquia</mat-label>
         <input matInput formControlName="parroquia" aria-label="Parroquia" />
       </mat-form-field>
-      <mat-form-field class="min-w-36 flex-1" appearance="outline">
+      <mat-form-field class="w-36 shrink-0" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Capilla</mat-label>
         <input matInput formControlName="capilla" aria-label="Capilla" />
       </mat-form-field>
