@@ -14,8 +14,11 @@ export interface ProcessRequest {
 export interface GrowthReportPeriod {
     month: number;
     year: number;
-    totalReceipts: number;
-    newPromiseAmount: number;
+    totalReceiptsMxn: number;
+    totalReceiptsUsd: number;
+    totalReceiptsConsolidatedMxn: number | null;
+    newPromiseAmountMxn: number;
+    newPromiseAmountUsd: number;
 }
 
 export interface GrowthReportVariation {
@@ -26,8 +29,10 @@ export interface GrowthReportVariation {
 export interface GrowthReport {
     currentPeriod: GrowthReportPeriod;
     previousPeriod: GrowthReportPeriod;
-    receiptsVariation: GrowthReportVariation;
-    promiseAmountVariation: GrowthReportVariation;
+    receiptsVariationMxn: GrowthReportVariation;
+    receiptsVariationUsd: GrowthReportVariation;
+    promiseAmountVariationMxn: GrowthReportVariation;
+    promiseAmountVariationUsd: GrowthReportVariation;
 }
 
 export interface PeriodStatusResponse {

@@ -98,10 +98,28 @@ describe('ProcessesService', () => {
   describe('getGrowthReport', () => {
     it('should GET /periods/growth-report with month and year params and return the data', () => {
       const data = {
-        currentPeriod: { month: 7, year: 2026, totalReceipts: 15400, newPromiseAmount: 3200 },
-        previousPeriod: { month: 6, year: 2026, totalReceipts: 12000, newPromiseAmount: 2500 },
-        receiptsVariation: { amount: 3400, percentage: 28.33 },
-        promiseAmountVariation: { amount: 700, percentage: 28.0 },
+        currentPeriod: {
+          month: 7,
+          year: 2026,
+          totalReceiptsMxn: 15400,
+          totalReceiptsUsd: 0,
+          totalReceiptsConsolidatedMxn: 15400,
+          newPromiseAmountMxn: 3200,
+          newPromiseAmountUsd: 0,
+        },
+        previousPeriod: {
+          month: 6,
+          year: 2026,
+          totalReceiptsMxn: 12000,
+          totalReceiptsUsd: 0,
+          totalReceiptsConsolidatedMxn: 12000,
+          newPromiseAmountMxn: 2500,
+          newPromiseAmountUsd: 0,
+        },
+        receiptsVariationMxn: { amount: 3400, percentage: 28.33 },
+        receiptsVariationUsd: { amount: 0, percentage: 0 },
+        promiseAmountVariationMxn: { amount: 700, percentage: 28.0 },
+        promiseAmountVariationUsd: { amount: 0, percentage: 0 },
       };
       let result: any;
       service.getGrowthReport(7, 2026).subscribe(r => (result = r));

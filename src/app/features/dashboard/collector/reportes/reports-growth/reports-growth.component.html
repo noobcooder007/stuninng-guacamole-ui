@@ -38,11 +38,17 @@
         <mat-card-content class="flex flex-col gap-3 pt-2">
           <div class="flex flex-col gap-0.5">
             <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Recibos cobrados</span>
-            <span class="text-xl font-semibold tabular-nums">{{ r.currentPeriod.totalReceipts | currency:'MXN':'symbol':'1.2-2' }}</span>
+            <span class="text-xl font-semibold tabular-nums">{{ r.currentPeriod.totalReceiptsMxn | currency:'MXN':'symbol':'1.2-2' }}</span>
+            @if (r.currentPeriod.totalReceiptsUsd) {
+              <span class="text-sm font-medium tabular-nums text-[color:var(--mat-sys-on-surface-variant)]">{{ r.currentPeriod.totalReceiptsUsd | currency:'USD':'symbol':'1.2-2' }}</span>
+            }
           </div>
           <div class="flex flex-col gap-0.5">
             <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Promesas nuevas</span>
-            <span class="text-xl font-semibold tabular-nums">{{ r.currentPeriod.newPromiseAmount | currency:'MXN':'symbol':'1.2-2' }}</span>
+            <span class="text-xl font-semibold tabular-nums">{{ r.currentPeriod.newPromiseAmountMxn | currency:'MXN':'symbol':'1.2-2' }}</span>
+            @if (r.currentPeriod.newPromiseAmountUsd) {
+              <span class="text-sm font-medium tabular-nums text-[color:var(--mat-sys-on-surface-variant)]">{{ r.currentPeriod.newPromiseAmountUsd | currency:'USD':'symbol':'1.2-2' }}</span>
+            }
           </div>
         </mat-card-content>
       </mat-card>
@@ -55,11 +61,17 @@
         <mat-card-content class="flex flex-col gap-3 pt-2">
           <div class="flex flex-col gap-0.5">
             <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Recibos cobrados</span>
-            <span class="text-xl font-semibold tabular-nums">{{ r.previousPeriod.totalReceipts | currency:'MXN':'symbol':'1.2-2' }}</span>
+            <span class="text-xl font-semibold tabular-nums">{{ r.previousPeriod.totalReceiptsMxn | currency:'MXN':'symbol':'1.2-2' }}</span>
+            @if (r.previousPeriod.totalReceiptsUsd) {
+              <span class="text-sm font-medium tabular-nums text-[color:var(--mat-sys-on-surface-variant)]">{{ r.previousPeriod.totalReceiptsUsd | currency:'USD':'symbol':'1.2-2' }}</span>
+            }
           </div>
           <div class="flex flex-col gap-0.5">
             <span class="text-xs text-[color:var(--mat-sys-on-surface-variant)]">Promesas nuevas</span>
-            <span class="text-xl font-semibold tabular-nums">{{ r.previousPeriod.newPromiseAmount | currency:'MXN':'symbol':'1.2-2' }}</span>
+            <span class="text-xl font-semibold tabular-nums">{{ r.previousPeriod.newPromiseAmountMxn | currency:'MXN':'symbol':'1.2-2' }}</span>
+            @if (r.previousPeriod.newPromiseAmountUsd) {
+              <span class="text-sm font-medium tabular-nums text-[color:var(--mat-sys-on-surface-variant)]">{{ r.previousPeriod.newPromiseAmountUsd | currency:'USD':'symbol':'1.2-2' }}</span>
+            }
           </div>
         </mat-card-content>
       </mat-card>
@@ -70,15 +82,29 @@
         <mat-card-header>
           <mat-card-title>Variación de recibos</mat-card-title>
         </mat-card-header>
-        <mat-card-content class="flex items-center gap-2 pt-2">
-          <mat-icon [class]="r.receiptsVariation.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
-            {{ r.receiptsVariation.amount >= 0 ? 'trending_up' : 'trending_down' }}
-          </mat-icon>
-          <span class="text-lg font-semibold tabular-nums"
-                [class]="r.receiptsVariation.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
-            {{ r.receiptsVariation.amount | currency:'MXN':'symbol':'1.2-2' }}
-            ({{ r.receiptsVariation.percentage | number:'1.2-2' }}%)
-          </span>
+        <mat-card-content class="flex flex-col gap-2 pt-2">
+          <div class="flex items-center gap-2">
+            <mat-icon [class]="r.receiptsVariationMxn.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+              {{ r.receiptsVariationMxn.amount >= 0 ? 'trending_up' : 'trending_down' }}
+            </mat-icon>
+            <span class="text-lg font-semibold tabular-nums"
+                  [class]="r.receiptsVariationMxn.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+              {{ r.receiptsVariationMxn.amount | currency:'MXN':'symbol':'1.2-2' }}
+              ({{ r.receiptsVariationMxn.percentage | number:'1.2-2' }}%)
+            </span>
+          </div>
+          @if (r.currentPeriod.totalReceiptsUsd || r.previousPeriod.totalReceiptsUsd) {
+            <div class="flex items-center gap-2">
+              <mat-icon [class]="r.receiptsVariationUsd.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+                {{ r.receiptsVariationUsd.amount >= 0 ? 'trending_up' : 'trending_down' }}
+              </mat-icon>
+              <span class="text-sm font-medium tabular-nums"
+                    [class]="r.receiptsVariationUsd.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+                {{ r.receiptsVariationUsd.amount | currency:'USD':'symbol':'1.2-2' }}
+                ({{ r.receiptsVariationUsd.percentage | number:'1.2-2' }}%)
+              </span>
+            </div>
+          }
         </mat-card-content>
       </mat-card>
 
@@ -86,15 +112,29 @@
         <mat-card-header>
           <mat-card-title>Variación de promesas nuevas</mat-card-title>
         </mat-card-header>
-        <mat-card-content class="flex items-center gap-2 pt-2">
-          <mat-icon [class]="r.promiseAmountVariation.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
-            {{ r.promiseAmountVariation.amount >= 0 ? 'trending_up' : 'trending_down' }}
-          </mat-icon>
-          <span class="text-lg font-semibold tabular-nums"
-                [class]="r.promiseAmountVariation.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
-            {{ r.promiseAmountVariation.amount | currency:'MXN':'symbol':'1.2-2' }}
-            ({{ r.promiseAmountVariation.percentage | number:'1.2-2' }}%)
-          </span>
+        <mat-card-content class="flex flex-col gap-2 pt-2">
+          <div class="flex items-center gap-2">
+            <mat-icon [class]="r.promiseAmountVariationMxn.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+              {{ r.promiseAmountVariationMxn.amount >= 0 ? 'trending_up' : 'trending_down' }}
+            </mat-icon>
+            <span class="text-lg font-semibold tabular-nums"
+                  [class]="r.promiseAmountVariationMxn.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+              {{ r.promiseAmountVariationMxn.amount | currency:'MXN':'symbol':'1.2-2' }}
+              ({{ r.promiseAmountVariationMxn.percentage | number:'1.2-2' }}%)
+            </span>
+          </div>
+          @if (r.currentPeriod.newPromiseAmountUsd || r.previousPeriod.newPromiseAmountUsd) {
+            <div class="flex items-center gap-2">
+              <mat-icon [class]="r.promiseAmountVariationUsd.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+                {{ r.promiseAmountVariationUsd.amount >= 0 ? 'trending_up' : 'trending_down' }}
+              </mat-icon>
+              <span class="text-sm font-medium tabular-nums"
+                    [class]="r.promiseAmountVariationUsd.amount >= 0 ? 'text-[color:var(--mat-sys-primary)]' : 'text-[color:var(--mat-sys-error)]'">
+                {{ r.promiseAmountVariationUsd.amount | currency:'USD':'symbol':'1.2-2' }}
+                ({{ r.promiseAmountVariationUsd.percentage | number:'1.2-2' }}%)
+              </span>
+            </div>
+          }
         </mat-card-content>
       </mat-card>
     </div>
