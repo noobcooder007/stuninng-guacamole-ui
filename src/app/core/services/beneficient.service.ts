@@ -224,7 +224,7 @@ export class BeneficientService {
             .get<{ statusCode: number; data: BeneficientDetail }>(`${environment.apiBaseUrl}/beneficient/${id}`)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open(apiErrorMessage(error, 'Error al obtener datos del bienhechore'), 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al obtener datos del bienhechor'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -235,7 +235,7 @@ export class BeneficientService {
             .post(`${environment.apiBaseUrl}/beneficient`, beneficent)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open(apiErrorMessage(error, 'Error al crear bienhechore'), 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al crear bienhechor'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -247,7 +247,7 @@ export class BeneficientService {
             .put(`${environment.apiBaseUrl}/beneficents/${id}`, updateData)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open(apiErrorMessage(error, 'Error al actualizar bienhechore'), 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al actualizar bienhechor'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );
@@ -258,7 +258,7 @@ export class BeneficientService {
             .delete(`${environment.apiBaseUrl}/beneficents/${id}`)
             .pipe(
                 catchError((error) => {
-                    this.snackbar.open(apiErrorMessage(error, 'Error al eliminar bienhechore'), 'Cerrar', { duration: 5000 });
+                    this.snackbar.open(apiErrorMessage(error, 'Error al eliminar bienhechor'), 'Cerrar', { duration: 5000 });
                     return throwError(() => error);
                 })
             );

@@ -104,7 +104,7 @@ describe('BeneficientService', () => {
     it('should show snackbar on error', () => {
       service.getBeneficent(99).subscribe({ error: () => {} });
       httpMock.expectOne(`${BASE}/99`).flush('err', { status: 404, statusText: 'Not Found' });
-      expect(snackBarSpy.open).toHaveBeenCalledWith('Error al obtener datos del bienhechore', 'Cerrar', { duration: 5000 });
+      expect(snackBarSpy.open).toHaveBeenCalledWith('Error al obtener datos del bienhechor', 'Cerrar', { duration: 5000 });
     });
   });
 
@@ -121,7 +121,7 @@ describe('BeneficientService', () => {
     it('should show snackbar on error', () => {
       service.create({} as CreateBeneficientDto).subscribe({ error: () => {} });
       httpMock.expectOne(BASE).flush('err', { status: 400, statusText: 'Bad Request' });
-      expect(snackBarSpy.open).toHaveBeenCalledWith('Error al crear bienhechore', 'Cerrar', { duration: 5000 });
+      expect(snackBarSpy.open).toHaveBeenCalledWith('Error al crear bienhechor', 'Cerrar', { duration: 5000 });
     });
   });
 
@@ -138,7 +138,7 @@ describe('BeneficientService', () => {
     it('should show snackbar on error', () => {
       service.update({ id: 7 } as any).subscribe({ error: () => {} });
       httpMock.expectOne(`${environment.apiBaseUrl}/beneficents/7`).flush('err', { status: 500, statusText: 'Server Error' });
-      expect(snackBarSpy.open).toHaveBeenCalledWith('Error al actualizar bienhechore', 'Cerrar', { duration: 5000 });
+      expect(snackBarSpy.open).toHaveBeenCalledWith('Error al actualizar bienhechor', 'Cerrar', { duration: 5000 });
     });
   });
 
@@ -153,7 +153,7 @@ describe('BeneficientService', () => {
     it('should show snackbar on error', () => {
       service.delete(5).subscribe({ error: () => {} });
       httpMock.expectOne(`${environment.apiBaseUrl}/beneficents/5`).flush('err', { status: 500, statusText: 'Server Error' });
-      expect(snackBarSpy.open).toHaveBeenCalledWith('Error al eliminar bienhechore', 'Cerrar', { duration: 5000 });
+      expect(snackBarSpy.open).toHaveBeenCalledWith('Error al eliminar bienhechor', 'Cerrar', { duration: 5000 });
     });
   });
 
