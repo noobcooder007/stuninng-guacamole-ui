@@ -61,8 +61,7 @@
             (click)="generarRecibos()"
           data-cuelume-press data-cuelume-release
           >
-            @if (isProcessing()) { <mat-spinner diameter="18" /> }
-            Generar recibos
+            @if (isProcessing()) { <mat-spinner diameter="18" /> } @else { Generar recibos }
           </button>
         }
 
@@ -132,8 +131,7 @@
             </mat-select>
           </mat-form-field>
           <button type="button" matButton="tonal" class="whitespace-nowrap sm:w-auto" [disabled]="isGeneratingReport() || periodReportsForm.invalid" (click)="generarReportePeriodo()" data-cuelume-press data-cuelume-release>
-            @if (isGeneratingReport()) { <mat-spinner diameter="18" /> }
-            Reporte periodo
+            @if (isGeneratingReport()) { <mat-spinner diameter="18" /> } @else { Reporte periodo }
           </button>
         </form>
       </mat-card-content>
@@ -144,8 +142,7 @@
             Cartas de liquidación del periodo actual ({{ months[period.month - 1]?.label }} {{ period.year }})
           </span>
           <button type="button" matButton="tonal" [disabled]="isGeneratingSettlement()" (click)="generarCartasLiquidacion()" data-cuelume-press data-cuelume-release>
-            @if (isGeneratingSettlement()) { <mat-spinner diameter="18" /> }
-            Cartas liquidación
+            @if (isGeneratingSettlement()) { <mat-spinner diameter="18" /> } @else { Cartas liquidación }
           </button>
         </mat-card-actions>
       }

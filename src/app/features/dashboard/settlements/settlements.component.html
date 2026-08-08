@@ -37,8 +37,9 @@
       >
         @if (isBulkPaying()) {
           <mat-spinner diameter="18" />
+        } @else {
+          Pago masivo ({{ pendingRows().length }})
         }
-        Pago masivo ({{ pendingRows().length }})
       </button>
     }
   </div>

@@ -263,15 +263,13 @@
         <button type="button" matButton="tonal" color="warn"
           [disabled]="isSaving() || !(Permissions.EDIT_PROMISE | hasPermission)"
           (click)="deactivate()" data-cuelume-press data-cuelume-release>
-          @if (isSaving()) { <mat-spinner diameter="18" /> }
-          Desactivar
+          @if (isSaving()) { <mat-spinner diameter="18" /> } @else { Desactivar }
         </button>
       } @else {
         <button type="button" matButton="filled"
           [disabled]="isSaving() || !(Permissions.EDIT_PROMISE | hasPermission)"
           (click)="reactivate()" data-cuelume-press data-cuelume-release>
-          @if (isSaving()) { <mat-spinner diameter="18" /> }
-          Reactivar
+          @if (isSaving()) { <mat-spinner diameter="18" /> } @else { Reactivar }
         </button>
       }
     </div>

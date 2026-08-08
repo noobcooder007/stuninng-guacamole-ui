@@ -150,8 +150,9 @@
             (click)="toggleStatus()" data-cuelume-press data-cuelume-release>
             @if (isTogglingStatus()) {
               <mat-spinner diameter="20" />
+            } @else {
+              Desactivar usuario
             }
-            Desactivar usuario
           </button>
         } @else {
           <button type="button" matButton="filled"
@@ -159,8 +160,9 @@
             (click)="toggleStatus()" data-cuelume-press data-cuelume-release>
             @if (isTogglingStatus()) {
               <mat-spinner diameter="20" />
+            } @else {
+              Activar usuario
             }
-            Activar usuario
           </button>
         }
       </div>
