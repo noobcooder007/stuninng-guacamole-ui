@@ -54,16 +54,16 @@
       </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'personal') {
-          <form [formGroup]="personalForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline">
+          <form [formGroup]="personalForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Nombre</mat-label>
               <input matInput formControlName="firstname" aria-label="Nombre" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Apellido paterno</mat-label>
               <input matInput formControlName="firstLastname" aria-label="Apellido paterno" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Apellido materno</mat-label>
               <input matInput formControlName="secondLastname" aria-label="Apellido materno" />
             </mat-form-field>
@@ -109,42 +109,42 @@
       </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'address') {
-          <form [formGroup]="addressForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline">
+          <form [formGroup]="addressForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Calle</mat-label>
               <input matInput formControlName="street" aria-label="Calle" />
             </mat-form-field>
-            <div class="grid grid-cols-2 gap-4">
-              <mat-form-field appearance="outline">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
                 <mat-label>No. exterior</mat-label>
                 <input matInput formControlName="noExt" aria-label="Número exterior" />
                 <span matTextPrefix>#</span>
               </mat-form-field>
-              <mat-form-field appearance="outline">
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
                 <mat-label>No. interior</mat-label>
                 <input matInput formControlName="noInt" aria-label="Número interior" />
               </mat-form-field>
             </div>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Colonia / Barrio</mat-label>
               <input matInput formControlName="neighborhood" aria-label="Colonia" />
               @if (addressForm.hasError('exclusiveFields')) {
                 <mat-error>Solo uno de Colonia o Localidad</mat-error>
               }
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Localidad</mat-label>
               <input matInput formControlName="locality" aria-label="Localidad" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Municipio / Delegación</mat-label>
               <input matInput formControlName="city" aria-label="Ciudad" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Estado</mat-label>
               <input matInput formControlName="state" aria-label="Estado" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Código postal</mat-label>
               <input matInput formControlName="zipCode" maxlength="5" aria-label="Código postal" />
               @if (addressForm.get('zipCode')?.hasError('pattern')) {
@@ -207,12 +207,12 @@
       </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'contact') {
-          <form [formGroup]="contactForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline">
+          <form [formGroup]="contactForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Teléfono celular</mat-label>
               <input type="tel" matInput formControlName="phoneNumber" aria-label="Teléfono celular" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Teléfono fijo</mat-label>
               <input type="tel" matInput formControlName="telephoneNumber" aria-label="Teléfono fijo" />
             </mat-form-field>
@@ -254,8 +254,8 @@
       </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'payment') {
-          <form [formGroup]="paymentForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline" class="w-48">
+          <form [formGroup]="paymentForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-48">
               <mat-label>Comisión (%)</mat-label>
               <input type="number" matInput formControlName="commissionPercent" aria-label="Comisión" />
               <mat-hint>Entre 0 y 100</mat-hint>
@@ -263,19 +263,19 @@
                 <mat-error>Valor entre 0 y 100</mat-error>
               }
             </mat-form-field>
-            <mat-form-field appearance="outline" class="w-48">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-48">
               <mat-label>Nómina ($)</mat-label>
               <input type="number" matInput formControlName="nomina" aria-label="Nómina" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Subsidio de transporte ($)</mat-label>
               <input type="number" matInput formControlName="transportAllowance" aria-label="Subsidio de transporte" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Banco</mat-label>
               <input matInput formControlName="bank" aria-label="Banco" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Referencia / CLABE</mat-label>
               <input matInput formControlName="reference" aria-label="Referencia" />
             </mat-form-field>
@@ -330,7 +330,7 @@
       <mat-card-content>
         @if (editingSection() === 'notes') {
           <form [formGroup]="notesForm" class="pt-2">
-            <mat-form-field appearance="outline" class="w-full">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
               <mat-label>Notas</mat-label>
               <textarea matInput formControlName="notes" rows="4" aria-label="Notas"></textarea>
             </mat-form-field>

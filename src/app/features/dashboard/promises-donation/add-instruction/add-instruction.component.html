@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>{{ isEdit ? 'Editar instrucción' : 'Agregar instrucción' }}</h2>
 
 <mat-dialog-content>
-    <form class="grid grid-cols-3 gap-4 p-4" [formGroup]="instructionForm">
+    <form class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4" [formGroup]="instructionForm">
         <mat-form-field appearance="outline">
           <mat-label>Dia de la semana</mat-label>
           <mat-select formControlName="day">

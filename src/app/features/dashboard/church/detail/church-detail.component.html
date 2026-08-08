@@ -34,24 +34,24 @@
       </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'identity') {
-          <form [formGroup]="identityForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline">
+          <form [formGroup]="identityForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Nombre</mat-label>
               <input matInput formControlName="name" aria-label="Nombre" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Vicaría</mat-label>
               <input matInput formControlName="vicaria" aria-label="Vicaría" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Decanato</mat-label>
               <input matInput formControlName="decanato" aria-label="Decanato" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Parroquia</mat-label>
               <input matInput formControlName="parroquia" aria-label="Parroquia" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Capilla</mat-label>
               <input matInput formControlName="capilla" aria-label="Capilla" />
             </mat-form-field>
@@ -105,42 +105,42 @@
       </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'address') {
-          <form [formGroup]="addressForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline">
+          <form [formGroup]="addressForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Calle</mat-label>
               <input matInput formControlName="street" aria-label="Calle" />
             </mat-form-field>
-            <div class="grid grid-cols-2 gap-4">
-              <mat-form-field appearance="outline">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
                 <mat-label>No. exterior</mat-label>
                 <input matInput formControlName="noExt" aria-label="Número exterior" />
                 <span matTextPrefix>#</span>
               </mat-form-field>
-              <mat-form-field appearance="outline">
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
                 <mat-label>No. interior</mat-label>
                 <input matInput formControlName="noInt" aria-label="Número interior" />
               </mat-form-field>
             </div>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Colonia / Barrio</mat-label>
               <input matInput formControlName="neighborhood" aria-label="Colonia" />
               @if (addressForm.hasError('exclusiveFields')) {
                 <mat-error>Solo uno de Colonia o Localidad</mat-error>
               }
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Localidad</mat-label>
               <input matInput formControlName="locality" aria-label="Localidad" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Municipio / Delegación</mat-label>
               <input matInput formControlName="city" aria-label="Ciudad" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Estado</mat-label>
               <input matInput formControlName="state" aria-label="Estado" />
             </mat-form-field>
-            <mat-form-field appearance="outline" class="w-40">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-40">
               <mat-label>Código postal</mat-label>
               <input matInput formControlName="zipCode" maxlength="5" aria-label="Código postal" />
               <mat-hint>5 dígitos</mat-hint>
@@ -204,16 +204,16 @@
       </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'priest') {
-          <form [formGroup]="priestForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline">
+          <form [formGroup]="priestForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Nombre</mat-label>
               <input matInput formControlName="firstname" aria-label="Nombre del párroco" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Apellido paterno</mat-label>
               <input matInput formControlName="firstLastname" aria-label="Apellido paterno del párroco" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Apellido materno</mat-label>
               <input matInput formControlName="secondLastname" aria-label="Apellido materno del párroco" />
             </mat-form-field>
@@ -248,16 +248,16 @@
       </mat-card-header>
       <mat-card-content>
         @if (editingSection() === 'auxiliar') {
-          <form [formGroup]="auxiliarForm" class="grid grid-cols-2 gap-4 pt-2">
-            <mat-form-field appearance="outline">
+          <form [formGroup]="auxiliarForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Nombre</mat-label>
               <input matInput formControlName="firstname" aria-label="Nombre del vicario" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Apellido paterno</mat-label>
               <input matInput formControlName="firstLastname" aria-label="Apellido paterno del vicario" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Apellido materno</mat-label>
               <input matInput formControlName="secondLastname" aria-label="Apellido materno del vicario" />
             </mat-form-field>
@@ -293,7 +293,7 @@
       <mat-card-content>
         @if (editingSection() === 'phone') {
           <form [formGroup]="phoneForm" class="pt-2">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Teléfono</mat-label>
               <input type="tel" matInput formControlName="phoneNumber" aria-label="Teléfono de la iglesia" />
             </mat-form-field>

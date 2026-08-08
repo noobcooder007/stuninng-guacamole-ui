@@ -15,7 +15,7 @@
   </div>
   <form class="flex flex-col gap-4 w-2/3" [formGroup]="createCollectorForm">
     <p class="text-2xl pb-4 font-semibold">Datos personales</p>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <input
         type="file"
         #fileInput
@@ -24,7 +24,7 @@
         aria-label="profilePicture"
         accept="image/*"
       />
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Fotografía</mat-label>
         <input
           matInput
@@ -37,24 +37,24 @@
           >attach_file</mat-icon
         >
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Nombre</mat-label>
         <input matInput formControlName="firstname" aria-label="firstname" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Apellido paterno</mat-label>
         <input matInput formControlName="firstLastname" aria-label="firstLastname" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Apellido materno</mat-label>
         <input matInput formControlName="secondLastname" aria-label="secondLastname" />
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-48">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-48">
         <mat-label>NSS</mat-label>
         <input type="tel" maxlength="11" minlength="11" matInput formControlName="nss" aria-label="nss" />
         <mat-hint>11 dígitos</mat-hint>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-48">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-48">
         <mat-label>Teléfono celular</mat-label>
         <input
           type="tel"
@@ -66,7 +66,7 @@
         />
         <mat-hint>10 dígitos, sin espacios ni guiones</mat-hint>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-48">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-48">
         <mat-label>Teléfono</mat-label>
         <input
           type="tel"
@@ -80,47 +80,47 @@
       </mat-form-field>
     </div>
     <p class="text-2xl pb-4 font-semibold">Domicilio</p>
-    <div formGroupName="address" class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
+    <div formGroupName="address" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Calle</mat-label>
         <input matInput formControlName="street" aria-label="address-street" />
       </mat-form-field>
-      <div formGroupName="numeration" class="grid grid-cols-2 gap-4">
-        <mat-form-field appearance="outline">
+      <div formGroupName="numeration" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Número exterior</mat-label>
           <input matInput formControlName="noExt" aria-label="address-number" />
           <span matTextPrefix>#</span>
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Número interior</mat-label>
           <input matInput formControlName="noInt" aria-label="address-letter" />
         </mat-form-field>
       </div>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Colonia</mat-label>
         <input matInput formControlName="neighborhood" aria-label="address-colony" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Localidad</mat-label>
         <input matInput formControlName="locality" aria-label="address-locality" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Municipio / Delegación</mat-label>
         <input matInput formControlName="city" aria-label="address-municipality" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Estado</mat-label>
         <input matInput formControlName="state" aria-label="address-state" />
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-40">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-40">
         <mat-label>Código postal</mat-label>
         <input type="tel" minlength="5" maxlength="5" matInput formControlName="zipCode" aria-label="address-postalCode" />
         <mat-hint>5 dígitos</mat-hint>
       </mat-form-field>
     </div>
     <p class="text-2xl pb-4 font-semibold">Información de pago</p>
-    <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline" class="w-48">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-48">
         <mat-label>Porcentaje de comisión</mat-label>
         <input
           class="text-right"
@@ -134,11 +134,11 @@
         <span matTextSuffix>%</span>
         <mat-hint>Entre 0 y 100</mat-hint>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Banco</mat-label>
         <input type="text" matInput formControlName="bank" aria-label="bank" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Referencia</mat-label>
         <input
           class="text-right"
@@ -149,8 +149,8 @@
         />
       </mat-form-field>
     </div>
-    <div class="grid grid-cols-3 gap-4">
-      <mat-form-field appearance="outline">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Nombre de usuario</mat-label>
         <input type="text" matInput readonly formControlName="username" aria-label="username" />
       </mat-form-field>
