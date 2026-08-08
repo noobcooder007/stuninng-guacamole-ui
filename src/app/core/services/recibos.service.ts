@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, from, Observable, of, switchMap, throwError } from 'rxjs';
 import { environment } from 'environments/environment';
 import { PaginatedMetadata } from './collector.service';
 import { apiErrorMessage } from '@app/shared/utils/api-error';
@@ -79,6 +79,40 @@ export interface CreateSpecialReceiptDto {
     collectorId: string;
     amount: number;
     currency: 'MXN' | 'USD';
+}
+
+export interface ApiErrorBody {
+    type?: string;
+    message?: string;
+}
+
+// FileReader en vez de Blob.text(): jsdom (entorno de test) no implementa
+// Blob.prototype.text(), pero sí FileReader; ambos son equivalentes en navegadores reales.
+function readBlobAsText(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(blob);
+    });
+}
+
+// El request pide responseType: 'blob' (para recibir el PDF), así que Angular
+// también entrega el body de un error como Blob en vez de JSON parseado —
+// hay que leerlo manualmente para poder distinguir el tipo de error.
+async function parseBlobErrorBody(error: HttpErrorResponse): Promise<ApiErrorBody> {
+    if (error.error instanceof Blob) {
+        try {
+            return JSON.parse(await readBlobAsText(error.error)) as ApiErrorBody;
+        } catch {
+            return {};
+        }
+    }
+    return (error.error as ApiErrorBody) ?? {};
+}
+
+export interface SpecialReceiptError extends HttpErrorResponse {
+    apiError?: ApiErrorBody;
 }
 
 export interface RecibosPaginatedResponse {
@@ -184,10 +218,25 @@ export class RecibosService {
 
     crearReciboEspecial(dto: CreateSpecialReceiptDto): Observable<Blob> {
         return this.http.post(`${environment.apiBaseUrl}/receipts/generate/special`, dto, { responseType: 'blob' }).pipe(
-            catchError((error) => {
-                this.snackbar.open(apiErrorMessage(error, 'Error al crear el recibo especial'), 'Cerrar', { duration: 5000 });
-                return throwError(() => error);
-            })
+            catchError((error: HttpErrorResponse) => {
+                // Leer el Blob es async; para cualquier otro caso (ej. error
+                // de red, sin body) seguimos síncronos como antes.
+                const apiError$ = error.error instanceof Blob
+                    ? from(parseBlobErrorBody(error))
+                    : of((error.error as ApiErrorBody) ?? {});
+                return apiError$.pipe(
+                    switchMap((apiError) => {
+                        // El recibo ya se creó (solo falló el PDF): el
+                        // componente muestra su propio diálogo en vez del
+                        // snackbar genérico.
+                        if (apiError.type !== 'PDF_GENERATION_FAILED') {
+                            this.snackbar.open(apiError.message ?? 'Error al crear el recibo especial', 'Cerrar', { duration: 5000 });
+                        }
+                        const errorWithApiError: SpecialReceiptError = Object.assign(error, { apiError });
+                        return throwError(() => errorWithApiError);
+                    }),
+                );
+            }),
         );
     }
 

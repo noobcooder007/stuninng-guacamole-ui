@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { firstValueFrom } from 'rxjs';
 import { vi } from 'vitest';
 import { RecibosService, CreateSpecialReceiptDto } from '@app/core/services/recibos.service';
 import { environment } from 'environments/environment.development';
@@ -143,6 +144,44 @@ describe('RecibosService', () => {
       expect(snackBarSpy.open).toHaveBeenCalledWith(
         'Error al crear el recibo especial', 'Cerrar', { duration: 5000 }
       );
+    });
+
+    it('should parse the blob error body and show its message on a regular failure', async () => {
+      const pending = firstValueFrom(service.crearReciboEspecial(dto)).catch((err) => err);
+      httpMock.expectOne(`${BASE}/generate/special`)
+        .flush(
+          new Blob(
+            [JSON.stringify({ type: 'VALIDATION', message: 'No hay un periodo abierto ni programado.' })],
+            { type: 'application/json' },
+          ),
+          { status: 422, statusText: 'Unprocessable Entity' },
+        );
+      const captured = await pending;
+
+      expect(snackBarSpy.open).toHaveBeenCalledWith(
+        'No hay un periodo abierto ni programado.', 'Cerrar', { duration: 5000 }
+      );
+      expect(captured.apiError.type).toBe('VALIDATION');
+    });
+
+    it('should NOT show a snackbar and should expose apiError.type when the receipt was created but the PDF failed', async () => {
+      const pending = firstValueFrom(service.crearReciboEspecial(dto)).catch((err) => err);
+      httpMock.expectOne(`${BASE}/generate/special`)
+        .flush(
+          new Blob(
+            [JSON.stringify({
+              type: 'PDF_GENERATION_FAILED',
+              message: 'El recibo especial JUN2026-0003-S-0001 se creó correctamente, pero no se pudo generar el PDF.',
+            })],
+            { type: 'application/json' },
+          ),
+          { status: 422, statusText: 'Unprocessable Entity' },
+        );
+      const captured = await pending;
+
+      expect(snackBarSpy.open).not.toHaveBeenCalled();
+      expect(captured.apiError.type).toBe('PDF_GENERATION_FAILED');
+      expect(captured.apiError.message).toContain('JUN2026-0003-S-0001');
     });
   });
 

@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -11,7 +12,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
 import { BeneficientService, Beneficient } from '@app/core/services/beneficient.service';
 import { CollectorService, CollectorListItem } from '@app/core/services/collector.service';
-import { CreateSpecialReceiptDto, RecibosService } from '@app/core/services/recibos.service';
+import { CreateSpecialReceiptDto, RecibosService, SpecialReceiptError } from '@app/core/services/recibos.service';
+import { SpecialReceiptWarningDialogComponent } from './special-receipt-warning-dialog.component';
 
 @Component({
     selector: 'app-recibos-especiales',
@@ -22,6 +24,7 @@ import { CreateSpecialReceiptDto, RecibosService } from '@app/core/services/reci
         ReactiveFormsModule,
         MatAutocompleteModule,
         MatButtonModule,
+        MatDialogModule,
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
@@ -34,6 +37,7 @@ export class RecibosEspecialesComponent implements OnInit {
     private readonly collectorService = inject(CollectorService);
     private readonly recibosService = inject(RecibosService);
     private readonly snackbar = inject(MatSnackBar);
+    private readonly dialog = inject(MatDialog);
 
     isSaving = signal(false);
     isLoadingBeneficients = signal(false);
@@ -155,7 +159,18 @@ export class RecibosEspecialesComponent implements OnInit {
                 this.isSaving.set(false);
                 this.resetForm();
             },
-            error: () => this.isSaving.set(false),
+            error: (err: SpecialReceiptError) => {
+                this.isSaving.set(false);
+                if (err.apiError?.type === 'PDF_GENERATION_FAILED') {
+                    // El recibo sí se creó del lado del servidor: se limpia el
+                    // formulario igual que en el caso exitoso, solo avisando
+                    // que el PDF no se pudo generar.
+                    this.dialog.open(SpecialReceiptWarningDialogComponent, {
+                        data: { message: err.apiError.message ?? 'El recibo se creó, pero no se pudo generar el PDF.' },
+                    });
+                    this.resetForm();
+                }
+            },
         });
     }
 
