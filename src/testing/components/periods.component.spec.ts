@@ -116,23 +116,35 @@ describe('PeriodsComponent', () => {
     });
 
     describe('togglePeriod()', () => {
-        it('should do nothing when dialog is dismissed', () => {
+        it('should do nothing when close dialog is dismissed without an exchange rate', () => {
+            const afterClosed$ = new Subject<number | undefined>();
+            dialogOpenSpy.mockReturnValue({ afterClosed: () => afterClosed$ });
+            component.ngOnInit();
+            component.togglePeriod();
+            afterClosed$.next(undefined);
+            expect(processesServiceSpy.closePeriod).not.toHaveBeenCalled();
+            expect(processesServiceSpy.openPeriod).not.toHaveBeenCalled();
+        });
+
+        it('should do nothing when open dialog is dismissed', () => {
+            processesServiceSpy.getPeriodStatus.mockReturnValue(
+                of(periodRes({ status: PeriodStatusEnum.CLOSED }))
+            );
             const afterClosed$ = new Subject<boolean>();
             dialogOpenSpy.mockReturnValue({ afterClosed: () => afterClosed$ });
             component.ngOnInit();
             component.togglePeriod();
             afterClosed$.next(false);
-            expect(processesServiceSpy.closePeriod).not.toHaveBeenCalled();
             expect(processesServiceSpy.openPeriod).not.toHaveBeenCalled();
         });
 
-        it('should call closePeriod when period is OPEN and dialog confirms', () => {
-            const afterClosed$ = new Subject<boolean>();
+        it('should call closePeriod with the entered exchange rate when period is OPEN and dialog confirms', () => {
+            const afterClosed$ = new Subject<number | undefined>();
             dialogOpenSpy.mockReturnValue({ afterClosed: () => afterClosed$ });
             component.ngOnInit();
             component.togglePeriod();
-            afterClosed$.next(true);
-            expect(processesServiceSpy.closePeriod).toHaveBeenCalled();
+            afterClosed$.next(18.5);
+            expect(processesServiceSpy.closePeriod).toHaveBeenCalledWith(18.5);
             expect(snackbarSpy.open).toHaveBeenCalledWith('Periodo cerrado correctamente', 'Cerrar', { duration: 5000 });
         });
 
@@ -151,11 +163,11 @@ describe('PeriodsComponent', () => {
 
         it('should reset isTogglingPeriod and show snackbar on error', () => {
             processesServiceSpy.closePeriod.mockReturnValue(throwError(() => ({ status: 500 })));
-            const afterClosed$ = new Subject<boolean>();
+            const afterClosed$ = new Subject<number | undefined>();
             dialogOpenSpy.mockReturnValue({ afterClosed: () => afterClosed$ });
             component.ngOnInit();
             component.togglePeriod();
-            afterClosed$.next(true);
+            afterClosed$.next(18.5);
             expect(component.isTogglingPeriod()).toBe(false);
             expect(snackbarSpy.open).toHaveBeenCalledWith(
                 'Error al cambiar el estado del periodo', 'Cerrar', { duration: 5000 }
@@ -172,34 +184,46 @@ describe('PeriodsComponent', () => {
         });
 
         it('should do nothing when dialog is dismissed', () => {
-            const afterClosed$ = new Subject<boolean>();
+            const afterClosed$ = new Subject<'OPEN' | 'SCHEDULED' | undefined>();
             dialogOpenSpy.mockReturnValue({ afterClosed: () => afterClosed$ });
             component.ngOnInit();
             component.generarRecibos();
-            afterClosed$.next(false);
+            afterClosed$.next(undefined);
             expect(processesServiceSpy.startReceiptsGenerationProcess).not.toHaveBeenCalled();
         });
 
-        it('should start receipts generation and show snackbar on confirm', () => {
-            const afterClosed$ = new Subject<boolean>();
+        it('should start receipts generation for the OPEN period and show snackbar on confirm', () => {
+            const afterClosed$ = new Subject<'OPEN' | 'SCHEDULED' | undefined>();
             dialogOpenSpy.mockReturnValue({ afterClosed: () => afterClosed$ });
             component.ngOnInit();
             component.generarRecibos();
-            afterClosed$.next(true);
-            expect(processesServiceSpy.startReceiptsGenerationProcess).toHaveBeenCalledWith(
-                { month: '06', year: '2026' }
+            afterClosed$.next('OPEN');
+            expect(processesServiceSpy.startReceiptsGenerationProcess).toHaveBeenCalledWith('OPEN');
+            expect(snackbarSpy.open).toHaveBeenCalledWith(
+                'Recibos generados correctamente para Junio 2026', 'Cerrar', { duration: 5000 }
             );
-            expect(snackbarSpy.open).toHaveBeenCalledWith('Recibos generados correctamente', 'Cerrar', { duration: 5000 });
             expect(component.isProcessing()).toBe(false);
+        });
+
+        it('should start receipts generation for the SCHEDULED period when chosen', () => {
+            const afterClosed$ = new Subject<'OPEN' | 'SCHEDULED' | undefined>();
+            dialogOpenSpy.mockReturnValue({ afterClosed: () => afterClosed$ });
+            component.ngOnInit();
+            component.generarRecibos();
+            afterClosed$.next('SCHEDULED');
+            expect(processesServiceSpy.startReceiptsGenerationProcess).toHaveBeenCalledWith('SCHEDULED');
+            expect(snackbarSpy.open).toHaveBeenCalledWith(
+                'Recibos generados correctamente para Julio 2026', 'Cerrar', { duration: 5000 }
+            );
         });
 
         it('should reset isProcessing and show snackbar on error', () => {
             processesServiceSpy.startReceiptsGenerationProcess.mockReturnValue(throwError(() => ({ status: 500 })));
-            const afterClosed$ = new Subject<boolean>();
+            const afterClosed$ = new Subject<'OPEN' | 'SCHEDULED' | undefined>();
             dialogOpenSpy.mockReturnValue({ afterClosed: () => afterClosed$ });
             component.ngOnInit();
             component.generarRecibos();
-            afterClosed$.next(true);
+            afterClosed$.next('OPEN');
             expect(component.isProcessing()).toBe(false);
             expect(snackbarSpy.open).toHaveBeenCalledWith(
                 'Error al generar los recibos', 'Cerrar', { duration: 7000 }

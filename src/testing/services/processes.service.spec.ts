@@ -76,12 +76,21 @@ describe('ProcessesService', () => {
   });
 
   describe('startReceiptsGenerationProcess', () => {
-    it('should POST to /processes/generate-receipts with the request body', () => {
-      const body = { month: '6', year: '2026' };
-      service.startReceiptsGenerationProcess(body).subscribe();
-      const req = httpMock.expectOne(`${BASE}/receipts/generate/recurring`);
+    it('should POST to /receipts/generate/recurring with targetPeriod=OPEN by default', () => {
+      service.startReceiptsGenerationProcess().subscribe();
+      const req = httpMock.expectOne(
+        (r) => r.url === `${BASE}/receipts/generate/recurring` && r.params.get('targetPeriod') === 'OPEN'
+      );
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(body);
+      req.flush({ statusCode: 200, data: {}, timestamp: '' });
+    });
+
+    it('should send targetPeriod=SCHEDULED when requested', () => {
+      service.startReceiptsGenerationProcess('SCHEDULED').subscribe();
+      const req = httpMock.expectOne(
+        (r) => r.url === `${BASE}/receipts/generate/recurring` && r.params.get('targetPeriod') === 'SCHEDULED'
+      );
+      expect(req.request.method).toBe('POST');
       req.flush({ statusCode: 200, data: {}, timestamp: '' });
     });
   });

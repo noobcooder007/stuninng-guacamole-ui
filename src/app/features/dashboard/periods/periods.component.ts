@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { Observable } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,8 +10,10 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PeriodStatus, ProcessesService } from '@app/core/services/processes.service';
+import { PeriodStatus, PeriodStatusResponse, ProcessesService } from '@app/core/services/processes.service';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
+import { ClosePeriodDialogComponent } from './close-period-dialog.component';
+import { GenerateReceiptsDialogComponent, GenerateReceiptsTargetPeriod } from './generate-receipts-dialog.component';
 import { PeriodStatusEnum } from '@app/shared/enums/period-status.enum';
 import { HasPermissionPipe } from '@app/shared/pipes/has-permission.pipe';
 import { Permissions } from '@app/shared/enums/app-permission.enum';
@@ -134,60 +137,61 @@ export class PeriodsComponent implements OnInit {
 
     togglePeriod(): void {
         const isOpen = this.periodStatus()?.status === PeriodStatusEnum.OPEN;
+
+        if (isOpen) {
+            this.dialog.open(ClosePeriodDialogComponent).afterClosed().subscribe((exchangeRateUsdToMxn?: number) => {
+                if (exchangeRateUsdToMxn == null) return;
+                this.runToggle(this.processesService.closePeriod(exchangeRateUsdToMxn), 'Periodo cerrado correctamente');
+            });
+            return;
+        }
+
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
-                title: isOpen ? 'Cerrar periodo' : 'Abrir periodo',
-                message: isOpen
-                    ? '¿Estás seguro de que deseas cerrar el periodo actual? Esta acción afectará todos los procesos activos.'
-                    : '¿Estás seguro de que deseas abrir un nuevo periodo?',
-                confirmLabel: isOpen ? 'Cerrar periodo' : 'Abrir periodo',
+                title: 'Abrir periodo',
+                message: '¿Estás seguro de que deseas abrir un nuevo periodo?',
+                confirmLabel: 'Abrir periodo',
             },
         });
 
         dialogRef.afterClosed().subscribe((confirmed: boolean) => {
             if (!confirmed) return;
-            this.isTogglingPeriod.set(true);
-            const action$ = isOpen
-                ? this.processesService.closePeriod()
-                : this.processesService.openPeriod();
+            this.runToggle(this.processesService.openPeriod(), 'Periodo abierto correctamente');
+        });
+    }
 
-            action$.subscribe({
-                next: () => {
-                    this.snackbar.open(
-                        isOpen ? 'Periodo cerrado correctamente' : 'Periodo abierto correctamente',
-                        'Cerrar',
-                        { duration: 5000 }
-                    );
-                    this.loadPeriodStatus();
-                    this.isTogglingPeriod.set(false);
-                },
-                error: (err) => {
-                    this.snackbar.open(apiErrorMessage(err, 'Error al cambiar el estado del periodo'), 'Cerrar', { duration: 5000 });
-                    this.isTogglingPeriod.set(false);
-                },
-            });
+    private runToggle(action$: Observable<PeriodStatusResponse>, successMessage: string): void {
+        this.isTogglingPeriod.set(true);
+        action$.subscribe({
+            next: () => {
+                this.snackbar.open(successMessage, 'Cerrar', { duration: 5000 });
+                this.loadPeriodStatus();
+                this.isTogglingPeriod.set(false);
+            },
+            error: (err) => {
+                this.snackbar.open(apiErrorMessage(err, 'Error al cambiar el estado del periodo'), 'Cerrar', { duration: 5000 });
+                this.isTogglingPeriod.set(false);
+            },
         });
     }
 
     generarRecibos(): void {
         const period = this.periodStatus();
         if (!period) return;
-        const monthLabel = this.months[period.month - 1]?.label ?? '';
-        this.dialog.open(ConfirmDialogComponent, {
-            data: {
-                title: 'Generar recibos',
-                message: `¿Generar recibos para ${monthLabel} ${period.year}? Esta acción no se puede deshacer.`,
-                confirmLabel: 'Generar',
-            },
-        }).afterClosed().subscribe((confirmed: boolean) => {
-            if (!confirmed) return;
+        const currentLabel = `${this.months[period.month - 1]?.label ?? ''} ${period.year}`;
+        const [nextMonth, nextYear] =
+            period.month === 12 ? [1, period.year + 1] : [period.month + 1, period.year];
+        const nextLabel = `${this.months[nextMonth - 1]?.label ?? ''} ${nextYear}`;
+
+        this.dialog.open(GenerateReceiptsDialogComponent, {
+            data: { currentLabel, nextLabel },
+        }).afterClosed().subscribe((targetPeriod?: GenerateReceiptsTargetPeriod) => {
+            if (!targetPeriod) return;
             this.isProcessing.set(true);
-            this.processesService.startReceiptsGenerationProcess({
-                month: period.month.toString().padStart(2, '0'),
-                year: period.year.toString(),
-            }).subscribe({
+            this.processesService.startReceiptsGenerationProcess(targetPeriod).subscribe({
                 next: () => {
-                    this.snackbar.open('Recibos generados correctamente', 'Cerrar', { duration: 5000 });
+                    const label = targetPeriod === 'SCHEDULED' ? nextLabel : currentLabel;
+                    this.snackbar.open(`Recibos generados correctamente para ${label}`, 'Cerrar', { duration: 5000 });
                     this.isProcessing.set(false);
                     this.loadPeriodStatus();
                 },

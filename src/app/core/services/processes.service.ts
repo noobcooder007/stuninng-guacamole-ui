@@ -64,16 +64,17 @@ export class ProcessesService {
         return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/periods/open`, {});
     }
 
-    closePeriod(): Observable<PeriodStatusResponse> {
-        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/periods/close`, {});
+    closePeriod(exchangeRateUsdToMxn?: number): Observable<PeriodStatusResponse> {
+        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/periods/close`, { exchangeRateUsdToMxn });
     }
 
     startCommissionProcess(request: ProcessRequest): Observable<PeriodStatusResponse> {
         return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/processes/commission`, request);
     }
 
-    startReceiptsGenerationProcess(request: ProcessRequest): Observable<PeriodStatusResponse> {
-        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/receipts/generate/recurring`, request);
+    startReceiptsGenerationProcess(targetPeriod: 'OPEN' | 'SCHEDULED' = 'OPEN'): Observable<PeriodStatusResponse> {
+        const params = new HttpParams().set('targetPeriod', targetPeriod);
+        return this.http.post<PeriodStatusResponse>(`${this.apiUrl}/receipts/generate/recurring`, {}, { params });
     }
 
     collectionPeriodReportPdf(month: number, year: number): Observable<Blob> {
