@@ -162,6 +162,7 @@
         <button
           type="button"
           matButton="outlined"
+          color="warn"
           [disabled]="isCancelling() || !(Permissions.VOID_INVOICE | hasPermission)"
           (click)="openCancelDialog()"
           class="shrink-0"

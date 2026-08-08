@@ -260,7 +260,7 @@
     <!-- ── Acciones ───────────────────────────────────────────────────────── -->
     <div class="flex gap-3 border-t border-[color:var(--mat-sys-outline-variant)] pt-4">
       @if (p.isActive) {
-        <button type="button" matButton="tonal"
+        <button type="button" matButton="tonal" color="warn"
           [disabled]="isSaving() || !(Permissions.EDIT_PROMISE | hasPermission)"
           (click)="deactivate()" data-cuelume-press data-cuelume-release>
           @if (isSaving()) { <mat-spinner diameter="18" /> }

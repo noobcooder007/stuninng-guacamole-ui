@@ -71,7 +71,7 @@
         <button
           type="button"
           matButton="filled"
-          [class]="period.status === PeriodStatusEnum.OPEN ? '!bg-[color:var(--mat-sys-error)] !text-[color:var(--mat-sys-on-error)]' : ''"
+          [color]="period.status === PeriodStatusEnum.OPEN ? 'warn' : undefined"
           [disabled]="isTogglingPeriod() || !(Permissions.RUN_PROCESS | hasPermission)"
           (click)="togglePeriod()"
           data-cuelume-press data-cuelume-release

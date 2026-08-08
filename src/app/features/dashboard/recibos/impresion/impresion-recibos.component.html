@@ -113,7 +113,7 @@
       <span class="flex-1"></span>
       <button
         type="button"
-        matButton="filled"
+        matButton="tonal"
         [disabled]="loadingAction() !== null || !(Permissions.PRINT_INVOICE | hasPermission)"
         (click)="printCarta()"
       data-cuelume-press data-cuelume-release
@@ -126,7 +126,7 @@
       </button>
       <button
         type="button"
-        matButton="filled"
+        matButton="tonal"
         [disabled]="loadingAction() !== null || !(Permissions.PRINT_INVOICE | hasPermission)"
         (click)="printRecibos()"
       data-cuelume-press data-cuelume-release

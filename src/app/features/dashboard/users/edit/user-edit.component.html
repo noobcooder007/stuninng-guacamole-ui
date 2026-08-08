@@ -145,7 +145,7 @@
       </div>
       <div class="flex gap-2 justify-end mt-4">
         @if (isActive()) {
-          <button type="button" matButton="outlined"
+          <button type="button" matButton="outlined" color="warn"
             [disabled]="isTogglingStatus() || !(Permissions.EDIT_USER | hasPermission)"
             (click)="toggleStatus()" data-cuelume-press data-cuelume-release>
             @if (isTogglingStatus()) {
