@@ -6,14 +6,14 @@
       Consulta de recibos
     </span>
 
-    <form [formGroup]="searchForm" class="flex flex-row gap-4 items-center flex-wrap">
-      <mat-form-field appearance="outline" class="w-52">
+    <form [formGroup]="searchForm" class="flex flex-col md:flex-row gap-4 items-stretch md:items-end flex-wrap">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-52">
         <mat-label>Folio</mat-label>
         <mat-icon matPrefix class="mr-1">receipt_long</mat-icon>
         <input matInput formControlName="folio" placeholder="ej. JUN2026-0001-R-0001" />
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-40">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-40">
         <mat-label>Estado</mat-label>
         <mat-select formControlName="status">
           @for (opt of statusOptions; track opt.value) {
@@ -22,7 +22,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-44">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-44">
         <mat-label>Tipo</mat-label>
         <mat-select formControlName="receiptType">
           @for (opt of receiptTypeOptions; track opt.value) {
@@ -31,7 +31,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-36">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-36">
         <mat-label>Mes</mat-label>
         <mat-select formControlName="month">
           @for (month of months; track month.value) {
@@ -40,7 +40,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-28">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-28">
         <mat-label>Año</mat-label>
         <mat-select formControlName="year">
           @for (year of years; track year) {
@@ -49,8 +49,10 @@
         </mat-select>
       </mat-form-field>
 
-      <button type="button" matButton="tonal" (click)="onSearch()">Buscar</button>
-      <button type="button" matButton="tonal" (click)="onClearFilters()">Borrar filtros</button>
+      <div class="flex gap-2">
+        <button type="button" matButton="tonal" class="flex-1 md:flex-none" (click)="onSearch()">Buscar</button>
+        <button type="button" matButton="tonal" class="flex-1 md:flex-none" (click)="onClearFilters()">Borrar filtros</button>
+      </div>
     </form>
   </section>
 

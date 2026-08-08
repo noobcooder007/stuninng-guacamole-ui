@@ -6,7 +6,7 @@
     </p>
 
     <div class="flex items-center gap-4 mb-4 flex-wrap">
-      <mat-form-field appearance="outline" class="w-72">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-72">
         <mat-label>Asignar a colector</mat-label>
         <input matInput [formControl]="collectorCtrl" [matAutocomplete]="collectorAuto" placeholder="Buscar colector…">
         <mat-autocomplete #collectorAuto [displayWith]="displayCollector" (optionSelected)="onCollectorSelected($event.option.value)">

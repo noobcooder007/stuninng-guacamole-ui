@@ -1,8 +1,8 @@
 <section class="flex flex-col h-full w-full items-center overflow-x-auto no-scrollbar p-6">
   <form class="flex flex-col gap-4 w-2/3" [formGroup]="createPromiseDonationForm">
     <p class="text-2xl pb-4 font-semibold">Datos generales</p>
-    <div class="grid grid-cols-2 gap-4 items-end">
-      <mat-form-field appearance="outline">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Bienhechor</mat-label>
         <input
           matInput
@@ -24,20 +24,20 @@
           }
         </mat-autocomplete>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Moneda</mat-label>
         <mat-select formControlName="currency">
           <mat-option value="MXN">Pesos</mat-option>
           <mat-option value="USD">Dolares</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Monto prometido</mat-label>
         <input type="number" min="0.01" max="999999" matInput formControlName="promiseAmount" aria-label="promiseAmount" />
         <span matTextPrefix>$</span>
         <mat-hint>Entre $0.01 y $999,999</mat-hint>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Método de pago</mat-label>
         <mat-select formControlName="method">
           <mat-option value="Efectivo">Efectivo</mat-option>
@@ -46,7 +46,7 @@
           <mat-option value="Tarjeta">Tarjeta</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Recurrencia</mat-label>
         <mat-select formControlName="recurrence">
           <mat-option value="MONTHLY">Mensual</mat-option>
@@ -57,7 +57,7 @@
           <mat-option value="ANNUAL">Anual</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Fecha de inicio</mat-label>
         <input
           matInput
