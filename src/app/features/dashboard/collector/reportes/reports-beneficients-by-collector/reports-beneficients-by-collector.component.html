@@ -1,0 +1,173 @@
+<div class="flex flex-col gap-4 p-6">
+
+  @if (isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)]">
+    Muestra, agrupado por colector, cuánto ha donado cada bienhechore en cada periodo dentro del rango seleccionado (recurrentes y especiales, excluibles), señalando si una donación se pagó en un periodo distinto al que se debía.
+  </p>
+
+  <form [formGroup]="filterForm" class="flex flex-col gap-4">
+    <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-end gap-4">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-32">
+        <mat-label>Mes inicial</mat-label>
+        <mat-select formControlName="fromMonth">
+          @for (month of months; track month.value) {
+            <mat-option [value]="month.value">{{ month.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-24">
+        <mat-label>Año inicial</mat-label>
+        <mat-select formControlName="fromYear">
+          @for (year of years; track year) {
+            <mat-option [value]="year">{{ year }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-32">
+        <mat-label>Mes final</mat-label>
+        <mat-select formControlName="toMonth">
+          @for (month of months; track month.value) {
+            <mat-option [value]="month.value">{{ month.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-24">
+        <mat-label>Año final</mat-label>
+        <mat-select formControlName="toYear">
+          @for (year of years; track year) {
+            <mat-option [value]="year">{{ year }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-end gap-4">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 min-w-56">
+        <mat-label>Colector (opcional)</mat-label>
+        <input
+          matInput
+          [formControl]="collectorCtrl"
+          [matAutocomplete]="collectorAuto"
+          placeholder="Buscar por nombre o número"
+        />
+        @if (collectorCtrl.value) {
+          <button matSuffix mat-icon-button type="button" (click)="clearCollector()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+        <mat-autocomplete #collectorAuto="matAutocomplete" [displayWith]="displayCollector" (optionSelected)="onCollectorSelected($event)">
+          @for (c of filteredCollectors(); track c.id) {
+            <mat-option [value]="c">{{ c.collectorNumber }} - {{ c.firstname }} {{ c.firstLastname }} {{ c.secondLastname ?? '' }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-checkbox formControlName="includeSpecial" class="mb-2">Incluir donaciones especiales</mat-checkbox>
+
+      <div class="flex gap-2 sm:ml-auto">
+        <button matButton="tonal" type="button" (click)="consultar()"
+                [disabled]="isLoading() || filterForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)" data-cuelume-press data-cuelume-release>
+          @if (isLoading()) { <mat-spinner diameter="20" /> }
+          @else { Consultar }
+        </button>
+        <button matButton="outlined" type="button" (click)="descargarPdf()"
+                [disabled]="isDownloading() || filterForm.invalid || !(Permissions.VIEW_REPORT | hasPermission)" data-cuelume-press data-cuelume-release>
+          @if (isDownloading()) { <mat-spinner diameter="20" /> }
+          @else { Descargar PDF }
+        </button>
+      </div>
+    </div>
+  </form>
+
+  @if (report(); as r) {
+    @if (!r.collectors.length) {
+      <div class="flex flex-col items-center gap-3 py-16 text-[color:var(--mat-sys-on-surface-variant)]">
+        <mat-icon class="!text-[48px] !w-12 !h-12 opacity-40">volunteer_activism</mat-icon>
+        <span class="text-sm font-medium">Sin donaciones pagadas en el rango seleccionado</span>
+      </div>
+    } @else {
+      <mat-accordion multi class="flex flex-col gap-2">
+        @for (collector of r.collectors; track collector.collectorNumber) {
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{ collector.collectorNumber }} - {{ collector.collectorName }}</mat-panel-title>
+              <mat-panel-description>{{ collector.beneficients.length }} bienhechore(s)</mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-accordion multi class="flex flex-col gap-2">
+              @for (beneficient of collector.beneficients; track beneficient.beneficientNumber) {
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>{{ beneficient.beneficientNumber }} - {{ beneficient.beneficientName }}</mat-panel-title>
+                    <mat-panel-description class="justify-end gap-3">
+                      @if (beneficient.totalDonatedMxn > 0) {
+                        <span>{{ beneficient.totalDonatedMxn | currency:'MXN':'symbol':'1.2-2' }}</span>
+                      }
+                      @if (beneficient.totalDonatedUsd > 0) {
+                        <span>{{ beneficient.totalDonatedUsd | currency:'USD':'symbol':'1.2-2' }}</span>
+                      }
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+
+                  <div class="overflow-x-auto">
+                    <table mat-table [dataSource]="receiptRows(beneficient)" class="w-full min-w-[700px]">
+
+                      <ng-container matColumnDef="period">
+                        <th mat-header-cell *matHeaderCellDef>Periodo</th>
+                        <td mat-cell *matCellDef="let row">{{ periodLabel(row.periodMonth, row.periodYear) }}</td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                        <td mat-cell *matCellDef="let row">{{ row.type === 'RECURRING' ? 'Recurrente' : 'Especial' }}</td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="folio">
+                        <th mat-header-cell *matHeaderCellDef>Folio</th>
+                        <td mat-cell *matCellDef="let row">{{ row.folio }}</td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="amount">
+                        <th mat-header-cell *matHeaderCellDef class="text-right">Monto</th>
+                        <td mat-cell *matCellDef="let row" class="text-right tabular-nums">
+                          {{ row.amount | currency:row.currency:'symbol':'1.2-2' }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>Estado de pago</th>
+                        <td mat-cell *matCellDef="let row">
+                          <mat-chip-set>
+                            @if (row.isDelayed === null) {
+                              <mat-chip highlighted disableRipple>Sin periodo vinculado</mat-chip>
+                            } @else if (row.isDelayed) {
+                              <mat-chip highlighted disableRipple color="warn">
+                                Retrasado (pagado en {{ periodLabel(row.paidPeriodMonth, row.paidPeriodYear) }})
+                              </mat-chip>
+                            } @else {
+                              <mat-chip highlighted disableRipple color="primary">A tiempo</mat-chip>
+                            }
+                          </mat-chip-set>
+                        </td>
+                      </ng-container>
+
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    </table>
+                  </div>
+                </mat-expansion-panel>
+              }
+            </mat-accordion>
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    }
+  }
+
+</div>

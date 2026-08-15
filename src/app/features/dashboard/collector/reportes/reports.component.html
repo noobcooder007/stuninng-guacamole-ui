@@ -1,6 +1,6 @@
 <div class="reports-container p-6">
   <p class="text-sm text-[color:var(--mat-sys-on-surface-variant)] mb-4">
-    "Reportes Generales" genera PDFs por periodo o colector. "Comparativo de Donativos" muestra la variación de recibos y promesas nuevas mes a mes. "Eficiencia Consolidada" muestra la relación entre lo asignado y lo cobrado por colector.
+    "Reportes Generales" genera PDFs por periodo o colector. "Comparativo de Donativos" muestra la variación de recibos y promesas nuevas mes a mes. "Eficiencia Consolidada" muestra la relación entre lo asignado y lo cobrado por colector. "Bienhechores por Colector" muestra cuánto ha donado cada bienhechore por periodo, agrupado por colector.
   </p>
   <mat-tab-group [(selectedIndex)]="activeTab">
     <!-- Pestaña: Reportes Generales -->
@@ -25,6 +25,14 @@
         <span>Eficiencia Consolidada</span>
       </ng-template>
       <app-reports-efficiency-consolidated></app-reports-efficiency-consolidated>
+    </mat-tab>
+
+    <!-- Pestaña: Bienhechores por Colector -->
+    <mat-tab label="Bienhechores por Colector">
+      <ng-template mat-tab-label>
+        <span>Bienhechores por Colector</span>
+      </ng-template>
+      <app-reports-beneficients-by-collector></app-reports-beneficients-by-collector>
     </mat-tab>
   </mat-tab-group>
 </div>
